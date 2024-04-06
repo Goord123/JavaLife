@@ -1,4 +1,4 @@
-package pt.isec.pa.mosquito.ui;
+package org.isec.pa.ecossistema.ui;
 
 import java.util.Scanner;
 

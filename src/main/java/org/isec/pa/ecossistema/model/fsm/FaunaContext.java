@@ -1,2 +1,4 @@
-package org.isec.pa.ecossistema.model.fsm;public class FaunaContext {
+package org.isec.pa.ecossistema.model.fsm;
+
+public class FaunaContext {
 }
