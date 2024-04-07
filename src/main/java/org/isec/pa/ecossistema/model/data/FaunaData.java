@@ -1,4 +1,122 @@
 package org.isec.pa.ecossistema.model.data;
 
-public class FaunaData extends EcossistemaData{
+import org.isec.pa.ecossistema.utils.Coords;
+import org.isec.pa.ecossistema.utils.DirectionEnum;
+import org.isec.pa.ecossistema.utils.Elemento;
+
+public class FaunaData extends EcossistemaData implements IElemento{
+
+    private static int lastId = 0; // Static variable to keep track of the last ID used
+    private final int id;
+    private final Elemento elemento = Elemento.FAUNA;
+    private double hp = 50;
+    private int velocity;
+    private DirectionEnum direction;
+    private Coords coords;
+    private Coords target;
+    private int timesReproduced = 0;
+    private int segundosParaReproduzir;
+
+    public FaunaData() {
+        this.id = ++lastId;
+        this.velocity = 0;
+        this.coords = new Coords(0,0);
+        this.target = new Coords(0,0);
+        this.segundosParaReproduzir = 0;
+    }
+    public FaunaData(int velocity) {
+        this.id = ++lastId;
+        this.velocity = velocity;
+        this.coords = new Coords(0,0);
+        this.target = new Coords(0,0);
+        this.segundosParaReproduzir = 0;
+    }
+
+    // GETTERS E SETTERS
+    @Override
+    public int getId() {
+        return id;
+    }
+    @Override
+    public Elemento getElemento() {
+        return elemento;
+    }
+    public double getHp() {
+        return hp;
+    }
+
+    public void setHp(double hp) {
+        this.hp = hp;
+    }
+
+    public int getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(int velocity) {
+        this.velocity = velocity;
+    }
+
+    public DirectionEnum getDirection() {
+        return direction;
+    }
+
+    public void setDirection(DirectionEnum direction) {
+        this.direction = direction;
+    }
+
+    public Coords getCoords() {
+        return coords;
+    }
+
+    public void setCoords(Coords coords) {
+        this.coords = coords;
+    }
+
+    public Coords getTarget() {
+        return target;
+    }
+
+    public void setTarget(Coords target) {
+        this.target = target;
+    }
+
+    public int getTimesReproduced() {
+        return timesReproduced;
+    }
+
+    public int getSegundosParaReproduzir() {
+        return segundosParaReproduzir;
+    }
+
+    public void incSegundosParaReproduzir() {
+        this.segundosParaReproduzir++;
+        if (this.segundosParaReproduzir == 10) {
+            this.segundosParaReproduzir = 0;
+            this.reproduce();
+        }
+    }
+
+
+    // METODOS
+
+    public void move() {
+        // TODO
+    }
+    public void reproduce() {
+        this.timesReproduced++;
+        if (this.hp >= 25) {
+            this.die();
+        }
+        else
+            this.hp -= 25;
+    }
+
+    public void die() {
+        // TODO
+    }
+
+
+
+
 }
