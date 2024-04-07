@@ -1,5 +1,6 @@
 package org.isec.pa.ecossistema.model.data;
 
+import org.isec.pa.ecossistema.utils.Coords;
 import org.isec.pa.ecossistema.utils.Elemento;
 
 public class FloraData extends EcossistemaData implements IElemento {
@@ -10,10 +11,12 @@ public class FloraData extends EcossistemaData implements IElemento {
     private double hp = 50;
     private int size;
     private int timesReproduced = 0;
+    private Coords coords;
 
     public FloraData(int size) {
         this.id = ++lastId;
         this.size = size;
+        this.coords = new Coords(0,0);
     }
 
     // GETTERS E SETTERS
@@ -31,6 +34,14 @@ public class FloraData extends EcossistemaData implements IElemento {
 
     public void setHp(double hp) {
         this.hp = hp;
+    }
+
+    public Coords getCoords() {
+        return coords;
+    }
+
+    public void setCoords(Coords coords) {
+        this.coords = coords;
     }
 
     public int getSize() {
