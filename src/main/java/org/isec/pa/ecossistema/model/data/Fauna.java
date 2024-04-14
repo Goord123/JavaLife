@@ -13,6 +13,7 @@ public class Fauna extends Ecossistema implements IElemento{
     private int velocity;
     private DirectionEnum direction;
     private Coords coords;
+    private int size;
     private Coords target;
     private int timesReproduced = 0;
     private int segundosParaReproduzir;
