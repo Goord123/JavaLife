@@ -2,13 +2,13 @@ package org.isec.pa.ecossistema.model.data;
 
 import org.isec.pa.ecossistema.utils.Coords;
 import org.isec.pa.ecossistema.utils.DirectionEnum;
-import org.isec.pa.ecossistema.utils.Elemento;
+import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-public class FaunaData extends EcossistemaData implements IElemento{
+public class Fauna extends Ecossistema implements IElemento{
 
     private static int lastId = 0; // Static variable to keep track of the last ID used
     private final int id;
-    private final Elemento elemento = Elemento.FAUNA;
+    private final ElementoEnum elementoEnum = ElementoEnum.FAUNA;
     private double hp = 50;
     private int velocity;
     private DirectionEnum direction;
@@ -17,14 +17,14 @@ public class FaunaData extends EcossistemaData implements IElemento{
     private int timesReproduced = 0;
     private int segundosParaReproduzir;
 
-    public FaunaData() {
+    public Fauna() {
         this.id = ++lastId;
         this.velocity = 0;
         this.coords = new Coords(0,0);
         this.target = new Coords(0,0);
         this.segundosParaReproduzir = 0;
     }
-    public FaunaData(int velocity) {
+    public Fauna(int velocity) {
         this.id = ++lastId;
         this.velocity = velocity;
         this.coords = new Coords(0,0);
@@ -38,8 +38,8 @@ public class FaunaData extends EcossistemaData implements IElemento{
         return id;
     }
     @Override
-    public Elemento getElemento() {
-        return elemento;
+    public ElementoEnum getElemento() {
+        return elementoEnum;
     }
     public double getHp() {
         return hp;

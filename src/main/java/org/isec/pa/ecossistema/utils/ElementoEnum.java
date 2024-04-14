@@ -1,4 +1,4 @@
 package org.isec.pa.ecossistema.utils;
-public enum Elemento {
+public enum ElementoEnum {
     INANIMADO, FLORA, FAUNA
 }

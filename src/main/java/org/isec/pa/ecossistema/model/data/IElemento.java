@@ -1,11 +1,11 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.utils.Elemento;
+import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 public interface IElemento {
 
     // METODOS COMUNS A TODOS OS ELEMENTOS DO ECOSSISTEMA
 
-    Elemento getElemento();
+    ElementoEnum getElemento();
     int getId();
 }

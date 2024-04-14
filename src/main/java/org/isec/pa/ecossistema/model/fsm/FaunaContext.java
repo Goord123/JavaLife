@@ -1,16 +1,16 @@
 package org.isec.pa.ecossistema.model.fsm;
 
-import org.isec.pa.ecossistema.model.data.FaunaData;
+import org.isec.pa.ecossistema.model.data.Fauna;
 import org.isec.pa.ecossistema.model.fsm.FaunaStates.IFaunaState;
 
 public class FaunaContext {
 
-    private FaunaData data;
+    private Fauna data;
     private IFaunaState currentState;
 
     public FaunaContext(){
-        this.data = new FaunaData();
-        this.currentState = FaunaState.INITIAL_STATE.getInstance(this, data);
+        this.data = new Fauna();
+        this.currentState = FaunaState.LOOKING_FOR_FLORA.getInstance(this, data);
     }
 
     public void changeState(IFaunaState newState){

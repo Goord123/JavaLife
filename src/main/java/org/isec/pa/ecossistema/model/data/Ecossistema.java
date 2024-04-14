@@ -1,13 +1,16 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.utils.Elemento;
+import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
+import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class EcossistemaData {
+public class Ecossistema implements IGameEngineEvolve {
 
     Set<IElemento> elementos = new HashSet<>();
+
+    Ecossistema(){}
 
     public void addElemento(IElemento elemento){
         elementos.add(elemento);
@@ -40,10 +43,10 @@ public class EcossistemaData {
         return false;
     }
 
-    public Set<IElemento> getElementosByElemento(Elemento elemento){
+    public Set<IElemento> getElementosByElemento(ElementoEnum elementoEnum){
         Set<IElemento> elementosByElemento = new HashSet<>();
         for(IElemento e : elementos){
-            if(e.getElemento() == elemento){
+            if(e.getElemento() == elementoEnum){
                 elementosByElemento.add(e);
             }
         }

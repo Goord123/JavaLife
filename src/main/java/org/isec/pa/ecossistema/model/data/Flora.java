@@ -1,19 +1,19 @@
 package org.isec.pa.ecossistema.model.data;
 
 import org.isec.pa.ecossistema.utils.Coords;
-import org.isec.pa.ecossistema.utils.Elemento;
+import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-public class FloraData extends EcossistemaData implements IElemento {
+public class Flora extends Ecossistema implements IElemento {
 
     private static int lastId = 0; // Static variable to keep track of the last ID used
     private final int id;
-    private final Elemento elemento = Elemento.FLORA;
+    private final ElementoEnum elementoEnum = ElementoEnum.FLORA;
     private double hp = 50;
     private int size;
     private int timesReproduced = 0;
     private Coords coords;
 
-    public FloraData(int size) {
+    public Flora(int size) {
         this.id = ++lastId;
         this.size = size;
         this.coords = new Coords(0,0);
@@ -25,8 +25,8 @@ public class FloraData extends EcossistemaData implements IElemento {
         return id;
     }
     @Override
-    public Elemento getElemento() {
-        return elemento;
+    public ElementoEnum getElemento() {
+        return elementoEnum;
     }
     public double getHp() {
         return hp;
