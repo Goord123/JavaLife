@@ -42,6 +42,18 @@ public class Fauna extends Ecossistema implements IElemento{
     public ElementoEnum getElemento() {
         return elementoEnum;
     }
+    @Override
+    public Coords getCoords() {
+        return coords;
+    }
+    @Override
+    public void setCoords(Coords coords) {
+        this.coords = coords;
+    }
+    @Override
+    public Field getField() {
+        return super.getField();
+    }
     public double getHp() {
         return hp;
     }
@@ -66,14 +78,6 @@ public class Fauna extends Ecossistema implements IElemento{
         this.direction = direction;
     }
 
-    public Coords getCoords() {
-        return coords;
-    }
-
-    public void setCoords(Coords coords) {
-        this.coords = coords;
-    }
-
     public Coords getTarget() {
         return target;
     }
@@ -88,6 +92,14 @@ public class Fauna extends Ecossistema implements IElemento{
 
     public int getSegundosParaReproduzir() {
         return segundosParaReproduzir;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public void incSegundosParaReproduzir() {
