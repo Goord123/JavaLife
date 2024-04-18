@@ -36,14 +36,19 @@ public class Flora extends Ecossistema implements IElemento {
         this.hp = hp;
     }
 
+    @Override
     public Coords getCoords() {
         return coords;
     }
 
+    @Override
     public void setCoords(Coords coords) {
         this.coords = coords;
     }
-
+    @Override
+    public Field getField() {
+        return super.getField();
+    }
     public int getSize() {
         return size;
     }

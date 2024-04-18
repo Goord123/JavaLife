@@ -9,8 +9,18 @@ import java.util.Set;
 public class Ecossistema implements IGameEngineEvolve {
 
     Set<IElemento> elementos = new HashSet<>();
+    Field field;
 
-    Ecossistema(){}
+    Ecossistema(){
+        this.field = new Field(100, 100);
+    }
+
+    public Field getField(){
+        return field;
+    }
+    public void setField(Field field){
+        this.field = field;
+    }
 
     public void addElemento(IElemento elemento){
         elementos.add(elemento);
@@ -36,6 +46,9 @@ public class Ecossistema implements IGameEngineEvolve {
     public boolean removeElementoById(int id){
         for(IElemento e : elementos){
             if(e.getId() == id){
+                int x = getElementoById(id).getCoords().getX();
+                int y = getElementoById(id).getCoords().getY();
+                field.removeElement(x, y);
                 elementos.remove(e);
                 return true;
             }
