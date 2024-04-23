@@ -1,35 +1,36 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.utils.Coords;
+import org.isec.pa.ecossistema.model.fsm.FaunaState;
+import org.isec.pa.ecossistema.model.fsm.FaunaStates.IFaunaState;
+import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.DirectionEnum;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-public class Fauna extends Ecossistema implements IElemento{
+import java.io.Serializable;
+
+public final class Fauna extends ElementoBase implements IElemento, IFaunaState, Serializable, IElementoComForca {
 
     private static int lastId = 0; // Static variable to keep track of the last ID used
     private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.FAUNA;
-    private double hp = 50;
+    private final static int HP_PER_TICK_EATING = 10;
+    private double forca = 50;
     private int velocity;
     private DirectionEnum direction;
-    private Coords coords;
+    private Area area;
     private int size;
-    private Coords target;
     private int timesReproduced = 0;
     private int segundosParaReproduzir;
+    private FaunaState state;
 
     public Fauna() {
         this.id = ++lastId;
         this.velocity = 0;
-        this.coords = new Coords(0,0);
-        this.target = new Coords(0,0);
         this.segundosParaReproduzir = 0;
     }
     public Fauna(int velocity) {
         this.id = ++lastId;
         this.velocity = velocity;
-        this.coords = new Coords(0,0);
-        this.target = new Coords(0,0);
         this.segundosParaReproduzir = 0;
     }
 
@@ -38,28 +39,25 @@ public class Fauna extends Ecossistema implements IElemento{
     public int getId() {
         return id;
     }
+
+    @Override
+    public Area getArea() {
+        return this.area;
+    }
     @Override
     public ElementoEnum getElemento() {
         return elementoEnum;
     }
     @Override
-    public Coords getCoords() {
-        return coords;
+    public FaunaState getState() {
+        return this.state;
     }
-    @Override
-    public void setCoords(Coords coords) {
-        this.coords = coords;
-    }
-    @Override
-    public Field getField() {
-        return super.getField();
-    }
-    public double getHp() {
-        return hp;
+    public double getForca() {
+        return forca;
     }
 
-    public void setHp(double hp) {
-        this.hp = hp;
+    public void setForca(double forca) {
+        this.forca = forca;
     }
 
     public int getVelocity() {
@@ -77,15 +75,6 @@ public class Fauna extends Ecossistema implements IElemento{
     public void setDirection(DirectionEnum direction) {
         this.direction = direction;
     }
-
-    public Coords getTarget() {
-        return target;
-    }
-
-    public void setTarget(Coords target) {
-        this.target = target;
-    }
-
     public int getTimesReproduced() {
         return timesReproduced;
     }
@@ -102,34 +91,169 @@ public class Fauna extends Ecossistema implements IElemento{
         this.size = size;
     }
 
-    public void incSegundosParaReproduzir() {
-        this.segundosParaReproduzir++;
-        if (this.segundosParaReproduzir == 10) {
-            this.segundosParaReproduzir = 0;
-            this.reproduce();
-        }
+    public void setArea(Area area) {
+        this.area = area;
     }
 
 
     // METODOS
 
-    public void move() {
-        // TODO
+    @Override
+    public void eat(){}
+    @Override
+    public void move(){}
+    @Override
+    public void reproduce(){}
+    @Override
+    public void die(){}
+/*
+    public void eat() {
+        if (field.getElementAt(this.coords.getX(), this.coords.getY()).getElemento() == ElementoEnum.FLORA) {
+            Flora flora = (Flora) field.getElementAt(this.coords.getX(), this.coords.getY());
+            if (flora.getHp() <= HP_PER_TICK_EATING) {
+                this.hp += flora.getHp();
+                flora.die();
+            }
+            else {
+                flora.setHp(flora.getHp() - HP_PER_TICK_EATING);
+            }
+        }
     }
+
+
+    public boolean checkIfAlive() {
+        if (this.forca <= 0) {
+            this.die();
+            return false;
+        }
+        return true;
+    }
+    */
+
+/*
+    public void move() {
+        if (checkIfAlive()) {
+            Coords newCoords = new Coords(this.coords.getX(), this.coords.getY());
+            switch (this.direction) {
+                case UP -> newCoords.setY(newCoords.getY() - this.velocity);
+                case DOWN -> newCoords.setY(newCoords.getY() + this.velocity);
+                case LEFT -> newCoords.setX(newCoords.getX() - this.velocity);
+                case RIGHT -> newCoords.setX(newCoords.getX() + this.velocity);
+            }
+            if (super.getField().checkIfValidMoveCoords(newCoords, this.size, this.height)) {
+                super.field.moveElement(this, newCoords.getX(), newCoords.getY());
+                this.coords = newCoords;
+            }
+            this.hp--;
+        }
+    }
+
+    public void spawn(Coords coords) {
+        Fauna newFauna = new Fauna();
+        newFauna.setCoords(coords);
+    }
+
+    public Coords checkForAdjacentFlora() {
+        // verifica as 3x3 celulas adjacentes por flora
+        int x = this.coords.getX();
+        int y = this.coords.getY();
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                IElemento element = super.getField().getElementAt(x + i, y + j);
+                if (element != null && element.getElemento() == ElementoEnum.FLORA) {
+                    return new Coords(x + i, y + j);
+                }
+            }
+        }
+        return null;
+    }
+
     public void reproduce() {
-        this.timesReproduced++;
-        if (this.hp >= 25) {
+        if (this.hp <= 25) {
             this.die();
         }
-        else
-            this.hp -= 25;
+        else {
+            if (checkForAdjacentFlora() != null) {
+                spawn(checkForAdjacentFlora());
+                this.hp -= 25;
+                this.timesReproduced++;
+            }
+        }
     }
 
     public void die() {
-        // TODO
+        this.forca = 0;
+        super.removeElemento(this);
+        //TODO: change state to dead
     }
 
+    public void choosekDirection() {
+        // escolhe um target e uma direcao baseada no target
+    }
+    */
+/*
+    public void hunt() {
+        if (this.hp < 80) return;
+        // verifica as celulas adjacentes
+        int x = this.coords.getX();
+        int y = this.coords.getY();
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                if (i == 0 && j == 0) continue;
+                IElemento element = super.getField().getElementAt(x + i, y + j);
+                if (element != null && element.getElemento() == ElementoEnum.FAUNA) {
+                    Fauna faunaTarget = (Fauna) element;
+                    // CASO ESTEJAM OS DOIS À PROCURA DE COMIDA (ganha o mais forte)
+                    if (faunaTarget.getHp() < 80 && faunaTarget.getState().equals(FaunaState.LOOKING_FOR_FAUNA)) {
+                        if (this.hp < faunaTarget.hp) {
+                            faunaTarget.hp += this.hp;
+                            this.hp = 0;
+                            this.die();
+                        }
+                        else {
+                            this.hp += faunaTarget.hp - 10;
+                            faunaTarget.die();
+                        }
+                    }
+                    else { // tenta atacar e morre
+                        this.hp -= 10;
+                        if (this.hp <= 0) {
+                            this.die();
+                            faunaTarget.hp += this.hp;
+                        }
+                        else { // ataca e mata
+                            faunaTarget.die();
+                            this.hp += faunaTarget.hp;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-
-
+    public boolean checkIfCanReproduce() {
+        // vai ver se há um elemento de fauna à volta, que nao esteja à procura de outra fauna
+        if (this.timesReproduced >= 2) return false;
+        int x = this.coords.getX();
+        int y = this.coords.getY();
+        for (int i = -4; i <= 4; i++) {
+            for (int j = -4; j <= 4; j++) {
+                if (i == 0 && j == 0) continue;
+                IElemento element = super.getField().getElementAt(x + i, y + j);
+                if (element != null && element.getElemento() == ElementoEnum.FAUNA) {
+                    Fauna faunaTarget = (Fauna) element;
+                    if (!faunaTarget.getState().equals(FaunaState.LOOKING_FOR_FAUNA) && faunaTarget.getTimesReproduced() < 2) {
+                        this.segundosParaReproduzir++;
+                        if (this.segundosParaReproduzir == 10) {
+                            this.segundosParaReproduzir = 0;
+                            this.reproduce();
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+*/
 }
