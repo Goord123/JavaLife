@@ -1,22 +1,24 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.utils.Coords;
+import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-public class Flora extends Ecossistema implements IElemento {
+import java.io.Serializable;
+
+public final class Flora extends ElementoBase implements IElemento, Serializable, IElementoComImagem, IElementoComForca {
 
     private static int lastId = 0; // Static variable to keep track of the last ID used
     private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.FLORA;
-    private double hp = 50;
+    private double forca = 50;
     private int size;
     private int timesReproduced = 0;
-    private Coords coords;
+    private Area area;
+    private String imagem;
 
     public Flora(int size) {
         this.id = ++lastId;
         this.size = size;
-        this.coords = new Coords(0,0);
     }
 
     // GETTERS E SETTERS
@@ -24,30 +26,26 @@ public class Flora extends Ecossistema implements IElemento {
     public int getId() {
         return id;
     }
+
+    @Override
+    public Area getArea() {
+        return this.area;
+    }
+
     @Override
     public ElementoEnum getElemento() {
         return elementoEnum;
     }
-    public double getHp() {
-        return hp;
+    public double getForca() {
+        return forca;
     }
 
-    public void setHp(double hp) {
-        this.hp = hp;
+    public void setForca(double forca) {
+        this.forca = forca;
     }
 
-    @Override
-    public Coords getCoords() {
-        return coords;
-    }
-
-    @Override
-    public void setCoords(Coords coords) {
-        this.coords = coords;
-    }
-    @Override
-    public Field getField() {
-        return super.getField();
+    public void setArea(Area area) {
+        this.area = area;
     }
     public int getSize() {
         return size;
@@ -64,15 +62,23 @@ public class Flora extends Ecossistema implements IElemento {
     // METODOS
 
     public void reproduce() {
-        if (this.hp >= 90 && this.timesReproduced < 2) {
+        if (this.forca >= 90 && this.timesReproduced < 2) {
             this.timesReproduced++;
-            this.hp = 60;
+            this.forca = 60;
         }
     }
 
-    public void isBeingSteppedOn() {
-        // ir ao ecoSistemaData e ver se há fauna a pisar
-        // se sim, diminuir hp
-        // temos que ver como é que vai funcionar o sistema de relogio da aplicacao
+    public void die() {
+        this.forca = 0;
+    }
+
+    @Override
+    public String getImagem() {
+        return this.imagem;
+    }
+
+    @Override
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
     }
 }

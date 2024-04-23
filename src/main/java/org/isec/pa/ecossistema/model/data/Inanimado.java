@@ -1,17 +1,18 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.utils.Coords;
+import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-public class Inanimado extends Ecossistema implements IElemento{
+import java.io.Serializable;
+
+public non-sealed class Inanimado extends ElementoBase implements IElemento, Serializable {
     private static int lastId = 0;
     private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.INANIMADO;
-    private Coords coords;
+    private Area area;
 
     public Inanimado() {
         this.id = ++lastId;
-        coords = new Coords(0,0);
     }
 
     // GETTERS E SETTERS
@@ -21,22 +22,16 @@ public class Inanimado extends Ecossistema implements IElemento{
     }
 
     @Override
-    public Coords getCoords() {
-        return coords;
-    }
-
-    @Override
-    public void setCoords(Coords coords) {
-        this.coords = coords;
-    }
-
-    @Override
     public ElementoEnum getElemento() {
         return elementoEnum;
     }
 
     @Override
-    public Field getField() {
-        return super.getField();
+    public Area getArea() {
+        return this.area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 }
