@@ -21,4 +21,15 @@ public class Inanimado extends Ecossistema implements IElemento{
         return elementoEnum;
     }
 
+    /*public void generateBarrier(int height, int width){
+
+    }
+
+    public void generateInanimated(int number){
+        // Create a Random object
+        Random random = new Random();
+
+        // Generate a random integer between 0 and 99
+        int randomNumber = random.nextInt(100);
+    }*/
 }
