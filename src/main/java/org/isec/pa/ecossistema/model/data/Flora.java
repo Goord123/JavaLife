@@ -36,6 +36,7 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
     public ElementoEnum getElemento() {
         return elementoEnum;
     }
+
     public double getForca() {
         return forca;
     }
@@ -47,6 +48,7 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
     public void setArea(Area area) {
         this.area = area;
     }
+
     public int getSize() {
         return size;
     }
