@@ -7,6 +7,7 @@ import org.isec.pa.ecossistema.utils.DirectionEnum;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 import java.io.Serializable;
+import java.util.List;
 
 public final class Fauna extends ElementoBase implements IElemento, IFaunaState, Serializable, IElementoComForca {
 
@@ -14,6 +15,7 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.FAUNA;
     private final static int HP_PER_TICK_EATING = 10;
+    private final Ecossistema ecossistema;
     private double forca = 50;
     private int velocity;
     private DirectionEnum direction;
@@ -23,14 +25,10 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     private int segundosParaReproduzir;
     private FaunaState state;
 
-    public Fauna() {
+    public Fauna(Ecossistema ecossistema) {
+        this.ecossistema = ecossistema;
         this.id = ++lastId;
         this.velocity = 0;
-        this.segundosParaReproduzir = 0;
-    }
-    public Fauna(int velocity) {
-        this.id = ++lastId;
-        this.velocity = velocity;
         this.segundosParaReproduzir = 0;
     }
 
@@ -44,14 +42,17 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     public Area getArea() {
         return this.area;
     }
+
     @Override
     public ElementoEnum getElemento() {
         return elementoEnum;
     }
+
     @Override
     public FaunaState getState() {
         return this.state;
     }
+
     public double getForca() {
         return forca;
     }
@@ -75,6 +76,7 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     public void setDirection(DirectionEnum direction) {
         this.direction = direction;
     }
+
     public int getTimesReproduced() {
         return timesReproduced;
     }
@@ -99,23 +101,61 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     // METODOS
 
     @Override
-    public void eat(){}
-    @Override
-    public void move(){}
-    @Override
-    public void reproduce(){}
-    @Override
-    public void die(){}
-/*
-    public void eat() {
-        if (field.getElementAt(this.coords.getX(), this.coords.getY()).getElemento() == ElementoEnum.FLORA) {
-            Flora flora = (Flora) field.getElementAt(this.coords.getX(), this.coords.getY());
-            if (flora.getHp() <= HP_PER_TICK_EATING) {
-                this.hp += flora.getHp();
-                flora.die();
+    public void move() {
+        if (checkIfCanMove()) {
+            double newUpperLeftX = area.upperLeft();
+            double newUpperLeftY = area.upperLeft();
+            double newLowerRightX = area.lowerRight();
+            double newLowerRightY = area.lowerRight();
+
+            switch (direction) {
+                case UP -> {
+                    newUpperLeftY -= velocity;
+                    newLowerRightY -= velocity;
+                }
+                case DOWN -> {
+                    newUpperLeftY += velocity;
+                    newLowerRightY += velocity;
+                }
+                case LEFT -> {
+                    newUpperLeftX -= velocity;
+                    newLowerRightX -= velocity;
+                }
+                case RIGHT -> {
+                    newUpperLeftX += velocity;
+                    newLowerRightX += velocity;
+                }
             }
-            else {
-                flora.setHp(flora.getHp() - HP_PER_TICK_EATING);
+
+            this.area = new Area(newUpperLeftX, newUpperLeftY, newLowerRightX, newLowerRightY);
+        }
+        this.forca--;
+    }
+
+
+
+    @Override
+    public void reproduce() {
+    }
+
+    @Override
+    public void die() {
+    }
+
+    @Override
+    public void eat() {
+        List<IElemento> elementos = this.ecossistema.getElementosByArea(this.area);
+        for (IElemento element : elementos) {
+            if (element != this) {
+                if (element.getElemento() == ElementoEnum.FLORA) {
+                    Flora flora = (Flora) element;
+                    if (flora.getForca() <= HP_PER_TICK_EATING) {
+                        this.forca += flora.getForca();
+                        flora.die();
+                    } else {
+                        flora.setForca(flora.getForca() - HP_PER_TICK_EATING);
+                    }
+                }
             }
         }
     }
@@ -128,8 +168,19 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         }
         return true;
     }
-    */
 
+    public boolean checkIfCanMove() {
+        List<IElemento> elementos = this.ecossistema.getElementosByArea(this.area);
+        for (IElemento element : elementos) {
+            if (element != this) {
+                if (element.getElemento() == ElementoEnum.FAUNA ||
+                        element.getElemento() == ElementoEnum.INANIMADO) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 /*
     public void move() {
         if (checkIfAlive()) {

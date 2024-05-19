@@ -10,6 +10,10 @@ public sealed interface IElemento extends Serializable permits ElementoBase, Flo
     // METODOS COMUNS A TODOS OS ELEMENTOS DO ECOSSISTEMA
 
     ElementoEnum getElemento();
+
     int getId();
+
     Area getArea();
+
+    //List<IElemento> getElementoByArea(Area area);
 }
