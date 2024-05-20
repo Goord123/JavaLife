@@ -7,12 +7,18 @@ import org.isec.pa.ecossistema.model.fsm.FaunaStateAdapter;
 
 public class LookingForFaunaState extends FaunaStateAdapter {
 
-        public LookingForFaunaState(FaunaContext context, Fauna data) {
-            super(context, data);
+        public LookingForFaunaState(FaunaContext context, Fauna fauna) {
+            super(context, fauna);
         }
 
         @Override
-        public FaunaState getState() {
+        public FaunaState getCurrentState() {
             return FaunaState.LOOKING_FOR_FAUNA;
+        }
+
+        @Override
+        public void evolve() {
+            if (!fauna.checkIfAlive()) changeState(FaunaState.DEAD);
+            fauna.hunt();
         }
 }

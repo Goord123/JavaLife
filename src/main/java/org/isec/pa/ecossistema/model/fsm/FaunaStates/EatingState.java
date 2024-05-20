@@ -12,8 +12,15 @@ public class EatingState extends FaunaStateAdapter {
     }
 
     @Override
-    public FaunaState getState() {
+    public FaunaState getCurrentState() {
         return FaunaState.EATING;
     }
 
+    @Override
+    public void eat() {
+        if (fauna.checkIfOnFlora())
+            fauna.eat();
+        else
+            changeState(FaunaState.LOOKING_FOR_FLORA);
+    }
 }

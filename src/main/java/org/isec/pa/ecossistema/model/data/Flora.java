@@ -45,6 +45,11 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
         this.forca = forca;
     }
 
+    @Override
+    public void evolve() {
+        //TODO implementar
+    }
+
     public void setArea(Area area) {
         this.area = area;
     }

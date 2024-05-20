@@ -12,7 +12,7 @@ public class DeadState extends FaunaStateAdapter {
         }
 
         @Override
-        public FaunaState getState() {
+        public FaunaState getCurrentState() {
             return FaunaState.DEAD;
         }
 }

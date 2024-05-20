@@ -15,4 +15,5 @@ public enum FaunaState {
             case DEAD -> new DeadState(context, data);
         };
     }
+
 }
