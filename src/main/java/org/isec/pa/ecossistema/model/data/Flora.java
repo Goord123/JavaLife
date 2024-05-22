@@ -1,5 +1,6 @@
 package org.isec.pa.ecossistema.model.data;
 
+import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
@@ -30,6 +31,11 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
     @Override
     public Area getArea() {
         return this.area;
+    }
+
+    @Override
+    public void evolve(IGameEngine gameEngine, long currentTime) {
+        //TODO implementar
     }
 
     @Override

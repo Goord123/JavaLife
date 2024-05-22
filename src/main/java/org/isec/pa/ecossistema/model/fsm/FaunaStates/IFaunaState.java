@@ -8,5 +8,6 @@ public interface IFaunaState {
     void eat();
     void reproduce();
     void die();
-    FaunaState getState();
+    FaunaState getCurrentState();
+    void evolve();
 }
