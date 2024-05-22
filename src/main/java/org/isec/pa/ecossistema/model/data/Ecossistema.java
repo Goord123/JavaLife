@@ -12,9 +12,14 @@ import java.util.Set;
 
 public class Ecossistema implements IGameEngineEvolve, Serializable {
 
+    private ElementoEnum elementType;
+
+    private ElementoBase element;
+
     Set<IElemento> elementos = new HashSet<>();
 
     public Ecossistema() {
+        this.elementType = ElementoEnum.INANIMADO;
     }
 
     public void addElemento(IElemento elemento) {
@@ -36,6 +41,10 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
             }
         }
         return null;
+    }
+
+    public ElementoBase getCurrentFigure() {
+        return this.element;
     }
 
     public Set<IElemento> getElementosByElemento(ElementoEnum elementoEnum) {
@@ -61,4 +70,10 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         return elementosByArea;
     }
 
+    public void createElement(double x, double y){
+        this.element = this.elementType.createFigure();
+        this.element.setP1(x, y);
+        this.element.setP2(x, y);
+        //this.element.setRGB(this.r, this.g, this.b);
+    }
 }
