@@ -4,7 +4,7 @@ import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-public class Inanimado extends Ecossistema implements IElemento{
+public final class Inanimado extends ElementoBase implements IElemento{
     private static int lastId = 0;
     private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.INANIMADO;
