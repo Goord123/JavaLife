@@ -65,4 +65,6 @@ public class EcossistemaManager {
         return elementosByArea;
     }
 
+
+
 }

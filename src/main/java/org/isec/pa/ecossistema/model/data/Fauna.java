@@ -3,6 +3,7 @@ package org.isec.pa.ecossistema.model.data;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.fsm.FaunaState;
 import org.isec.pa.ecossistema.model.fsm.FaunaStates.IFaunaState;
+import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.DirectionEnum;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
@@ -21,6 +22,7 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     private int velocity;
     private DirectionEnum direction;
     private Area area;
+    private Area target;
     private int size;
     private int timesReproduced = 0;
     private int segundosParaReproduzir;
@@ -45,6 +47,15 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     }
 
     @Override
+    public void evolve(IGameEngine gameEngine, long currentTime) {
+        // TODO: implement evolve
+    }
+
+    @Override
+    public void evolve() {
+        // TODO: implement evolve
+    }
+    @Override
     public ElementoEnum getElemento() {
         return elementoEnum;
     }
@@ -60,11 +71,6 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
 
     public void setForca(double forca) {
         this.forca = forca;
-    }
-
-    @Override
-    public void evolve() {
-        // TODO: implement evolve
     }
 
     public int getVelocity() {
@@ -103,6 +109,13 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         this.area = area;
     }
 
+    public Area getTarget() {
+        return target;
+    }
+
+    public void setTarget(Area target) {
+        this.target = target;
+    }
 
     // METODOS
 
@@ -110,10 +123,10 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     public void move() {
         boolean continua = true;
         while (continua) {
-            double newX1 = area.x1(); // top-left x
-            double newY1 = area.y1(); // top-left y
-            double newX2 = area.x2(); // bottom-right x
-            double newY2 = area.y2(); // bottom-right y
+            double newX1 = target.x1(); // top-left x
+            double newY1 = target.y1(); // top-left y
+            double newX2 = target.x2(); // bottom-right x
+            double newY2 = target.y2(); // bottom-right y
 
             if (direction == null) {
                 direction = DirectionEnum.values()[(int) (Math.random() * 4)];
@@ -315,16 +328,16 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         return false;
     }
 
-    public void moveTo(Area target) {
+    public void moveToTarget() {
         double currentX1 = area.x1();
         double currentY1 = area.y1();
         double currentX2 = area.x2();
         double currentY2 = area.y2();
 
-        double targetX1 = target.x1();
-        double targetY1 = target.y1();
-        double targetX2 = target.x2();
-        double targetY2 = target.y2();
+        double targetX1 = this.target.x1();
+        double targetY1 = this.target.y1();
+        double targetX2 = this.target.x2();
+        double targetY2 = this.target.y2();
 
         // Determine direction based on the target coordinates
         if (currentY1 > targetY1) {
@@ -343,5 +356,31 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
 
         // Move in the chosen direction
         move();
+    }
+
+    public Area lookForWeakestFauna() {
+
+        // Assuming we need to check the 9x9 cells around the top-left corner of the area
+        double x1 = this.area.x1();
+        double y1 = this.area.y1();
+        int weakestForca = 100;
+        Area weakestFaunaArea = null;
+
+        for (int i = -4; i <= 4; i++) {
+            for (int j = -4; j <= 4; j++) {
+                if (i == 0 && j == 0) continue;
+                Area areaToCheck = new Area(x1 + i * size, x1 + (i + 1) * size, y1 + j * size, y1 + (j + 1) * size);
+                List<IElemento> elementos = ecossistemaManager.getElementosByArea(areaToCheck);
+                for (IElemento element : elementos) {
+                    if (element.getElemento() == ElementoEnum.FAUNA) {
+                        if (((Fauna) element).getForca() < weakestForca) {
+                            weakestFaunaArea = areaToCheck;
+                        }
+                    }
+                }
+            }
+        }
+
+        return weakestFaunaArea;
     }
 }

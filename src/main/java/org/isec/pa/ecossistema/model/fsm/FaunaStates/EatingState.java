@@ -7,8 +7,8 @@ import org.isec.pa.ecossistema.model.fsm.FaunaStateAdapter;
 
 public class EatingState extends FaunaStateAdapter {
 
-    public EatingState(FaunaContext context, Fauna data) {
-        super(context, data);
+    public EatingState(FaunaContext context, Fauna fauna) {
+        super(context, fauna);
     }
 
     @Override
@@ -18,9 +18,15 @@ public class EatingState extends FaunaStateAdapter {
 
     @Override
     public void eat() {
-        if (fauna.checkIfOnFlora())
+        if (!fauna.checkIfAlive()) return;
+
+        if (fauna.checkIfOnFlora() && fauna.getForca() != 100)
             fauna.eat();
-        else
+        else {
+            // muda de estado
             changeState(FaunaState.LOOKING_FOR_FLORA);
+            // avisa o contexto, que por sua vez avisa a fauna que mudou de estado
+            context.changeState(FaunaState.LOOKING_FOR_FLORA.getInstance(context, fauna));
+        }
     }
 }

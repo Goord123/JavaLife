@@ -36,4 +36,7 @@ public class FaunaContext {
         currentState.die();
     }
 
+    public FaunaState getCurrentState() {
+        return currentState.getCurrentState();
+    }
 }

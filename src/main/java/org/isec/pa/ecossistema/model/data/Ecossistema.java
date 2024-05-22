@@ -1,5 +1,6 @@
 package org.isec.pa.ecossistema.model.data;
 
+import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 
 import java.io.Serializable;
@@ -20,4 +21,10 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         this.elementos = elementos;
     }
 
+    @Override
+    public void evolve(IGameEngine gameEngine, long currentTime) {
+        for (IElemento elemento : elementos) {
+            elemento.evolve(gameEngine, currentTime);
+        }
+    }
 }
