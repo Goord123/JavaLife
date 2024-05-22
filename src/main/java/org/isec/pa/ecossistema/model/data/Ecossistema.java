@@ -1,13 +1,11 @@
 package org.isec.pa.ecossistema.model.data;
 
+import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
-import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Ecossistema implements IGameEngineEvolve, Serializable {
@@ -57,17 +55,15 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         return elementosByElemento;
     }
 
-    public List<IElemento> getElementosByArea(Area area) {
-        List<IElemento> elementosByArea = new ArrayList<>();
-        for (IElemento e : elementos) {
-            if (e.getArea().upperLeft() <= area.upperLeft() &&
-                    e.getArea().upperRight() >= area.upperRight() &&
-                    e.getArea().lowerLeft() <= area.lowerLeft() &&
-                    e.getArea().lowerRight() >= area.lowerRight()) {
-                elementosByArea.add(e);
-            }
+    public void setElementos(Set<IElemento> elementos) {
+        this.elementos = elementos;
+    }
+
+    @Override
+    public void evolve(IGameEngine gameEngine, long currentTime) {
+        for (IElemento elemento : elementos) {
+            elemento.evolve(gameEngine, currentTime);
         }
-        return elementosByArea;
     }
 
     public void createElement(double x, double y){

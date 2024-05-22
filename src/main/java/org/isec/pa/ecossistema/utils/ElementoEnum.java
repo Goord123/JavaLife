@@ -1,5 +1,6 @@
 package org.isec.pa.ecossistema.utils;
 
+import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.*;
 
 public enum ElementoEnum {
@@ -9,7 +10,8 @@ public enum ElementoEnum {
         return switch (this) {
             case INANIMADO -> new Inanimado();
             case FLORA -> new Flora(1); //puz um só para não dar erro
-            case FAUNA -> new Fauna(new Ecossistema());//puz Fauna(new Ecossistema() só para não dar erro
+            // TODO
+            case FAUNA -> new Fauna(new EcossistemaManager(new Ecossistema()));//puz Fauna(new Ecossistema() só para não dar erro
         };
     }
 }
