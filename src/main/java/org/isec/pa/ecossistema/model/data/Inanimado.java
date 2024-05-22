@@ -4,9 +4,7 @@ import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-import java.io.Serializable;
-
-public non-sealed class Inanimado extends ElementoBase implements IElemento, Serializable {
+public final class Inanimado extends ElementoBase implements IElemento{
     private static int lastId = 0;
     private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.INANIMADO;
