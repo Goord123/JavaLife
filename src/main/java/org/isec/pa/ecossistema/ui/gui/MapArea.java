@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.ElementoBase;
 
-public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
+public class MapArea extends Canvas {
     EcossistemaManager ecossistemaManager;
     public MapArea(EcossistemaManager ecossistemaManager) {
         super(ecossistemaManager.getMapHeight(), ecossistemaManager.getMapWidth());
@@ -21,9 +21,9 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
         this.ecossistemaManager.addPropertyChangeListener("_element_", (evt) -> {
             this.update();
         });
-        this.setOnMousePressed((mouseEvent) -> {
-            this.ecossistemaManager.createFigure(mouseEvent.getX(), mouseEvent.getY());
-        });
+//        this.setOnMousePressed((mouseEvent) -> {
+//            this.ecossistemaManager.createFigure(mouseEvent.getX(), mouseEvent.getY());
+//        });
         //widthProperty().addListener() -> update();
 //        this.setOnMouseDragged((mouseEvent) -> {
 //            this.drawing.updateCurrentFigure(mouseEvent.getX(), mouseEvent.getY());
@@ -64,19 +64,22 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
             //gc.setFill(color);
             switch (element.getElemento()) {
                 case INANIMADO:
-                    gc.setStroke(Color.DARKGREY);
-                    gc.setFill(Color.DARKGREY);
-                    gc.fillRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
+                    gc.setStroke(Color.GREY.darker());
+                    gc.setFill(Color.GREY);
+                    gc.fillRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
+                    gc.strokeRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
                     break;
                 case FLORA:
-                    gc.setStroke(Color.GREEN);
+                    gc.setStroke(Color.GREEN.darker());
                     gc.setFill(Color.GREEN);
-                    gc.fillRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
+                    gc.fillRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
+                    gc.strokeRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
                     break;
                 case FAUNA:
-                    gc.setStroke(Color.YELLOW);
-                    gc.setFill(Color.YELLOW);
-                    gc.fillRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
+                    gc.setStroke(Color.MAGENTA.darker());
+                    gc.setFill(Color.MAGENTA);
+                    gc.fillRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
+                    gc.strokeRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
             }
         }
     }

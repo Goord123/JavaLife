@@ -66,10 +66,10 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         }
     }
 
-    public void createElement(double x, double y){
-        this.element = this.elementType.createFigure();
-        this.element.setP1(x, y);
-        this.element.setP2(x, y);
-        //this.element.setRGB(this.r, this.g, this.b);
-    }
+//    public void createElement(double x, double y){
+//        this.element = this.elementType.createFigure();
+//        this.element.setP1(x, y);
+//        this.element.setP2(x, y);
+//        //this.element.setRGB(this.r, this.g, this.b);
+//    }
 }
