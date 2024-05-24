@@ -72,4 +72,12 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         this.element.setP2(x, y);
         //this.element.setRGB(this.r, this.g, this.b);
     }
+
+//    public boolean existsElement(double x1, double y1, double x2, double y2){
+//        for (IElemento e : elementos) {
+//            if (e.getElemento() == elementoEnum) {
+//                elementosByElemento.add(e);
+//            }
+//        }
+//    }
 }

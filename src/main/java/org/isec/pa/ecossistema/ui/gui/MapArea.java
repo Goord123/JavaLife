@@ -5,14 +5,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.ElementoBase;
-import org.isec.pa.ecossistema.model.data.Inanimado;
-import org.isec.pa.ecossistema.utils.Cores;
 
 public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
-    EcossistemaManager ecossistema;
-    public MapArea(EcossistemaManager ecossistema) {
-        super(ecossistema.getMapHeight(), ecossistema.getMapWidth());
-        this.ecossistema = ecossistema;
+    EcossistemaManager ecossistemaManager;
+    public MapArea(EcossistemaManager ecossistemaManager) {
+        super(ecossistemaManager.getMapHeight(), ecossistemaManager.getMapWidth());
+        this.ecossistemaManager = ecossistemaManager;
         this.registerHandlers();
         this.spawnBorder();
         this.spawnRandoms();
@@ -20,11 +18,11 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
     }
 
     private void registerHandlers() {
-        this.ecossistema.addPropertyChangeListener("_element_", (evt) -> {
+        this.ecossistemaManager.addPropertyChangeListener("_element_", (evt) -> {
             this.update();
         });
         this.setOnMousePressed((mouseEvent) -> {
-            this.ecossistema.createFigure(mouseEvent.getX(), mouseEvent.getY());
+            this.ecossistemaManager.createFigure(mouseEvent.getX(), mouseEvent.getY());
         });
         //widthProperty().addListener() -> update();
 //        this.setOnMouseDragged((mouseEvent) -> {
@@ -39,7 +37,7 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
         GraphicsContext gc = this.getGraphicsContext2D();
         this.clearScreen(gc);
         //this.spawnBorder();
-        this.ecossistema.getElementos().forEach((element) -> {
+        this.ecossistemaManager.getElementos().forEach((element) -> {
             this.drawFigure(gc, (ElementoBase) element);
         });
         //this.drawFigure(gc, this.ecossistema.getCurrentElement());
@@ -52,11 +50,11 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
     }
 
     public void spawnBorder(){
-        ecossistema.spawnBorder(1.1, 1.1, this.getWidth(), this.getHeight());
+        ecossistemaManager.spawnBorder(1.1, 1.1, this.getWidth(), this.getHeight());
     }
 
     public void spawnRandoms(){
-        ecossistema.spawnRandoms(1.1, 1.1, this.getWidth(), this.getHeight());
+        ecossistemaManager.spawnRandoms(1.1, 1.1, this.getWidth(), this.getHeight());
     }
 
     private void drawFigure(GraphicsContext gc, ElementoBase element) {
