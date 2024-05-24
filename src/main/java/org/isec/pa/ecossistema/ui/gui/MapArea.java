@@ -14,16 +14,19 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
         super(ecossistema.getMapHeight(), ecossistema.getMapWidth());
         this.ecossistema = ecossistema;
         this.registerHandlers();
+        this.spawnBorder();
+        this.spawnRandoms();
         this.update();
     }
 
     private void registerHandlers() {
-        this.ecossistema.addPropertyChangeListener("_figures_", (evt) -> {
+        this.ecossistema.addPropertyChangeListener("_element_", (evt) -> {
             this.update();
         });
         this.setOnMousePressed((mouseEvent) -> {
             this.ecossistema.createFigure(mouseEvent.getX(), mouseEvent.getY());
         });
+        //widthProperty().addListener() -> update();
 //        this.setOnMouseDragged((mouseEvent) -> {
 //            this.drawing.updateCurrentFigure(mouseEvent.getX(), mouseEvent.getY());
 //        });
@@ -35,7 +38,7 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
     private void update() {
         GraphicsContext gc = this.getGraphicsContext2D();
         this.clearScreen(gc);
-        this.spawnBorder();
+        //this.spawnBorder();
         this.ecossistema.getElementos().forEach((element) -> {
             this.drawFigure(gc, (ElementoBase) element);
         });
@@ -43,7 +46,7 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
     }
 
     private void clearScreen(GraphicsContext gc) {
-        gc.setFill(Color.LIGHTGREEN);
+        gc.setFill(Color.WHITESMOKE);
         //gc.fillRect(0.0, 0.0, 500, 250);
         gc.fillRect(0.0, 0.0, this.getWidth(), this.getHeight());
     }
@@ -52,25 +55,30 @@ public class MapArea extends Canvas { // NAO DEVE SER O CANVAS
         ecossistema.spawnBorder(1.1, 1.1, this.getWidth(), this.getHeight());
     }
 
+    public void spawnRandoms(){
+        ecossistema.spawnRandoms(1.1, 1.1, this.getWidth(), this.getHeight());
+    }
+
     private void drawFigure(GraphicsContext gc, ElementoBase element) {
         if (element != null) {
             //Color color = Color.color(element.getR(), element.getG(), element.getB());
-            Color color = Color.color(Cores.RED.getCode(), 0, 0);
-            gc.setFill(color);
+            //Color color = Color.color(Cores.RED.getCode(), 0, 0);
+            //gc.setFill(color);
             switch (element.getElemento()) {
                 case INANIMADO:
-                    gc.setStroke(color);
+                    gc.setStroke(Color.DARKGREY);
+                    gc.setFill(Color.DARKGREY);
                     gc.fillRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
                     break;
                 case FLORA:
-//                    gc.fillRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
-//                    //gc.setStroke(color.darker());
-//                    gc.strokeRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
+                    gc.setStroke(Color.GREEN);
+                    gc.setFill(Color.GREEN);
+                    gc.fillRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
                     break;
                 case FAUNA:
-//                    gc.fillOval(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
-//                    //gc.setStroke(color.darker());
-//                    gc.strokeRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
+                    gc.setStroke(Color.YELLOW);
+                    gc.setFill(Color.YELLOW);
+                    gc.fillRect(element.getX1(), element.getY1(), element.getWidth(), element.getHeight());
             }
         }
     }
