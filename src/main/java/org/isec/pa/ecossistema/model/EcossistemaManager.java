@@ -23,6 +23,7 @@ public class EcossistemaManager {
     private Ecossistema ecossistema;
     private final int mapHeight;
     private final int mapWidth;
+    private final int pixelMultiplier = 20;
 
     private final double tamBorder = 20;
 
@@ -32,6 +33,10 @@ public class EcossistemaManager {
         this.ecossistema = ecossistema;
         mapHeight = 800;
         mapWidth = 600;
+    }
+
+    public int getPixelMultiplier(){
+        return pixelMultiplier;
     }
 
     public void addElemento(IElemento elemento) {
@@ -145,15 +150,18 @@ public class EcossistemaManager {
 
     public void spawnRandoms(double x, double y, double width, double height){
         double randomWidth, randomHeight;
-        for(double i = 0; i < 15.0; i++){
+        int randomWidthInt, randomHeightInt;
+        for(double i = 0; i < 140.0; i++){
             do{
                 do{
-                    randomWidth = (double) getRandomNumber((int) width);
+                    randomWidthInt = getRandomNumber((int) width);
+                    randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
                 }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
                 do{
-                    randomHeight = (double) getRandomNumber((int) height);
+                    randomHeightInt = getRandomNumber((int) height);
+                    randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
                 }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
-            }while(existsElement(randomWidth, randomHeight, randomWidth + 20, randomHeight + 20));
+            }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
             Inanimado inanimadoTemp = new Inanimado();
             inanimadoTemp.setP1(randomWidth, randomHeight);
@@ -163,15 +171,17 @@ public class EcossistemaManager {
             //System.out.println(inanimadoTemp.getArea().x1());
         }
 
-        for(double i = 0; i < 15.0; i++){
+        for(double i = 0; i < 40.0; i++){
             do{
                 do{
-                    randomWidth = (double) getRandomNumber((int) width);
+                    randomWidthInt = getRandomNumber((int) width);
+                    randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
                 }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
                 do{
-                    randomHeight = (double) getRandomNumber((int) height);
+                    randomHeightInt = getRandomNumber((int) height);
+                    randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
                 }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
-            }while(existsElement(randomWidth, randomHeight, randomWidth + 20, randomHeight + 20));
+            }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
             Flora floraTemp = new Flora(20);
             floraTemp.setP1(randomWidth, randomHeight);
