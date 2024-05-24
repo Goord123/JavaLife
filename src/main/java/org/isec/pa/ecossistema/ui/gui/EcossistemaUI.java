@@ -26,12 +26,12 @@ public class EcossistemaUI extends BorderPane {
     }
 
     private void registerHandlers() {
-        this.mapAreaPane.widthProperty().addListener((observable) -> {
-            this.mapArea.updateSize(this.mapAreaPane.getWidth(), this.mapAreaPane.getHeight());
-        });
-        this.mapAreaPane.heightProperty().addListener((observable) -> {
-            this.mapArea.updateSize(this.mapAreaPane.getWidth(), this.mapAreaPane.getHeight());
-        });
+//        this.mapAreaPane.widthProperty().addListener((observable) -> {
+//            this.mapArea.updateSize(this.mapAreaPane.getWidth(), this.mapAreaPane.getHeight());
+//        });
+//        this.mapAreaPane.heightProperty().addListener((observable) -> {
+//            this.mapArea.updateSize(this.mapAreaPane.getWidth(), this.mapAreaPane.getHeight());
+//        });
     }
 
     private void update() {

@@ -23,6 +23,7 @@ public class EcossistemaManager {
     private Ecossistema ecossistema;
     private final int mapHeight;
     private final int mapWidth;
+    private final int pixelMultiplier = 20;
 
     private final double tamBorder = 20;
 
@@ -32,6 +33,10 @@ public class EcossistemaManager {
         this.ecossistema = ecossistema;
         mapHeight = 800;
         mapWidth = 600;
+    }
+
+    public int getPixelMultiplier(){
+        return pixelMultiplier;
     }
 
     public void addElemento(IElemento elemento) {
@@ -70,14 +75,15 @@ public class EcossistemaManager {
     }
 
     public List<IElemento> getElementosByArea(Area area) {
+        //TODO falta comparar com ele próprio
         List<IElemento> elementosByArea = new ArrayList<>();
         for (IElemento e : ecossistema.getElementos()) {
             Area eArea = e.getArea();
 
-            boolean intersects = !(eArea.x1() > area.x2() ||
-                    eArea.x2() < area.x1() ||
-                    eArea.y1() > area.y2() ||
-                    eArea.y2() < area.y1());
+            boolean intersects = !(eArea.x1() >= area.x2() ||
+                    eArea.x2() <= area.x1() ||
+                    eArea.y1() >= area.y2() ||
+                    eArea.y2() <= area.y1());
 
             if (intersects) {
                 elementosByArea.add(e);
@@ -90,10 +96,10 @@ public class EcossistemaManager {
         this.pcs.addPropertyChangeListener(property, listener);
     }
 
-    public void createFigure(double x, double y) {
-        ecossistema.createElement(x,y);
-        pcs.firePropertyChange(PROP_ELEMENT,null,null);
-    }
+//    public void createFigure(double x, double y) {
+//        ecossistema.createElement(x,y);
+//        pcs.firePropertyChange(PROP_ELEMENT,null,null);
+//    }
 
     public int getMapHeight() {
         return mapHeight;
@@ -107,77 +113,77 @@ public class EcossistemaManager {
         // Draw top border
         for (double i = 0; i < width; i = i + tamBorder) {
             Inanimado inanimadoTemp = new Inanimado();
-            inanimadoTemp.setP1(i, 0);
-            inanimadoTemp.setP2(i+tamBorder, tamBorder);
+            inanimadoTemp.setArea(new Area(i, i+tamBorder,0, tamBorder));
             ecossistema.addElemento(inanimadoTemp);
+
         }
 
         // Draw bottom border
         for (double i = 0; i < width; i = i + tamBorder) {
             Inanimado inanimadoTemp = new Inanimado();
-            inanimadoTemp.setP1(i, height-tamBorder);
-            inanimadoTemp.setP2(i+tamBorder, height);
+            inanimadoTemp.setArea(new Area(i, i+tamBorder,height-tamBorder, height));
             ecossistema.addElemento(inanimadoTemp);
+
         }
 
         // Draw left border
         for (double i = 0; i < height; i = i + tamBorder) {
             Inanimado inanimadoTemp = new Inanimado();
-            inanimadoTemp.setP1(0, i);
-            inanimadoTemp.setP2(tamBorder, i+tamBorder);
+            inanimadoTemp.setArea(new Area(0, tamBorder,i ,i+tamBorder));
             ecossistema.addElemento(inanimadoTemp);
         }
 
         // Draw right border
         for (double i = 0; i < height; i = i + tamBorder) {
             Inanimado inanimadoTemp = new Inanimado();
-            inanimadoTemp.setP1(width-tamBorder, i);
-            inanimadoTemp.setP2(width, i+tamBorder);
+            inanimadoTemp.setArea(new Area(width-tamBorder, width,i , i+tamBorder));
             ecossistema.addElemento(inanimadoTemp);
         }
     }
 
     public void spawnRandoms(double x, double y, double width, double height){
         double randomWidth, randomHeight;
-        for(double i = 0; i < 15.0; i++){
-//            do{
-//                do{
-//                    randomWidth = (double) getRandomNumber((int) width);
-//                }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
-//                do{
-//                    randomHeight = (double) getRandomNumber((int) height);
-//                }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
-//            }while(existsElement(randomHeight, randomWidth) == false);
-
+        int randomWidthInt, randomHeightInt;
+        for(double i = 0; i < 140.0; i++){
             do{
-                randomWidth = (double) getRandomNumber((int) width);
-            }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
-            do{
-                randomHeight = (double) getRandomNumber((int) height);
-            }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
+                do{
+                    randomWidthInt = getRandomNumber((int) width);
+                    randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
+                }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
+                do{
+                    randomHeightInt = getRandomNumber((int) height);
+                    randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
+                }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
+            }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
             Inanimado inanimadoTemp = new Inanimado();
-            inanimadoTemp.setP1(randomWidth, randomHeight);
-            inanimadoTemp.setP2(randomWidth + tamBorder, randomHeight + tamBorder);
+            inanimadoTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
             ecossistema.addElemento(inanimadoTemp);
+            //System.out.println(inanimadoTemp.getArea().x1());
         }
 
-        for(double i = 0; i < 15.0; i++){
+        for(double i = 0; i < 40.0; i++){
             do{
-                randomWidth = (double) getRandomNumber((int) width);
-            }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
-            do{
-                randomHeight = (double) getRandomNumber((int) height);
-            }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
+                do{
+                    randomWidthInt = getRandomNumber((int) width);
+                    randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
+                }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
+                do{
+                    randomHeightInt = getRandomNumber((int) height);
+                    randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
+                }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
+            }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
             Flora floraTemp = new Flora(20);
-            floraTemp.setP1(randomWidth, randomHeight);
-            floraTemp.setP2(randomWidth + tamBorder, randomHeight + tamBorder);
+            floraTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
             ecossistema.addElemento(floraTemp);
         }
     }
 
-    //public boolean existsElement(){
-//        ecossistema.
-//    }
+    public boolean existsElement(double x1, double y1, double x2, double y2){
+        Area area = new Area(x1, x2, y1, y2);
+        return !getElementosByArea(area).isEmpty();
+
+        //return ecossistema.existsElement(x1, y1, x2, y2);
+    }
 }
