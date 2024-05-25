@@ -9,7 +9,8 @@ import org.isec.pa.ecossistema.model.data.ElementoBase;
 public class MapArea extends Canvas {
     EcossistemaManager ecossistemaManager;
     public MapArea(EcossistemaManager ecossistemaManager) {
-        super(ecossistemaManager.getMapHeight(), ecossistemaManager.getMapWidth());
+        //super(ecossistemaManager.getMapHeight(), ecossistemaManager.getMapWidth());
+        super(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         this.ecossistemaManager = ecossistemaManager;
         this.registerHandlers();
         this.spawnBorder();
@@ -46,15 +47,15 @@ public class MapArea extends Canvas {
     private void clearScreen(GraphicsContext gc) {
         gc.setFill(Color.WHITESMOKE);
         //gc.fillRect(0.0, 0.0, 500, 250);
-        gc.fillRect(0.0, 0.0, this.getWidth(), this.getHeight());
+        gc.fillRect(0.0, 0.0, ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
     }
 
     public void spawnBorder(){
-        ecossistemaManager.spawnBorder(1.1, 1.1, this.getWidth(), this.getHeight());
+        ecossistemaManager.spawnBorder(1.1, 1.1, ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
     }
 
     public void spawnRandoms(){
-        ecossistemaManager.spawnRandoms(1.1, 1.1, this.getWidth(), this.getHeight());
+        ecossistemaManager.spawnRandoms(1.1, 1.1, ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
     }
 
     private void drawFigure(GraphicsContext gc, ElementoBase element) {
