@@ -25,7 +25,7 @@ public class MainJFX extends Application {
 
     private void createOneStage(Stage stage) {
         EcossistemaUI ecossistemaUI = new EcossistemaUI(this.manager);
-        Scene scene = new Scene(ecossistemaUI,800,600);  //largura , altura
+        Scene scene = new Scene(ecossistemaUI,800,605);  //largura , altura
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("Drawing@PA");
