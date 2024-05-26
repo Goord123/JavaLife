@@ -31,9 +31,7 @@ public final class Inanimado extends ElementoBase implements IElemento{
     }
 
     @Override
-    public void evolve(IGameEngine gameEngine, long currentTime) {
-        // TODO dar só return ?
-    }
+    public void evolve(IGameEngine gameEngine, long currentTime) {}
 
     public void setArea(Area area) {
         this.area = area;

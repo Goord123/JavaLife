@@ -1,12 +1,13 @@
 package org.isec.pa.ecossistema.model.data;
 
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
+import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 import java.io.Serializable;
 
-public final class Flora extends ElementoBase implements IElemento, Serializable, IElementoComImagem, IElementoComForca {
+public final class Flora extends ElementoBase implements IElemento, Serializable, IElementoComImagem, IElementoComForca, IGameEngineEvolve {
 
     private static int lastId = 0; // Static variable to keep track of the last ID used
     private final int id;

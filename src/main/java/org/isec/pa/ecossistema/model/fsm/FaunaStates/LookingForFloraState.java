@@ -13,8 +13,8 @@ public class LookingForFloraState extends FaunaStateAdapter {
     }
 
     @Override
-    public FaunaState getCurrentState() {
-        return FaunaState.LOOKING_FOR_FLORA;
+    public IFaunaState getCurrentState() {
+        return FaunaState.LOOKING_FOR_FLORA.getInstance(context, fauna);
     }
 
 
@@ -30,18 +30,25 @@ public class LookingForFloraState extends FaunaStateAdapter {
         } else {
             // se tem target, move-se para ele
             if (fauna.getTarget() != null)
-                fauna.moveToTarget();
+                fauna.getDirectionOfTarget();
             else {
                 // se nao tem target, procura um
                 Area target = fauna.checkForAdjacentFlora();
-                if (target != null) {
-                    fauna.moveToTarget();
-                } else { // se nao há flora, procura fauna
+                if (target != null) { // se encontrou flora
+                    fauna.setTarget(target);
+                    fauna.getDirectionOfTarget();
+                } else { // se nao encontrou flora, procura fauna
                     changeState(FaunaState.LOOKING_FOR_FAUNA);
                     context.changeState(FaunaState.LOOKING_FOR_FAUNA.getInstance(context, fauna));
                     Area area = fauna.lookForWeakestFauna();
                     if (area != null) {
-                        fauna.moveToTarget();
+                        fauna.setTarget(area);
+                        fauna.getDirectionOfTarget();
+                    }
+                    else {
+                        fauna.setDirection(null);
+                        fauna.setTarget(null);
+                        fauna.getDirectionOfTarget();
                     }
                 }
             }

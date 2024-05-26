@@ -1,9 +1,11 @@
 package org.isec.pa.ecossistema.model.data;
 
 import org.isec.pa.ecossistema.model.EcossistemaManager;
+import org.isec.pa.ecossistema.model.fsm.FaunaContext;
 import org.isec.pa.ecossistema.model.fsm.FaunaState;
 import org.isec.pa.ecossistema.model.fsm.FaunaStates.IFaunaState;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
+import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.DirectionEnum;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
@@ -11,7 +13,7 @@ import org.isec.pa.ecossistema.utils.ElementoEnum;
 import java.io.Serializable;
 import java.util.List;
 
-public final class Fauna extends ElementoBase implements IElemento, IFaunaState, Serializable, IElementoComForca {
+public final class Fauna extends ElementoBase implements IElemento, IFaunaState, Serializable, IElementoComForca, IGameEngineEvolve {
 
     private static int lastId = 0; // Static variable to keep track of the last ID used
     private final int id;
@@ -26,13 +28,16 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     private int size;
     private int timesReproduced = 0;
     private int segundosParaReproduzir;
-    private FaunaState currentState;
+
+    private IFaunaState currentState;
+    private FaunaContext context;
 
     public Fauna(EcossistemaManager ecossistemaManager) {
         this.ecossistemaManager = ecossistemaManager;
         this.id = ++lastId;
         this.velocity = 0;
         this.segundosParaReproduzir = 0;
+        this.context = new FaunaContext(ecossistemaManager,this);
     }
 
     // GETTERS E SETTERS
@@ -49,20 +54,28 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     @Override
     public void evolve(IGameEngine gameEngine, long currentTime) {
         // TODO: implement evolve
+        System.out.println("Fauna evolve id" + this.id);
+        context.evolve();
+        System.out.println(currentState.getClass().getSimpleName());
     }
 
-    @Override
-    public void evolve() {
-        // TODO: implement evolve
-    }
     @Override
     public ElementoEnum getElemento() {
         return elementoEnum;
     }
 
     @Override
-    public FaunaState getCurrentState() {
+    public IFaunaState getCurrentState() {
         return this.currentState;
+    }
+
+    public void changeState(IFaunaState newState) {
+        this.currentState = newState;
+    }
+
+    @Override
+    public void evolve() {
+        // isto vai ser chamado pelo evolve do gameEngine
     }
 
     public double getForca() {
@@ -117,7 +130,39 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         this.target = target;
     }
 
+
     // METODOS
+
+
+    public void getDirectionOfTarget() {
+        double currentX1 = area.x1();
+        double currentY1 = area.y1();
+        double currentX2 = area.x2();
+        double currentY2 = area.y2();
+
+        double targetX1 = this.target.x1();
+        double targetY1 = this.target.y1();
+        double targetX2 = this.target.x2();
+        double targetY2 = this.target.y2();
+
+        // Determine direction based on the target coordinates
+        if (currentY1 > targetY1) {
+            // Move up
+            direction = DirectionEnum.UP;
+        } else if (currentY2 < targetY2) {
+            // Move down
+            direction = DirectionEnum.DOWN;
+        } else if (currentX1 > targetX1) {
+            // Move left
+            direction = DirectionEnum.LEFT;
+        } else if (currentX2 < targetX2) {
+            // Move right
+            direction = DirectionEnum.RIGHT;
+        }
+
+        // Move in the chosen direction
+        move();
+    }
 
     @Override
     public void move() {
@@ -162,6 +207,8 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         }
         this.forca--;
     }
+
+
 
     @Override
     public void eat() {
@@ -231,11 +278,13 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
                 List<IElemento> elementos = ecossistemaManager.getElementosByArea(areaToCheck);
                 for (IElemento element : elementos) {
                     if (element.getElemento() == ElementoEnum.FLORA) {
+                        System.out.println("Found flora" + areaToCheck.toString());
                         return areaToCheck;
                     }
                 }
             }
         }
+        System.out.println("No flora found");
         return null;
     }
 
@@ -328,35 +377,7 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         return false;
     }
 
-    public void moveToTarget() {
-        double currentX1 = area.x1();
-        double currentY1 = area.y1();
-        double currentX2 = area.x2();
-        double currentY2 = area.y2();
 
-        double targetX1 = this.target.x1();
-        double targetY1 = this.target.y1();
-        double targetX2 = this.target.x2();
-        double targetY2 = this.target.y2();
-
-        // Determine direction based on the target coordinates
-        if (currentY1 > targetY1) {
-            // Move up
-            direction = DirectionEnum.UP;
-        } else if (currentY2 < targetY2) {
-            // Move down
-            direction = DirectionEnum.DOWN;
-        } else if (currentX1 > targetX1) {
-            // Move left
-            direction = DirectionEnum.LEFT;
-        } else if (currentX2 < targetX2) {
-            // Move right
-            direction = DirectionEnum.RIGHT;
-        }
-
-        // Move in the chosen direction
-        move();
-    }
 
     public Area lookForWeakestFauna() {
 
