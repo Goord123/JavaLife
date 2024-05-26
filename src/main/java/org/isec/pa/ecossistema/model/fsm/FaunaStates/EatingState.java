@@ -25,8 +25,6 @@ public class EatingState extends FaunaStateAdapter {
         else {
             // muda de estado
             changeState(FaunaState.LOOKING_FOR_FLORA);
-            // avisa o contexto, que por sua vez avisa a fauna que mudou de estado
-            context.changeState(FaunaState.LOOKING_FOR_FLORA.getInstance(context, fauna));
         }
     }
 }

@@ -22,9 +22,9 @@ public class LookingForFaunaState extends FaunaStateAdapter {
             if (!fauna.checkIfAlive()) return;
             fauna.checkIfCanReproduce();
 
-            Area target = fauna.checkForAdjacentFlora();
-            if (target != null) {
-                this.fauna.setTarget(target);
+            Area targetFlora = fauna.checkForAdjacentFlora();
+            if (targetFlora != null) {
+                this.fauna.setTarget(targetFlora);
                 fauna.getDirectionOfTarget();
                 changeState(FaunaState.LOOKING_FOR_FLORA);
                 context.changeState(FaunaState.LOOKING_FOR_FLORA.getInstance(context, fauna));

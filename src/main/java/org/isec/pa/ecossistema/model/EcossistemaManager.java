@@ -1,5 +1,6 @@
 package org.isec.pa.ecossistema.model;
 
+import javafx.application.Platform;
 import org.isec.pa.ecossistema.model.data.*;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
@@ -27,6 +28,20 @@ public class EcossistemaManager {
         this.ecossistema = ecossistema;
         mapHeight = 580;
         mapWidth = 800;
+
+        // Add a listener to handle updates
+        ecossistema.addPropertyChangeListener(evt -> {
+            if (PROP_ELEMENT.equals(evt.getPropertyName())) {
+                refreshUI();
+            }
+        });
+    }
+
+    public void refreshUI() {
+        // Logic to refresh the UI, typically by updating the JavaFX scene graph
+        Platform.runLater(() -> {
+            pcs.firePropertyChange(PROP_ELEMENT, null, null);
+        });
     }
 
     public int getPixelMultiplier(){
