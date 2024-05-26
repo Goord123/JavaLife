@@ -13,8 +13,8 @@ public class LookingForFaunaState extends FaunaStateAdapter {
         }
 
         @Override
-        public FaunaState getCurrentState() {
-            return FaunaState.LOOKING_FOR_FAUNA;
+        public IFaunaState getCurrentState() {
+            return FaunaState.LOOKING_FOR_FAUNA.getInstance(context, fauna);
         }
 
         @Override
@@ -24,7 +24,8 @@ public class LookingForFaunaState extends FaunaStateAdapter {
 
             Area target = fauna.checkForAdjacentFlora();
             if (target != null) {
-                fauna.moveToTarget();
+                this.fauna.setTarget(target);
+                fauna.getDirectionOfTarget();
                 changeState(FaunaState.LOOKING_FOR_FLORA);
                 context.changeState(FaunaState.LOOKING_FOR_FLORA.getInstance(context, fauna));
             } else {

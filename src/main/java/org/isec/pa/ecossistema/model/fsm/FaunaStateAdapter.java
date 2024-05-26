@@ -21,7 +21,7 @@ public abstract class FaunaStateAdapter implements IFaunaState {
 
     }
 
-    public abstract FaunaState getCurrentState();
+    public abstract IFaunaState getCurrentState();
 
     @Override
     public void eat() {

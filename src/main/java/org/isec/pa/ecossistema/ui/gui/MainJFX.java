@@ -2,7 +2,6 @@ package org.isec.pa.ecossistema.ui.gui;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.Ecossistema;

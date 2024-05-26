@@ -12,8 +12,8 @@ public class EatingState extends FaunaStateAdapter {
     }
 
     @Override
-    public FaunaState getCurrentState() {
-        return FaunaState.EATING;
+    public IFaunaState getCurrentState() {
+        return FaunaState.EATING.getInstance(context, fauna);
     }
 
     @Override

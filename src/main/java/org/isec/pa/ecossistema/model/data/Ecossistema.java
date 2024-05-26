@@ -1,5 +1,6 @@
 package org.isec.pa.ecossistema.model.data;
 
+import org.isec.pa.ecossistema.model.fsm.GameEngine.GameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
@@ -10,18 +11,20 @@ import java.util.Set;
 
 public class Ecossistema implements IGameEngineEvolve, Serializable {
 
-    private ElementoEnum elementType;
 
-    private ElementoBase element;
+    private IGameEngine gameEngine;
 
     Set<IElemento> elementos = new HashSet<>();
 
     public Ecossistema() {
-        this.elementType = ElementoEnum.INANIMADO;
+        this.gameEngine = new GameEngine();
+        this.gameEngine.start(1000);
     }
 
     public void addElemento(IElemento elemento) {
         elementos.add(elemento);
+        if (elemento instanceof IGameEngineEvolve) // inanimados nao passam neste check
+            gameEngine.registerClient((IGameEngineEvolve) elemento);
     }
 
     public void removeElemento(IElemento elemento) {
@@ -39,10 +42,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
             }
         }
         return null;
-    }
-
-    public ElementoBase getCurrentFigure() {
-        return this.element;
     }
 
     public Set<IElemento> getElementosByElemento(ElementoEnum elementoEnum) {
