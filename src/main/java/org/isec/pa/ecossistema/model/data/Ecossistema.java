@@ -5,26 +5,42 @@ import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.isec.pa.ecossistema.model.EcossistemaManager.PROP_ELEMENT;
+
 public class Ecossistema implements IGameEngineEvolve, Serializable {
-
-
     private IGameEngine gameEngine;
-
     Set<IElemento> elementos = new HashSet<>();
+    private transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
 
     public Ecossistema() {
         this.gameEngine = new GameEngine();
         this.gameEngine.start(1000);
+        this.gameEngine.registerClient(this);
+    }
+
+    @Override
+    public void evolve(IGameEngine gameEngine, long currentTime) {
+        for (IElemento elemento : elementos) {
+            elemento.evolve(gameEngine, currentTime);
+        }
+        pcs.firePropertyChange(PROP_ELEMENT, null, null);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
     }
 
     public void addElemento(IElemento elemento) {
         elementos.add(elemento);
-        if (elemento instanceof IGameEngineEvolve) // inanimados nao passam neste check
-            gameEngine.registerClient((IGameEngineEvolve) elemento);
+       // if (elemento instanceof IGameEngineEvolve) // inanimados nao passam neste check
+       //     gameEngine.registerClient((IGameEngineEvolve) elemento);
     }
 
     public void removeElemento(IElemento elemento) {
@@ -58,12 +74,7 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         this.elementos = elementos;
     }
 
-    @Override
-    public void evolve(IGameEngine gameEngine, long currentTime) {
-        for (IElemento elemento : elementos) {
-            elemento.evolve(gameEngine, currentTime);
-        }
-    }
+
 
 //    public void createElement(double x, double y){
 //        this.element = this.elementType.createFigure();

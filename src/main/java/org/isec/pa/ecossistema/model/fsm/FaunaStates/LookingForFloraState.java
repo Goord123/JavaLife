@@ -26,23 +26,22 @@ public class LookingForFloraState extends FaunaStateAdapter {
 
         if (fauna.checkIfOnFlora()) {
             changeState(FaunaState.EATING);
-            context.changeState(FaunaState.EATING.getInstance(context, fauna));
         } else {
             // se tem target, move-se para ele
             if (fauna.getTarget() != null)
                 fauna.getDirectionOfTarget();
             else {
                 // se nao tem target, procura um
-                Area target = fauna.checkForAdjacentFlora();
-                if (target != null) { // se encontrou flora
-                    fauna.setTarget(target);
+                Area targetFlora = fauna.checkForAdjacentFlora();
+                if (targetFlora != null) { // se encontrou flora
+                    fauna.setTarget(targetFlora);
                     fauna.getDirectionOfTarget();
                 } else { // se nao encontrou flora, procura fauna
-                    changeState(FaunaState.LOOKING_FOR_FAUNA);
-                    context.changeState(FaunaState.LOOKING_FOR_FAUNA.getInstance(context, fauna));
-                    Area area = fauna.lookForWeakestFauna();
-                    if (area != null) {
-                        fauna.setTarget(area);
+                    //changeState(FaunaState.LOOKING_FOR_FAUNA);
+                    //context.changeState(FaunaState.LOOKING_FOR_FAUNA.getInstance(context, fauna));
+                    Area targetFauna = fauna.lookForWeakestFauna();
+                    if (targetFauna != null) {
+                        fauna.setTarget(targetFauna);
                         fauna.getDirectionOfTarget();
                     }
                     else {

@@ -7,6 +7,8 @@ import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.ElementoBase;
 
 public class MapArea extends Canvas {
+    public static final String PROP_ELEMENT = "_element_";
+
     EcossistemaManager ecossistemaManager;
     public MapArea(EcossistemaManager ecossistemaManager) {
         //super(ecossistemaManager.getMapHeight(), ecossistemaManager.getMapWidth());
@@ -19,7 +21,7 @@ public class MapArea extends Canvas {
     }
 
     private void registerHandlers() {
-        this.ecossistemaManager.addPropertyChangeListener("_element_", (evt) -> {
+        this.ecossistemaManager.addPropertyChangeListener(PROP_ELEMENT, (evt) -> {
             this.update();
         });
 //        this.setOnMousePressed((mouseEvent) -> {
