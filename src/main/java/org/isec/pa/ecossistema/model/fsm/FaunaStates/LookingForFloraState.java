@@ -35,6 +35,7 @@ public class LookingForFloraState extends FaunaStateAdapter {
                 Area targetFlora = fauna.checkForAdjacentFlora();
                 if (targetFlora != null) { // se encontrou flora
                     fauna.setTarget(targetFlora);
+                    System.out.println("target: " + fauna.getTarget());
                     fauna.getDirectionOfTarget();
                 } else { // se nao encontrou flora, procura fauna
                     //changeState(FaunaState.LOOKING_FOR_FAUNA);

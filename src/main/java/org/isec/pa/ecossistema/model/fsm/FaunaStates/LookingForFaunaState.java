@@ -27,7 +27,6 @@ public class LookingForFaunaState extends FaunaStateAdapter {
                 this.fauna.setTarget(targetFlora);
                 fauna.getDirectionOfTarget();
                 changeState(FaunaState.LOOKING_FOR_FLORA);
-                context.changeState(FaunaState.LOOKING_FOR_FLORA.getInstance(context, fauna));
             } else {
                 fauna.hunt();
             }
