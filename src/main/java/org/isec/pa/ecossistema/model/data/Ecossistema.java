@@ -13,6 +13,7 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     private final IGameEngine gameEngine;
     Set<IElemento> elementos = new HashSet<>();
 
+    private int tickSpeed = 1000;// (milisegundos)
 
     public Ecossistema() {
         this.gameEngine = new GameEngine();
@@ -30,6 +31,12 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         }
         if (elemento instanceof IGameEngineEvolve) {
             gameEngine.registerClient((IGameEngineEvolve) elemento);
+        }
+    }
+
+    public void removeAllElementos() {
+        synchronized (elementos) {
+            elementos.clear();
         }
     }
 
@@ -77,7 +84,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     public void unregisterClient(IGameEngineEvolve client) {
         gameEngine.unregisterClient(client);
     }
-
 
 
 

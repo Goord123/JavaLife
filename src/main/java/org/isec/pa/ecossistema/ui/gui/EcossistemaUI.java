@@ -19,8 +19,9 @@ public class EcossistemaUI extends BorderPane {
     }
 
     private void createViews() {
-        this.setTop(new VBox(new Node[]{new MapMenu(this.ecossistema)}));
         this.mapArea = new MapArea(this.ecossistema);
+        this.setTop(new VBox(new Node[]{new MapMenu(this.ecossistema, mapArea)}));
+
         this.mapAreaPane = new Pane(new Node[]{this.mapArea});
         this.setCenter(this.mapAreaPane);
     }

@@ -24,6 +24,7 @@ public class EcossistemaManager implements IGameEngineEvolve{
     private final int mapWidth;
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
+    private double forcaDefault = 50;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public EcossistemaManager(Ecossistema ecossistema) {
@@ -107,8 +108,19 @@ public class EcossistemaManager implements IGameEngineEvolve{
         ecossistema.getElementos().remove(elemento);
     }
 
+    public void setForcaDefault(double newForcaDefault) {
+        this.forcaDefault = newForcaDefault;
+    }
+
+    public double getForcaDefault() {
+        return forcaDefault;
+    }
     public Set<IElemento> getElementos() {
         return ecossistema.getElementos();
+    }
+
+    public void removeAllElementos() {
+       ecossistema.removeAllElementos();
     }
 
     public IElemento getElementoByIdAndType(int id, IElemento elemento) {
@@ -302,6 +314,15 @@ public class EcossistemaManager implements IGameEngineEvolve{
         System.out.println(faunaTemp.getArea().toString());
         ecossistema.addElemento(faunaTemp);
         this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
+    }
+
+    public Area convertToPixels(double mouseX, double mouseY){
+         // Convert coordinates to multiples of 20
+        int x1 = (int) (mouseX / 20) * 20;
+        int y1 = (int) (mouseY / 20) * 20;
+
+        // Assuming x2 and y2 are the same as x1 and y1 for simplicity
+        return new Area(x1, x1+20, y1, y1+20);
     }
 
     public void deletedDeadElement(int id, IElemento elementoToDelete) {
