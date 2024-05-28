@@ -2,6 +2,7 @@ package org.isec.pa.ecossistema.model;
 
 import javafx.application.Platform;
 import org.isec.pa.ecossistema.model.data.*;
+import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
@@ -44,6 +45,9 @@ public class EcossistemaManager {
         });
     }
 
+    public void unregisterClient(IGameEngineEvolve client) {
+        ecossistema.unregisterClient(client);
+    }
     public int getPixelMultiplier(){
         return pixelMultiplier;
     }
@@ -179,7 +183,7 @@ public class EcossistemaManager {
                 }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
             }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
-            Flora floraTemp = new Flora(20);
+            Flora floraTemp = new Flora(this);
             floraTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
             ecossistema.addElemento(floraTemp);
         }
@@ -209,7 +213,7 @@ public class EcossistemaManager {
         Inanimado inanimadoTemp = new Inanimado();
         inanimadoTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
         ecossistema.addElemento(inanimadoTemp);
-        this.pcs.firePropertyChange("_element_", (Object)null, (Object)null);
+        this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
     }
 
     public void adicionarElementoFlora(double width, double height){
@@ -226,10 +230,10 @@ public class EcossistemaManager {
             }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
         }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
-        Flora floraTemp = new Flora(20);
+        Flora floraTemp = new Flora(this);
         floraTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
         ecossistema.addElemento(floraTemp);
-        this.pcs.firePropertyChange("_element_", (Object)null, (Object)null);
+        this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
     }
 
     public void adicionarElementoFauna(double width, double height){
@@ -250,6 +254,15 @@ public class EcossistemaManager {
         faunaTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
         System.out.println(faunaTemp.getArea().toString());
         ecossistema.addElemento(faunaTemp);
-        this.pcs.firePropertyChange("_element_", (Object)null, (Object)null);
+        this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
+    }
+
+    public void deletedDeadElement(int id, IElemento elementoToDelete) {
+        IElemento elemento = getElementoByIdAndType(id, elementoToDelete);
+        if (elemento != null) {
+            ecossistema.unregisterClient((IGameEngineEvolve) elemento);
+            ecossistema.removeElemento(elemento);
+            this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
+        }
     }
 }

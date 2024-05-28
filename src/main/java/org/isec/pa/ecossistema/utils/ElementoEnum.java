@@ -9,7 +9,7 @@ public enum ElementoEnum {
     public ElementoBase createFigure() {
         return switch (this) {
             case INANIMADO -> new Inanimado();
-            case FLORA -> new Flora(1); //puz um só para não dar erro
+            case FLORA -> new Flora(new EcossistemaManager(new Ecossistema())); //puz um só para não dar erro
             // TODO
             case FAUNA -> new Fauna(new EcossistemaManager(new Ecossistema()));//puz Fauna(new Ecossistema() só para não dar erro
         };

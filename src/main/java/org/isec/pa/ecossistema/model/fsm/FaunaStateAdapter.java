@@ -29,8 +29,9 @@ public abstract class FaunaStateAdapter implements IFaunaState {
     }
 
     @Override
-    public void reproduce() {
+    public boolean reproduce() {
 
+        return false;
     }
 
     @Override

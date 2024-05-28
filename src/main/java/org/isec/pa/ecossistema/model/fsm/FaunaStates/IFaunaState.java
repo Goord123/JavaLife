@@ -4,7 +4,7 @@ public interface IFaunaState {
 
     void move();
     void eat();
-    void reproduce();
+    boolean reproduce();
     void die();
     IFaunaState getCurrentState();
 

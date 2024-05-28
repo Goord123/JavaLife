@@ -31,11 +31,14 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
 
     private IFaunaState currentState;
     private FaunaContext context;
+    private final int pixelMultiplier;
+    private Area reproductionArea;
 
     public Fauna(EcossistemaManager ecossistemaManager) {
         this.ecossistemaManager = ecossistemaManager;
         this.id = ++lastId;
         this.velocity = 1 * ecossistemaManager.getPixelMultiplier();
+        this.pixelMultiplier = ecossistemaManager.getPixelMultiplier();
         this.segundosParaReproduzir = 0;
         this.context = new FaunaContext(ecossistemaManager,this);
     }
@@ -53,10 +56,7 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
 
     @Override
     public void evolve(IGameEngine gameEngine, long currentTime) {
-        // TODO: implement evolve
-        System.out.println("Fauna evolve id" + this.id);
         context.evolve();
-        System.out.println(currentState.getClass().getSimpleName());
     }
 
     @Override
@@ -209,7 +209,6 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
             if (checkIfCanMove(newArea, this)) {
                 this.area = newArea;
                 continua = false;
-                System.out.println("Moved to " + this.area.toString());
             } else {
                 direction = DirectionEnum.values()[(int) (Math.random() * 4)];
             }
@@ -229,9 +228,15 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
                     if (flora.getForca() <= HP_PER_TICK_EATING) {
                         this.forca += flora.getForca();
                         flora.die();
+                        //this.ecossistemaManager.deletedDeadElement(flora.getId(), flora);
                         this.target = null;
                     } else {
                         flora.setForca(flora.getForca() - HP_PER_TICK_EATING);
+                        if (this.forca >= 80) {
+                            this.forca = 100;
+                        } else {
+                            this.forca += HP_PER_TICK_EATING;
+                        }
                     }
                 }
             }
@@ -250,7 +255,12 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     @Override
     public void die() {
         this.forca = 0;
-        ecossistemaManager.removeElemento(this);
+        //this.area = new Area(0, 0, 0, 0);
+        //ecossistemaManager.unregisterClient(this); // pára de fazer evolve
+        // porque que isto está assim?
+        // porque se tentarmos remover/modificar o HashSet durant eo evolve, é lançada uma
+        // ConcurrentModificationException, logo mete-se a força a 0 e a area como inválida (n dá para ser null)
+        // e no final do programa, removem-se os elementos com força 0 e area inválida
     }
 
     public boolean checkIfCanMove(Area area, Fauna fauna) {
@@ -277,49 +287,78 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     }
 
     public Area checkForAdjacentFlora() {
-        // Assuming we need to check the 3x3 cells around the top-left corner of the area
         double x1 = this.area.x1();
         double y1 = this.area.y1();
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                Area areaToCheck = new Area(x1 + i * size, x1 + (i + 1) * size, y1 + j * size, y1 + (j + 1) * size);
+
+        // Iterate over the 3x3 grid around the current position
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
+                // Skip the current position
+                if (i == 0 && j == 0) continue;
+
+                double newX1 = x1 + i * pixelMultiplier;
+                double newY1 = y1 + j * pixelMultiplier;
+                double newX2 = newX1 + pixelMultiplier;
+                double newY2 = newY1 + pixelMultiplier;
+
+                // Check bounds (ensure new coordinates are within map dimensions)
+                if (newX1 < 0 || newY1 < 0 || newX2 > ecossistemaManager.getMapWidth() || newY2 > ecossistemaManager.getMapHeight()) {
+                    continue;
+                }
+
+                Area areaToCheck = new Area(newX1, newX2, newY1, newY2);
                 List<IElemento> elementos = ecossistemaManager.getElementosByArea(areaToCheck);
                 for (IElemento element : elementos) {
                     if (element.getElemento() == ElementoEnum.FLORA) {
-                        System.out.println("Found flora" + areaToCheck.toString());
+                        System.out.println("Found flora");
                         return areaToCheck;
                     }
                 }
             }
         }
-        System.out.println("No flora found");
         return null;
     }
 
     @Override
-    public void reproduce() {
+    public boolean reproduce() {
         if (this.forca <= 25) {
             this.die();
         } else {
             Area area = checkForAdjacentFlora();
             if (area != null) {
-                spawn(area);
+                //spawn(area);
+                this.setReproductionArea(area);
                 this.forca -= 25;
                 this.timesReproduced++;
+                return true;
             }
         }
+        return false;
     }
 
     public void hunt() {
         if (this.forca < 80) return;
-        // Assuming we need to check the 3x3 cells around the top-left corner of the area
+        // Assuming we need to check the 7x7 cells around the top-left corner of the area
         double x1 = this.area.x1();
         double y1 = this.area.y1();
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
+
+        for (int i = -3; i <= 3; i++) {
+            for (int j = -3; j <= 3; j++) {
                 if (i == 0 && j == 0) continue;
-                Area areaToCheck = new Area(x1 + i * size, x1 + (i + 1) * size, y1 + j * size, y1 + (j + 1) * size);
+
+                double newX1 = x1 + i * pixelMultiplier;
+                double newY1 = y1 + j * pixelMultiplier;
+                double newX2 = newX1 + pixelMultiplier;
+                double newY2 = newY1 + pixelMultiplier;
+
+                // Check bounds (ensure new coordinates are within map dimensions)
+                if (newX1 < 0 || newY1 < 0 || newX2 > ecossistemaManager.getMapWidth() || newY2 > ecossistemaManager.getMapHeight()) {
+                    continue;
+                }
+
+                Area areaToCheck = new Area(newX1, newX2, newY1, newY2);
                 List<IElemento> elementos = ecossistemaManager.getElementosByArea(areaToCheck);
+
                 for (IElemento element : elementos) {
                     if (element.getElemento() == ElementoEnum.FAUNA) {
                         Fauna faunaTarget = (Fauna) element;
@@ -352,17 +391,32 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
 
     public boolean checkIfCanReproduce() {
         if (this.timesReproduced >= 2) return false;
+
         double x1 = this.area.x1();
         double y1 = this.area.y1();
+
         for (int i = -4; i <= 4; i++) {
             for (int j = -4; j <= 4; j++) {
                 if (i == 0 && j == 0) continue;
-                Area areaToCheck = new Area(x1 + i * size, x1 + (i + 1) * size, y1 + j * size, y1 + (j + 1) * size);
+
+                double newX1 = x1 + i * pixelMultiplier;
+                double newY1 = y1 + j * pixelMultiplier;
+                double newX2 = newX1 + pixelMultiplier;
+                double newY2 = newY1 + pixelMultiplier;
+
+                // Check bounds (ensure new coordinates are within map dimensions)
+                if (newX1 < 0 || newY1 < 0 || newX2 > ecossistemaManager.getMapWidth() || newY2 > ecossistemaManager.getMapHeight()) {
+                    continue;
+                }
+
+                Area areaToCheck = new Area(newX1, newX2, newY1, newY2);
                 List<IElemento> elementos = ecossistemaManager.getElementosByArea(areaToCheck);
+
                 for (IElemento element : elementos) {
                     if (element.getElemento() == ElementoEnum.FAUNA) {
                         Fauna faunaTarget = (Fauna) element;
-                        if (!faunaTarget.getCurrentState().equals(FaunaState.LOOKING_FOR_FAUNA) && faunaTarget.getTimesReproduced() < 2) {
+                        if (!faunaTarget.getCurrentState().equals(FaunaState.LOOKING_FOR_FAUNA.getInstance(context, this))
+                                && faunaTarget.getTimesReproduced() < 2) {
                             this.segundosParaReproduzir++;
                             if (this.segundosParaReproduzir == 10) {
                                 this.segundosParaReproduzir = 0;
@@ -400,7 +454,7 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         for (int i = -4; i <= 4; i++) {
             for (int j = -4; j <= 4; j++) {
                 if (i == 0 && j == 0) continue;
-                Area areaToCheck = new Area(x1 + i * size, x1 + (i + 1) * size, y1 + j * size, y1 + (j + 1) * size);
+                Area areaToCheck = new Area(x1 + i * pixelMultiplier, x1 + (i + 1) * pixelMultiplier, y1 + j * pixelMultiplier, y1 + (j + 1) * pixelMultiplier);
                 List<IElemento> elementos = ecossistemaManager.getElementosByArea(areaToCheck);
                 for (IElemento element : elementos) {
                     if (element.getElemento() == ElementoEnum.FAUNA && element != this) {
@@ -413,5 +467,17 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         }
 
         return weakestFaunaArea;
+    }
+
+    public Area getReproductionArea() {
+        return reproductionArea;
+    }
+
+    public void setReproductionArea(Area reproductionArea) {
+        this.reproductionArea = reproductionArea;
+    }
+
+    public EcossistemaManager getEcossistemaManager() {
+        return ecossistemaManager;
     }
 }

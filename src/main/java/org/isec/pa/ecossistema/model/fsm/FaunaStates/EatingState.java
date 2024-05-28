@@ -17,11 +17,14 @@ public class EatingState extends FaunaStateAdapter {
     }
 
     @Override
-    public void eat() {
+    public void evolve() {
         if (!fauna.checkIfAlive()) return;
-
-        if (fauna.checkIfOnFlora() && fauna.getForca() != 100)
+        System.out.println("valor: " + fauna.checkIfOnFlora());
+        System.out.println("forca: " + fauna.getForca());
+        if (fauna.checkIfOnFlora() && fauna.getForca() != 100) {
+            System.out.println("Eating");
             fauna.eat();
+        }
         else {
             // muda de estado
             changeState(FaunaState.LOOKING_FOR_FLORA);
