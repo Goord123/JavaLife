@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.isec.pa.ecossistema.utils.UtilFunctions.getRandomNumber;
-
+ //Evolve implement manager
 public class EcossistemaManager {
     public static final String PROP_ELEMENT = "_element_";
 
@@ -22,6 +22,7 @@ public class EcossistemaManager {
     private final int mapWidth;
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
+    private double forcaDefault = 50;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public EcossistemaManager(Ecossistema ecossistema) {
@@ -43,7 +44,6 @@ public class EcossistemaManager {
             pcs.firePropertyChange(PROP_ELEMENT, null, null);
         });
     }
-
     public int getPixelMultiplier(){
         return pixelMultiplier;
     }
@@ -56,6 +56,21 @@ public class EcossistemaManager {
         ecossistema.getElementos().remove(elemento);
     }
 
+    public void deleteAllElements(){
+        //TODO
+
+        for (IElemento e : ecossistema.getElementos()) {
+            removeElemento(e);
+        }
+    }
+
+    public void setForcaDefault(double newForcaDefault) {
+        this.forcaDefault = newForcaDefault;
+    }
+
+    public double getForcaDefault() {
+        return forcaDefault;
+    }
     public Set<IElemento> getElementos() {
         return ecossistema.getElementos();
     }
@@ -251,5 +266,14 @@ public class EcossistemaManager {
         System.out.println(faunaTemp.getArea().toString());
         ecossistema.addElemento(faunaTemp);
         this.pcs.firePropertyChange("_element_", (Object)null, (Object)null);
+    }
+
+    public Area convertToPixels(double mouseX, double mouseY){
+         // Convert coordinates to multiples of 20
+        int x1 = (int) (mouseX / 20) * 20;
+        int y1 = (int) (mouseY / 20) * 20;
+
+        // Assuming x2 and y2 are the same as x1 and y1 for simplicity
+        return new Area(x1, x1+20, y1, y1+20);
     }
 }

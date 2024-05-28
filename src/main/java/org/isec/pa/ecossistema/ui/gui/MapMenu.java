@@ -1,19 +1,22 @@
 package org.isec.pa.ecossistema.ui.gui;
 
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 
 import java.io.File;
 
 public class MapMenu extends MenuBar {
     EcossistemaManager ecossistemaManager;
+    MapArea mapArea;
     Menu mnFicheiro;
     Menu mnEcossistema;
     Menu mnSimulacao;
@@ -42,8 +45,9 @@ public class MapMenu extends MenuBar {
     MenuItem mnAplicarSol;
     MenuItem mnAplicarHerbicida;
     MenuItem mnInjetarForca;
-    public MapMenu(EcossistemaManager ecossistemaManager) {
+    public MapMenu(EcossistemaManager ecossistemaManager, MapArea mapArea) {
         this.ecossistemaManager = ecossistemaManager;
+        this.mapArea = mapArea;
         this.createViews();
         this.registerHandlers();
         this.update();
@@ -67,7 +71,7 @@ public class MapMenu extends MenuBar {
         this.mnEliminarElemento = new MenuItem("_Eliminar Elemento");
         this.mnUndo = new MenuItem("_Undo");
         this.mnRedo = new MenuItem("_Redo");
-        this.mnConfigSimulacao = new MenuItem("_Configuração da Simulacao");
+        this.mnConfigSimulacao = new MenuItem("_Configuração da Simulação");
         this.mnExecutar = new MenuItem("_Executar");
         this.mnParar = new MenuItem("_Parar");
         this.mnPausar = new MenuItem("_Pausar");
@@ -97,6 +101,26 @@ public class MapMenu extends MenuBar {
         this.mnAdicionarElementoFauna.setOnAction((event) -> {
             this.ecossistemaManager.adicionarElementoFauna(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         });
+        this.mnConfigGeraisEcossistema.setOnAction((event) -> {
+            openCustomWindowConfigGeraisEcossistema();
+        });
+        this.mnConfigSimulacao.setOnAction((event) -> {
+            openCustomWindowConfigSimulacao();
+        });
+        this.mnCriar.setOnAction((event) -> {
+            //dá clean a tudo (Set com elementos e ecrã)
+            ecossistemaManager.deleteAllElements();
+            mapArea.update();
+            // Como limpar a area do mapa vizualmente?
+            openCustomWindowConfigSimulacao();
+        });
+        this.mnEditarElemento.setOnAction((event) -> {
+            openCustomWindowEditarElemento();
+        });
+        this.mnEliminarElemento.setOnAction((event) -> {
+            openCustomWindowEliminarElemento();
+        });
+
 //        this.mnNew.setOnAction((event) -> {
 //            this.drawing.clearAll();
 //        });
@@ -128,4 +152,189 @@ public class MapMenu extends MenuBar {
         this.mnUndo.setDisable(true);
         this.mnRedo.setDisable(true);
     }
+
+    private void openCustomWindowConfigGeraisEcossistema() {
+        Stage window = new Stage();
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+
+        Label instructionLabelForca = new Label("Força: ");
+        TextField inputFieldForca = new TextField();
+        Label instructionLabelVel = new Label("Velocidade: ");
+        TextField inputFieldVel = new TextField();
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+
+        Button submitButton = new Button("Confirmar");
+        submitButton.setOnAction(event -> {
+            String input1 = inputFieldForca.getText();
+            String input2 = inputFieldVel.getText();
+            if (isNumeric(input1) && isNumeric(input2)) {
+                int userInput1 = Integer.parseInt(input1);
+                int userInput2 = Integer.parseInt(input2);
+                System.out.println("Força: " + userInput1);
+                System.out.println("Velocidade: " + userInput2);
+                window.close();
+                //mudar aqui valores
+            } else {
+                errorLabel.setText("Ambos os campos devem ser preenchidos com NUMEROS INTEIROS");
+            }
+        });
+
+        Button closeButton = new Button("Cancelar");
+        closeButton.setOnAction(event -> window.close());
+
+        layout.getChildren().addAll(instructionLabelForca, inputFieldForca, instructionLabelVel, inputFieldVel, submitButton, errorLabel, closeButton);
+
+        Scene scene = new Scene(layout, 400, 250);
+        window.setTitle("Configurações Gerais do Ecossistema");
+        window.setScene(scene);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.showAndWait();
+    }
+
+
+    private boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private void openCustomWindowEditarElemento(){
+        Stage window = new Stage();
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+
+        Label instructionLabelId = new Label("ID do elemento: ");
+        TextField inputFieldId = new TextField();
+        Label instructionLabelForca = new Label("Força: ");
+        TextField inputFieldForca = new TextField();
+        Label instructionLabelVel = new Label("Velocidade: ");
+        TextField inputFieldVel = new TextField();
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+
+        Button submitButton = new Button("Confirmar");
+        submitButton.setOnAction(event -> {
+            String input1 = inputFieldId.getText();
+            String input2 = inputFieldForca.getText();
+            String input3 = inputFieldVel.getText();
+            if (isNumeric(input1) && isNumeric(input2) && isNumeric(input3)) {
+                int userInput1 = Integer.parseInt(input1);
+                int userInput2 = Integer.parseInt(input2);
+                int userInput3 = Integer.parseInt(input3);
+                System.out.println("ID: " + userInput1);
+                System.out.println("Força: " + userInput2);
+                System.out.println("Velocidade: " + userInput3);
+                window.close();
+                //mudar aqui valores
+            } else {
+                errorLabel.setText("Ambos os campos devem ser preenchidos com NUMEROS INTEIROS");
+            }
+        });
+
+        Button closeButton = new Button("Cancelar");
+        closeButton.setOnAction(event -> window.close());
+
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, instructionLabelForca, inputFieldForca, instructionLabelVel, inputFieldVel, submitButton, errorLabel, closeButton);
+
+        Scene scene = new Scene(layout, 400, 350);
+        window.setTitle("Configurações Gerais do Ecossistema");
+        window.setScene(scene);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.showAndWait();
+    }
+
+    private void openCustomWindowEliminarElemento(){
+        Stage window = new Stage();
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+
+        Label instructionLabelId = new Label("ID do elemento: ");
+        TextField inputFieldId = new TextField();
+        Label instructionLabelType = new Label("Tipo do elemento [INANIMADO, FAUNA, FLORA]: ");
+        TextField inputFieldType = new TextField();
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+
+        Button submitButton = new Button("Confirmar");
+        submitButton.setOnAction(event -> {
+            String input1 = inputFieldId.getText();
+            if (isNumeric(input1)) {
+                int userInput1 = Integer.parseInt(input1);
+                // Convert to Enum (inputFieldType) ?
+                //ecossistemaManager.removeElemento(EcossistemaManager.getElementoByIdAndType(userInput1, ConversionResult));
+
+                System.out.println("ID eliminado: " + userInput1);
+                window.close();
+                //mudar aqui valores
+            } else {
+                errorLabel.setText("Campo deve ser preenchido com NUMEROS INTEIROS");
+            }
+        });
+
+        Button closeButton = new Button("Cancelar");
+        closeButton.setOnAction(event -> window.close());
+
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, submitButton, errorLabel, closeButton);
+
+        Scene scene = new Scene(layout, 400, 350);
+        window.setTitle("Configurações Gerais do Ecossistema");
+        window.setScene(scene);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.showAndWait();
+    }
+
+    private void openCustomWindowConfigSimulacao(){
+        Stage window = new Stage();
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+
+        Label instructionLabelTimeUnit = new Label("Unidade de tempo de cada movimentação: ");
+        TextField inputFieldTimeUnit = new TextField();
+        Label instructionLabelHeight = new Label("Tamanho de janela (Altura): ");
+        TextField inputFieldHeight = new TextField();
+        Label instructionLabelWidth = new Label("Tamanho de janela (Largura): ");
+        TextField inputFieldWidth = new TextField();
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+
+        Button submitButton = new Button("Confirmar");
+        submitButton.setOnAction(event -> {
+            String input1 = inputFieldTimeUnit.getText();
+            String input2 = inputFieldHeight.getText();
+            String input3 = inputFieldWidth.getText();
+            if (isNumeric(input1) && isNumeric(input2) && isNumeric(input3)) {
+                int userInput1 = Integer.parseInt(input1);
+                int userInput2 = Integer.parseInt(input2);
+                int userInput3 = Integer.parseInt(input3);
+                System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
+                System.out.println("Tamanho de janela (Altura): " + userInput2);
+                System.out.println("Tamanho de janela (Largura): " + userInput3);
+                window.close();
+                //mudar aqui valores
+            } else {
+                errorLabel.setText("Ambos os campos devem ser preenchidos com NUMEROS INTEIROS");
+            }
+        });
+
+        Button closeButton = new Button("Cancelar");
+        closeButton.setOnAction(event -> window.close());
+
+        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, instructionLabelHeight, inputFieldHeight, instructionLabelWidth, inputFieldWidth, submitButton, errorLabel, closeButton);
+
+        Scene scene = new Scene(layout, 400, 350);
+        window.setTitle("Configurações Gerais do Ecossistema");
+        window.setScene(scene);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.showAndWait();
+    }
+
 }

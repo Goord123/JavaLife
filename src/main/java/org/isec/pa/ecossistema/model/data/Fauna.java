@@ -20,12 +20,16 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     private final ElementoEnum elementoEnum = ElementoEnum.FAUNA;
     private final static int HP_PER_TICK_EATING = 10;
     private final EcossistemaManager ecossistemaManager;
-    private double forca = 50;
+    private double forca;
+
     private int velocity;
     private DirectionEnum direction;
     private Area area;
     private Area target;
     private int size;
+
+
+
     private int timesReproduced = 0;
     private int segundosParaReproduzir;
 
@@ -33,6 +37,7 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     private FaunaContext context;
 
     public Fauna(EcossistemaManager ecossistemaManager) {
+        this.forca = ecossistemaManager.getForcaDefault();
         this.ecossistemaManager = ecossistemaManager;
         this.id = ++lastId;
         this.velocity = 1 * ecossistemaManager.getPixelMultiplier();
@@ -85,6 +90,8 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     public void setForca(double forca) {
         this.forca = forca;
     }
+
+
 
     public int getVelocity() {
         return velocity;
