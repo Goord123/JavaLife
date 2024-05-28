@@ -18,6 +18,7 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     Set<IElemento> elementos = new HashSet<>();
     private transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
+    private int tickSpeed = 1000;// (milisegundos)
 
     public Ecossistema() {
         this.gameEngine = new GameEngine();
@@ -73,7 +74,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     public void setElementos(Set<IElemento> elementos) {
         this.elementos = elementos;
     }
-
 
 
 //    public void createElement(double x, double y){
