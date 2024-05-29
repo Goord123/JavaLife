@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import org.isec.pa.ecossistema.model.data.*;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
+import org.isec.pa.ecossistema.ui.gui.MainJFX;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
@@ -20,17 +21,19 @@ public class EcossistemaManager implements IGameEngineEvolve{
     public static final String PROP_ELEMENT = "_element_";
 
     private Ecossistema ecossistema;
-    private final int mapHeight;
-    private final int mapWidth;
+    private int mapHeight;
+    private int mapWidth;
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
     private double forcaDefault = 50;
+
+    private double velocidadeDefault = 1;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public EcossistemaManager(Ecossistema ecossistema) {
         this.ecossistema = ecossistema;
-        mapHeight = 580;
         mapWidth = 800;
+        mapHeight = 580;
 
         // Add a listener to handle updates
         pcs.addPropertyChangeListener(evt -> {
@@ -94,6 +97,22 @@ public class EcossistemaManager implements IGameEngineEvolve{
         Platform.runLater(() -> {
             pcs.firePropertyChange(PROP_ELEMENT, null, null);
         });
+    }
+
+    public int getMapHeight() {
+        return mapHeight;
+    }
+
+    public void setMapHeight(int mapHeight) {
+        this.mapHeight = mapHeight;
+    }
+
+    public int getMapWidth() {
+        return mapWidth;
+    }
+
+    public void setMapWidth(int mapWidth) {
+        this.mapWidth = mapWidth;
     }
 
     public int getPixelMultiplier(){
@@ -169,14 +188,6 @@ public class EcossistemaManager implements IGameEngineEvolve{
 //        pcs.firePropertyChange(PROP_ELEMENT,null,null);
 //    }
 
-    public int getMapHeight() {
-        return mapHeight;
-    }
-
-    public int getMapWidth() {
-        return mapWidth;
-    }
-
     public void spawnBorder(double x, double y, double width, double height){
         // Draw top border
         for (double i = 0; i < width; i = i + tamBorder) {
@@ -230,7 +241,7 @@ public class EcossistemaManager implements IGameEngineEvolve{
             //System.out.println(inanimadoTemp.getArea().x1());
         }
 
-        for(double i = 0; i < 40.0; i++){
+        for(double i = 0; i < 0.0; i++){
             do{
                 do{
                     randomWidthInt = getRandomNumber((int) width);
@@ -334,5 +345,16 @@ public class EcossistemaManager implements IGameEngineEvolve{
         }
     }
 
+    public void setForcaFlora(int id, double forca){
+        ecossistema.setForcaFlora(id, forca);
+//        Flora flora = (Flora) ecossistema.getElementoByIdAndType(id, new Fauna(this));
+//        flora.setForca(forca);
+    }
 
+    public void setForcaEVelocidadeFauna(int id, double forca, int velocidade){
+        ecossistema.setForcaEVelocidadeFauna(id, forca, velocidade);
+        //(Fauna) ecossistema.getElementoByIdAndType(id, new Fauna(this).setForca(forca));
+//        fauna.setForca(forca);
+//        fauna.setVelocity(velocidade);
+    }
 }
