@@ -1,6 +1,5 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
@@ -16,6 +15,6 @@ public sealed interface IElemento extends Serializable permits ElementoBase, Flo
 
     Area getArea();
 
-    void evolve(IGameEngine gameEngine, long currentTime);
+    void evolve();
 
 }

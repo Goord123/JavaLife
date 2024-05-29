@@ -3,16 +3,10 @@ package org.isec.pa.ecossistema.ui.gui;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
-
-import java.io.File;
 
 public class MapMenu extends MenuBar {
     EcossistemaManager ecossistemaManager;
@@ -109,7 +103,7 @@ public class MapMenu extends MenuBar {
         });
         this.mnCriar.setOnAction((event) -> {
             //dá clean a tudo (Set com elementos e ecrã)
-            ecossistemaManager.deleteAllElements();
+            ecossistemaManager.removeAllElementos();
             mapArea.update();
             // Como limpar a area do mapa vizualmente?
             openCustomWindowConfigSimulacao();

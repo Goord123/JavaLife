@@ -20,15 +20,22 @@ public class LookingForFaunaState extends FaunaStateAdapter {
         @Override
         public void evolve() {
             if (!fauna.checkIfAlive()) return;
-            fauna.checkIfCanReproduce();
 
-            Area targetFlora = fauna.checkForAdjacentFlora();
-            if (targetFlora != null) {
-                this.fauna.setTarget(targetFlora);
-                fauna.getDirectionOfTarget();
+            if (fauna.getForca() < 50) {
                 changeState(FaunaState.LOOKING_FOR_FLORA);
-            } else {
-                fauna.hunt();
             }
+
+                if (fauna.hunt()) return;
+
+                Area targetFauna = fauna.lookForWeakestFauna();
+                if (targetFauna != null) {
+                    fauna.setTarget(targetFauna);
+                    fauna.getDirectionOfTarget();
+                }
+                else {
+                    fauna.setDirection(null);
+                    fauna.setTarget(null);
+                    fauna.getDirectionOfTarget();
+                }
         }
 }

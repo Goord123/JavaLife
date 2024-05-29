@@ -1,6 +1,5 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
@@ -31,7 +30,9 @@ public final class Inanimado extends ElementoBase implements IElemento{
     }
 
     @Override
-    public void evolve(IGameEngine gameEngine, long currentTime) {}
+    public void evolve() {
+
+    }
 
     public void setArea(Area area) {
         this.area = area;
