@@ -85,7 +85,28 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         gameEngine.unregisterClient(client);
     }
 
+    public void setForcaFlora(int id, double forca){
+        synchronized (this.elementos){
+            for(IElemento e: elementos){
+                if(e.getElemento() == ElementoEnum.FLORA && e.getId() == id){
+                    Flora flora = (Flora) e;
+                    flora.setForca(forca);
+                }
+            }
+        }
+    }
 
+    public void setForcaEVelocidadeFauna(int id, double forca, int velocidade){
+        synchronized (this.elementos){
+            for(IElemento e: elementos){
+                if(e.getElemento() == ElementoEnum.FAUNA && e.getId() == id){
+                    Fauna fauna = (Fauna) e;
+                    fauna.setForca(forca);
+                    fauna.setVelocity(velocidade);
+                }
+            }
+        }
+    }
 
 //    public void createElement(double x, double y){
 //        this.element = this.elementType.createFigure();

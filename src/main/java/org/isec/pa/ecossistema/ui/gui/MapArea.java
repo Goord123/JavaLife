@@ -106,6 +106,7 @@ public class MapArea extends Canvas {
                     gc.strokeRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
                     break;
                 case FLORA:
+                    //TODO mudar para a percentagem da força
                     gc.setStroke(Color.GREEN.darker());
                     gc.setFill(Color.GREEN);
                     gc.fillRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
@@ -161,9 +162,10 @@ public class MapArea extends Canvas {
         // Create a label for the element
         Label type = new Label("Type of Element: " + flora.getElemento());
         Label elementLabel = new Label("ID: " + flora.getId());
+        Label forca = new Label("Forca: "+flora.getForca());
         Label area = new Label("Area: " + "  X1:" + flora.getArea().x1() + "  Y1:" + flora.getArea().y1() + "  X2:" + flora.getArea().x2() + "  Y2:" + flora.getArea().y2());
         //Label secondsToReproduce = new Label("Seconds to Reproduce: " + e.getSecondsToReproduce());
-        layout.getChildren().addAll(type, elementLabel, area);
+        layout.getChildren().addAll(type, elementLabel, forca, area);
 
         Scene scene = new Scene(layout, 300, 200);
 
@@ -184,9 +186,11 @@ public class MapArea extends Canvas {
         // Create a label for the element
         Label type = new Label("Type of Element: " + fauna.getElemento());
         Label elementLabel = new Label("ID: " + fauna.getId());
+        Label forca = new Label("Forca: "+fauna.getForca());
+        Label velocidade = new Label("Velocidade: "+fauna.getVelocity());
         Label area = new Label("Area: " + "  X1:" + fauna.getArea().x1() + "  Y1:" + fauna.getArea().y1() + "  X2:" + fauna.getArea().x2() + "  Y2:" + fauna.getArea().y2());
         //Label secondsToReproduce = new Label("Seconds to Reproduce: " + e.getSecondsToReproduce());
-        layout.getChildren().addAll(type, elementLabel, area);
+        layout.getChildren().addAll(type, elementLabel, forca, velocidade, area);
 
 
         Scene scene = new Scene(layout, 300, 200);
