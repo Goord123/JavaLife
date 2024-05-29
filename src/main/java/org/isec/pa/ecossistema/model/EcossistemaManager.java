@@ -21,11 +21,12 @@ public class EcossistemaManager implements IGameEngineEvolve{
     public static final String PROP_ELEMENT = "_element_";
 
     private Ecossistema ecossistema;
-    private final int mapHeight;
-    private final int mapWidth;
+    private int mapHeight;
+    private int mapWidth;
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
     private double forcaDefault = 50;
+    private double velocidadeDefault = 1;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private final IGameEngine gameEngine;
 
@@ -97,6 +98,22 @@ public class EcossistemaManager implements IGameEngineEvolve{
         Platform.runLater(() -> {
             pcs.firePropertyChange(PROP_ELEMENT, null, null);
         });
+    }
+
+    public int getMapHeight() {
+        return mapHeight;
+    }
+
+    public void setMapHeight(int mapHeight) {
+        this.mapHeight = mapHeight;
+    }
+
+    public int getMapWidth() {
+        return mapWidth;
+    }
+
+    public void setMapWidth(int mapWidth) {
+        this.mapWidth = mapWidth;
     }
 
     public int getPixelMultiplier(){
@@ -177,14 +194,6 @@ public class EcossistemaManager implements IGameEngineEvolve{
 //        ecossistema.createElement(x,y);
 //        pcs.firePropertyChange(PROP_ELEMENT,null,null);
 //    }
-
-    public int getMapHeight() {
-        return mapHeight;
-    }
-
-    public int getMapWidth() {
-        return mapWidth;
-    }
 
     public void spawnBorder(double x, double y, double width, double height){
         // Draw top border
@@ -342,5 +351,16 @@ public class EcossistemaManager implements IGameEngineEvolve{
         }
     }
 
+    public void setForcaFlora(int id, double forca){
+        ecossistema.setForcaFlora(id, forca);
+//        Flora flora = (Flora) ecossistema.getElementoByIdAndType(id, new Fauna(this));
+//        flora.setForca(forca);
+    }
 
+    public void setForcaEVelocidadeFauna(int id, double forca, int velocidade){
+        ecossistema.setForcaEVelocidadeFauna(id, forca, velocidade);
+        //(Fauna) ecossistema.getElementoByIdAndType(id, new Fauna(this).setForca(forca));
+//        fauna.setForca(forca);
+//        fauna.setVelocity(velocidade);
+    }
 }

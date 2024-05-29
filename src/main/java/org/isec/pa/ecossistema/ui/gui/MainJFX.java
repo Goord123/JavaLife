@@ -8,14 +8,20 @@ import org.isec.pa.ecossistema.model.data.Ecossistema;
 
 public class MainJFX extends Application {
 
-    private EcossistemaManager manager;
+    private EcossistemaManager ecossistemaManager;
     private Ecossistema ecossistema;
+
+
 
     public void init() throws Exception {
         super.init();
         this.ecossistema = new Ecossistema();
-        this.manager = new EcossistemaManager(ecossistema);
+        this.ecossistemaManager = new EcossistemaManager(ecossistema);
+//        widthWindow = 800;
+//        heightWindow = 605;
     }
+
+
 
     @Override
     public void start(Stage stage) {
@@ -23,8 +29,8 @@ public class MainJFX extends Application {
     }
 
     private void createOneStage(Stage stage) {
-        EcossistemaUI ecossistemaUI = new EcossistemaUI(this.manager);
-        Scene scene = new Scene(ecossistemaUI,800,605);  //largura , altura
+        EcossistemaUI ecossistemaUI = new EcossistemaUI(this.ecossistemaManager);
+        Scene scene = new Scene(ecossistemaUI, ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight() + 25);  //largura , altura
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("Drawing@PA");
