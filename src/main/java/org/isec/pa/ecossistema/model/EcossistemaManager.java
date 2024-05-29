@@ -2,9 +2,9 @@ package org.isec.pa.ecossistema.model;
 
 import javafx.application.Platform;
 import org.isec.pa.ecossistema.model.data.*;
+import org.isec.pa.ecossistema.model.fsm.GameEngine.GameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
-import org.isec.pa.ecossistema.ui.gui.MainJFX;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
@@ -26,14 +26,17 @@ public class EcossistemaManager implements IGameEngineEvolve{
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
     private double forcaDefault = 50;
-
     private double velocidadeDefault = 1;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private final IGameEngine gameEngine;
 
     public EcossistemaManager(Ecossistema ecossistema) {
         this.ecossistema = ecossistema;
-        mapWidth = 800;
+        this.gameEngine = new GameEngine();
+        this.gameEngine.start(1000);
+        this.gameEngine.registerClient(this);
         mapHeight = 580;
+        mapWidth = 800;
 
         // Add a listener to handle updates
         pcs.addPropertyChangeListener(evt -> {
@@ -51,45 +54,43 @@ public class EcossistemaManager implements IGameEngineEvolve{
 
         synchronized (elementos) {
             for (IElemento elemento : elementos) {
-                if (elemento instanceof Fauna && ((Fauna) elemento).getForca() <= 0) {
+                elemento.evolve();
+                if (elemento instanceof Fauna && ((Fauna) elemento).isDead()) {
                     elementsToRemove.add(elemento);
-                    gameEngine.unregisterClient((IGameEngineEvolve) elemento);
-                } else if (elemento instanceof Flora && ((Flora) elemento).getForca() <= 0) {
-                    System.out.println("morreu FLORA");
+                } else if (elemento instanceof Flora && ((Flora) elemento).isDead()) {
                     elementsToRemove.add(elemento);
-                    gameEngine.unregisterClient((IGameEngineEvolve) elemento);
-                } else if (elemento instanceof Fauna && ((Fauna) elemento).checkIfCanReproduce()) {
+                    System.out.println("Removing Flora with ID: " + ((Flora) elemento).getId() + " as it is dead.");                    elementsToRemove.add(elemento);
+                } else if (elemento instanceof Fauna && ((Fauna) elemento).reproduce()) {
                     System.out.println("reproduzir ANIMAL");
                     Area areaForNewFauna = ((Fauna) elemento).getReproductionArea();
                     Fauna newFauna = new Fauna(((Fauna) elemento).getEcossistemaManager());
                     newFauna.setArea(areaForNewFauna);
                     elementsToAdd.add(newFauna);
                 } else if (elemento instanceof Flora && ((Flora) elemento).reproduce()) {
-                    System.out.println("entrei");
+                    ((Flora) elemento).setForca(60);
+                    ((Flora) elemento).setTimesReproduced(((Flora) elemento).getTimesReproduced() + 1);
                     Area areaForNewFlora = ((Flora) elemento).getAdjacentArea();
-                    System.out.println("areaForNewFlora: " + areaForNewFlora);
                     if (areaForNewFlora != null) {
                         Flora newFlora = new Flora(((Flora) elemento).getEcossistemaManager());
                         newFlora.setArea(areaForNewFlora);
                         elementsToAdd.add(newFlora);
-                        System.out.println("areaForNewFlora nao é null");
                     }
                 }
             }
         }
 
-        synchronized (elementos) {
-            elementos.removeAll(elementsToRemove);
-            elementos.addAll(elementsToAdd);
-            for (IElemento newElement : elementsToAdd) {
-                if (newElement instanceof IGameEngineEvolve) {
-                    gameEngine.registerClient((IGameEngineEvolve) newElement);
-                    System.out.println("registado");
+        Platform.runLater(() -> {
+            synchronized (elementos) {
+                for (IElemento elem : elementsToRemove) {
+                    System.out.println("Actually removing element with ID: " + elem.getId());
                 }
-            }
-        }
 
-        pcs.firePropertyChange(PROP_ELEMENT, null, null);
+                ecossistema.removeElementos(elementsToRemove);
+                ecossistema.addElementos(elementsToAdd);
+
+                pcs.firePropertyChange(PROP_ELEMENT, null, null);
+            }
+        });
     }
 
     public void refreshUI() {
@@ -165,6 +166,12 @@ public class EcossistemaManager implements IGameEngineEvolve{
         //TODO falta comparar com ele próprio
         List<IElemento> elementosByArea = new ArrayList<>();
         for (IElemento e : ecossistema.getElementos()) {
+            if (e.getElemento() == ElementoEnum.FAUNA){
+                Fauna fauna = (Fauna) e;
+                if (fauna.isDead()) {
+                    continue;
+                }
+            }
             Area eArea = e.getArea();
 
             boolean intersects = !(eArea.x1() >= area.x2() ||
@@ -241,7 +248,7 @@ public class EcossistemaManager implements IGameEngineEvolve{
             //System.out.println(inanimadoTemp.getArea().x1());
         }
 
-        for(double i = 0; i < 0.0; i++){
+        for(double i = 0; i < 40.0; i++){
             do{
                 do{
                     randomWidthInt = getRandomNumber((int) width);
@@ -339,7 +346,6 @@ public class EcossistemaManager implements IGameEngineEvolve{
     public void deletedDeadElement(int id, IElemento elementoToDelete) {
         IElemento elemento = getElementoByIdAndType(id, elementoToDelete);
         if (elemento != null) {
-            ecossistema.unregisterClient((IGameEngineEvolve) elemento);
             ecossistema.removeElemento(elemento);
             this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
         }

@@ -24,23 +24,6 @@ public class FaunaContext {
     public void evolve() {
         currentState.evolve();
     }
-
-    public void move(){
-        currentState.move();
-    }
-
-    public void eat(){
-        currentState.eat();
-    }
-
-    public void reproduce(){
-        currentState.reproduce();
-    }
-
-    public void die(){
-        currentState.die();
-    }
-
     public IFaunaState getCurrentState() {
         return fauna.getCurrentState();
     }

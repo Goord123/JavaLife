@@ -1,29 +1,36 @@
 package org.isec.pa.ecossistema.model.data;
 
 import org.isec.pa.ecossistema.model.EcossistemaManager;
-import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
-import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 import java.io.Serializable;
 import java.util.List;
 
-public final class Flora extends ElementoBase implements IElemento, Serializable, IElementoComImagem, IElementoComForca, IGameEngineEvolve {
+public final class Flora extends ElementoBase implements IElemento, Serializable, IElementoComImagem, IElementoComForca {
 
     private static int lastId = 0; // Static variable to keep track of the last ID used
     private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.FLORA;
-    private double forca = 89;
+    private double forca = 50;
     private int size;
     private int timesReproduced = 0;
     private Area area;
     private String imagem;
     private EcossistemaManager ecossistemaManager;
+    private boolean dead = false;
 
     public Flora(EcossistemaManager ecossistemaManager) {
         this.ecossistemaManager = ecossistemaManager;
         this.id = ++lastId;
+    }
+
+    public void evolve() {
+        if (this.forca <= 0) dead = true;
+
+        this.forca++;
+
+        reproduce();
     }
 
     // GETTERS E SETTERS
@@ -37,14 +44,63 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
         return this.area;
     }
 
-    @Override
-    public void evolve(IGameEngine gameEngine, long currentTime) {
-        if (this.forca <= 0) die();
-
-        this.forca++;
-
-        reproduce();
+    public void setArea(Area area) {
+        this.area = area;
     }
+
+    @Override
+    public ElementoEnum getElemento() {
+        return elementoEnum;
+    }
+
+    public double getForca() {
+        return forca;
+    }
+
+    public void setForca(double forca) {
+        this.forca = forca;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getTimesReproduced() {
+        return timesReproduced;
+    }
+
+    public void setTimesReproduced(int timesReproduced) {
+        this.timesReproduced = timesReproduced;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
+    @Override
+    public String getImagem() {
+        return this.imagem;
+    }
+
+    @Override
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+
+    // METODOS
+
+    public EcossistemaManager getEcossistemaManager() {
+        return ecossistemaManager;
+    }
+
 
     public Area getAdjacentArea() {
         double x1 = this.area.x1();
@@ -68,6 +124,7 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
                 }
 
                 areaToCheck = new Area(newX1, newX2, newY1, newY2);
+                if (checkIfAreaWithinBounds(areaToCheck)) continue;
                 List<IElemento> elementos = ecossistemaManager.getElementosByArea(areaToCheck);
 
                 // Check if the area is empty
@@ -79,78 +136,20 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
         return areaToCheck;
     }
 
+    public boolean checkIfAreaWithinBounds(Area areaToCheck) {
+        return (areaToCheck.x1() < 0 &&
+                areaToCheck.y1() < 0 &&
+                areaToCheck.x2() > ecossistemaManager.getMapWidth() &&
+                areaToCheck.y2() > ecossistemaManager.getMapHeight());
+    }
+
     public boolean reproduce() {
         if (this.forca >= 90 && this.timesReproduced < 2) {
             Area areaNewFlora = getAdjacentArea();
             if (areaNewFlora != null) {
-                this.timesReproduced++;
-                this.forca = 60;
-                System.out.println("Flora " + this.id + " reproduced");
                 return true;
             }
         }
         return false;
-
-        //Flora newFlora = new Flora(ecossistemaManager);
-        //newFlora.setArea(areaNewFlora);
-        //ecossistemaManager.addElemento(newFlora);
-
-    }
-
-    @Override
-    public ElementoEnum getElemento() {
-        return elementoEnum;
-    }
-
-    public double getForca() {
-        return forca;
-    }
-
-    public void setForca(double forca) {
-        this.forca = forca;
-    }
-
-    public void setArea(Area area) {
-        this.area = area;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public int getTimesReproduced() {
-        return timesReproduced;
-    }
-
-    // METODOS
-
-
-
-    public void die() {
-        this.forca = 0;
-        //this.area = new Area(0, 0, 0, 0);
-        //ecossistemaManager.unregisterClient(this); // pára de fazer evolve
-        // porque que isto está assim?
-        // porque se tentarmos remover/modificar o HashSet durant eo evolve, é lançada uma
-        // ConcurrentModificationException, logo mete-se a força a 0 e a area como inválida (n dá para ser null)
-        // e no final do programa, removem-se os elementos com força 0 e area inválida
-    }
-
-    @Override
-    public String getImagem() {
-        return this.imagem;
-    }
-
-    @Override
-    public void setImagem(String imagem) {
-        this.imagem = imagem;
-    }
-
-    public EcossistemaManager getEcossistemaManager() {
-        return ecossistemaManager;
     }
 }

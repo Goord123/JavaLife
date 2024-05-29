@@ -7,7 +7,7 @@ public abstract class FaunaStateAdapter implements IFaunaState {
     protected FaunaContext context;
     protected Fauna fauna;
 
-    protected FaunaStateAdapter(FaunaContext context, Fauna fauna){
+    protected FaunaStateAdapter(FaunaContext context, Fauna fauna) {
         this.context = context;
         this.fauna = fauna;
     }
@@ -18,29 +18,20 @@ public abstract class FaunaStateAdapter implements IFaunaState {
 
     @Override
     public void move() {
-
     }
 
     public abstract IFaunaState getCurrentState();
 
     @Override
     public void eat() {
-
     }
 
     @Override
     public boolean reproduce() {
-
         return false;
     }
 
     @Override
-    public void die() {
-
-    }
-
-    @Override
     public void evolve() {
-
     }
 }

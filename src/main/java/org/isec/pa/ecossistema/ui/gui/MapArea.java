@@ -10,7 +10,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
-import org.isec.pa.ecossistema.model.data.*;
+import org.isec.pa.ecossistema.model.data.ElementoBase;
+import org.isec.pa.ecossistema.model.data.Fauna;
+import org.isec.pa.ecossistema.model.data.Flora;
+import org.isec.pa.ecossistema.model.data.IElemento;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
@@ -162,10 +165,10 @@ public class MapArea extends Canvas {
         // Create a label for the element
         Label type = new Label("Type of Element: " + flora.getElemento());
         Label elementLabel = new Label("ID: " + flora.getId());
-        Label forca = new Label("Forca: "+flora.getForca());
+        Label hp = new Label("Força: " + flora.getForca());
         Label area = new Label("Area: " + "  X1:" + flora.getArea().x1() + "  Y1:" + flora.getArea().y1() + "  X2:" + flora.getArea().x2() + "  Y2:" + flora.getArea().y2());
         //Label secondsToReproduce = new Label("Seconds to Reproduce: " + e.getSecondsToReproduce());
-        layout.getChildren().addAll(type, elementLabel, forca, area);
+        layout.getChildren().addAll(type, hp, elementLabel, area);
 
         Scene scene = new Scene(layout, 300, 200);
 

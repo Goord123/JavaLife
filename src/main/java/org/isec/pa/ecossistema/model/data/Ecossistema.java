@@ -1,6 +1,5 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.model.fsm.GameEngine.GameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
@@ -10,15 +9,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Ecossistema implements IGameEngineEvolve, Serializable {
-    private final IGameEngine gameEngine;
     Set<IElemento> elementos = new HashSet<>();
 
     private int tickSpeed = 1000;// (milisegundos)
 
     public Ecossistema() {
-        this.gameEngine = new GameEngine();
-        this.gameEngine.start(1000);
-        this.gameEngine.registerClient(this);
     }
 
     @Override
@@ -28,9 +23,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     public void addElemento(IElemento elemento) {
         synchronized (elementos) {
             elementos.add(elemento);
-        }
-        if (elemento instanceof IGameEngineEvolve) {
-            gameEngine.registerClient((IGameEngineEvolve) elemento);
         }
     }
 
@@ -46,6 +38,16 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         }
     }
 
+    public void removeElementos(Set<IElemento> elementsToRemove) {
+        synchronized (elementos) {
+            elementos.removeAll(elementsToRemove);
+        }
+    }
+    public void addElementos(Set<IElemento> elementsToAdd) {
+        synchronized (elementos) {
+            elementos.addAll(elementsToAdd);
+        }
+    }
     public Set<IElemento> getElementos() {
         synchronized (elementos) {
             return new HashSet<>(elementos);
@@ -81,10 +83,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         }
     }
 
-    public void unregisterClient(IGameEngineEvolve client) {
-        gameEngine.unregisterClient(client);
-    }
-
     public void setForcaFlora(int id, double forca){
         synchronized (this.elementos){
             for(IElemento e: elementos){
@@ -95,7 +93,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
             }
         }
     }
-
     public void setForcaEVelocidadeFauna(int id, double forca, int velocidade){
         synchronized (this.elementos){
             for(IElemento e: elementos){

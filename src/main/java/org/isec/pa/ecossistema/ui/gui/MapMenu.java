@@ -4,11 +4,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
@@ -17,8 +13,6 @@ import org.isec.pa.ecossistema.model.data.Flora;
 import org.isec.pa.ecossistema.model.data.IElemento;
 import org.isec.pa.ecossistema.model.data.Inanimado;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
-
-import java.io.File;
 
 public class MapMenu extends MenuBar {
     EcossistemaManager ecossistemaManager;
