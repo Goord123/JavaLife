@@ -8,8 +8,11 @@ public final class Inanimado extends ElementoBase implements IElemento {
     private final ElementoEnum elementoEnum = ElementoEnum.INANIMADO;
     private int id;
     private Area area;
+    private boolean isBarreira;
+
     public Inanimado() {
         this.id = ++lastId;
+        this.isBarreira = false;
     }
 
     // GETTERS E SETTERS
@@ -32,12 +35,20 @@ public final class Inanimado extends ElementoBase implements IElemento {
         return this.area;
     }
 
-    public void setArea(Area area) {
-        this.area = area;
+    public boolean isBarreira() {
+        return isBarreira;
+    }
+
+    public void setBarreira(boolean barreira) {
+        isBarreira = barreira;
     }
 
     @Override
     public void evolve() {
 
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
     }
 }

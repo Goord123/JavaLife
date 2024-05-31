@@ -17,11 +17,11 @@ public non-sealed class Flora extends ElementoBase implements IElemento, Seriali
     private int timesReproduced = 0;
     private Area area;
     private String imagem;
-    private EcossistemaManager ecossistemaManager;
+    private Ecossistema ecossistema;
     private boolean dead = false;
 
-    public Flora(EcossistemaManager ecossistemaManager) {
-        this.ecossistemaManager = ecossistemaManager;
+    public Flora(Ecossistema ecossistema) {
+        this.ecossistema = ecossistema;
         this.id = ++lastId;
     }
 
@@ -102,10 +102,6 @@ public non-sealed class Flora extends ElementoBase implements IElemento, Seriali
 
     // METODOS
 
-    public EcossistemaManager getEcossistemaManager() {
-        return ecossistemaManager;
-    }
-
 
     public Area getAdjacentArea() {
         double x1 = this.area.x1();
@@ -118,19 +114,19 @@ public non-sealed class Flora extends ElementoBase implements IElemento, Seriali
                 // Skip the current position
                 if (i == 0 && j == 0) continue;
 
-                double newX1 = x1 + i * ecossistemaManager.getPixelMultiplier();
-                double newY1 = y1 + j * ecossistemaManager.getPixelMultiplier();
-                double newX2 = newX1 + ecossistemaManager.getPixelMultiplier();
-                double newY2 = newY1 + ecossistemaManager.getPixelMultiplier();
+                double newX1 = x1 + i * ecossistema.getPixelMultiplier();
+                double newY1 = y1 + j * ecossistema.getPixelMultiplier();
+                double newX2 = newX1 + ecossistema.getPixelMultiplier();
+                double newY2 = newY1 + ecossistema.getPixelMultiplier();
 
                 // Check bounds (ensure new coordinates are within map dimensions)
-                if (newX1 < 0 || newY1 < 0 || newX2 > ecossistemaManager.getMapWidth() || newY2 > ecossistemaManager.getMapHeight()) {
+                if (newX1 < 0 || newY1 < 0 || newX2 > ecossistema.getMapWidth() || newY2 > ecossistema.getMapHeight()) {
                     continue;
                 }
 
                 areaToCheck = new Area(newX1, newX2, newY1, newY2);
                 if (checkIfAreaWithinBounds(areaToCheck)) continue;
-                List<IElemento> elementos = ecossistemaManager.getElementosByArea(areaToCheck);
+                List<IElemento> elementos = ecossistema.getElementosByArea(areaToCheck);
 
                 // Check if the area is empty
                 if (elementos.isEmpty()) {
@@ -144,8 +140,8 @@ public non-sealed class Flora extends ElementoBase implements IElemento, Seriali
     public boolean checkIfAreaWithinBounds(Area areaToCheck) {
         return (areaToCheck.x1() < 0 &&
                 areaToCheck.y1() < 0 &&
-                areaToCheck.x2() > ecossistemaManager.getMapWidth() &&
-                areaToCheck.y2() > ecossistemaManager.getMapHeight());
+                areaToCheck.x2() > ecossistema.getMapWidth() &&
+                areaToCheck.y2() > ecossistema.getMapHeight());
     }
 
     public boolean reproduce() {
