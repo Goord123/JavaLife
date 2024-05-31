@@ -11,14 +11,14 @@ import org.isec.pa.ecossistema.utils.ElementoEnum;
 import java.io.Serializable;
 import java.util.List;
 
-public final class Fauna extends ElementoBase implements IElemento, IFaunaState, Serializable, IElementoComForca {
+public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaState, Serializable, IElementoComForca, IElementoComImagem {
 
     private final static int HP_PER_TICK_EATING = 20;
     private static int lastId = 0; // Static variable to keep track of the last ID used
-    private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.FAUNA;
     private final EcossistemaManager ecossistemaManager;
     private final int pixelMultiplier;
+    private int id;
     private double forca;
     private int velocity;
     private DirectionEnum direction;
@@ -31,17 +31,19 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     private IFaunaState currentState;
     private FaunaContext context;
     private Area reproductionArea;
+    private String imagem;
 
     public Fauna(EcossistemaManager ecossistemaManager) {
-        this.forca = ecossistemaManager.getForcaDefault();
+        this.imagem = "/fauna.png";
         this.ecossistemaManager = ecossistemaManager;
+        this.forca = ecossistemaManager.getForcaDefault();
         this.id = ++lastId;
         this.velocity = 1 * ecossistemaManager.getPixelMultiplier();
         this.pixelMultiplier = ecossistemaManager.getPixelMultiplier();
         this.segundosParaReproduzir = 0;
         this.context = new FaunaContext(ecossistemaManager, this);
     }
-    
+
     @Override
     public void evolve() {
         context.evolve();
@@ -51,6 +53,10 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
     @Override
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -112,8 +118,16 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
         return timesReproduced;
     }
 
+    public void setTimesReproduced(int timesReproduced) {
+        this.timesReproduced = timesReproduced;
+    }
+
     public int getSegundosParaReproduzir() {
         return segundosParaReproduzir;
+    }
+
+    public void setSegundosParaReproduzir(int segundosParaReproduzir) {
+        this.segundosParaReproduzir = segundosParaReproduzir;
     }
 
     public int getSize() {
@@ -477,5 +491,15 @@ public final class Fauna extends ElementoBase implements IElemento, IFaunaState,
 
     public EcossistemaManager getEcossistemaManager() {
         return ecossistemaManager;
+    }
+
+    @Override
+    public String getImagem() {
+        return imagem;
+    }
+
+    @Override
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
     }
 }

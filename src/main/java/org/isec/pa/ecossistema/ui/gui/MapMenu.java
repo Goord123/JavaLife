@@ -1,6 +1,5 @@
 package org.isec.pa.ecossistema.ui.gui;
 
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -8,11 +7,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
-import org.isec.pa.ecossistema.model.data.Fauna;
-import org.isec.pa.ecossistema.model.data.Flora;
-import org.isec.pa.ecossistema.model.data.IElemento;
-import org.isec.pa.ecossistema.model.data.Inanimado;
-import org.isec.pa.ecossistema.utils.ElementoEnum;
+
+import java.io.IOException;
 
 public class MapMenu extends MenuBar {
     EcossistemaManager ecossistemaManager;
@@ -45,6 +41,7 @@ public class MapMenu extends MenuBar {
     MenuItem mnAplicarSol;
     MenuItem mnAplicarHerbicida;
     MenuItem mnInjetarForca;
+
     public MapMenu(EcossistemaManager ecossistemaManager, MapArea mapArea) {
         this.ecossistemaManager = ecossistemaManager;
         this.mapArea = mapArea;
@@ -52,6 +49,7 @@ public class MapMenu extends MenuBar {
         this.registerHandlers();
         this.update();
     }
+
     private void createViews() {
         this.mnFicheiro = new Menu("Ficheiro");
         this.mnEcossistema = new Menu("Ecossistema");
@@ -122,6 +120,22 @@ public class MapMenu extends MenuBar {
         });
         this.mnEliminarElemento.setOnAction((event) -> {
             openCustomWindowEliminarElemento();
+        });
+        this.mnGravar.setOnAction((event) -> {
+            try {
+                ecossistemaManager.saveToCSV();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Ecossistema Gravado");
+        });
+        this.mnAbrir.setOnAction((event) -> {
+            try {
+                ecossistemaManager.loadFromCSV();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Ecossistema Carregado");
         });
 
 //        this.mnNew.setOnAction((event) -> {
@@ -209,7 +223,7 @@ public class MapMenu extends MenuBar {
         }
     }
 
-    private void openCustomWindowEditarElemento(){
+    private void openCustomWindowEditarElemento() {
         Stage window = new Stage();
 
         VBox layout = new VBox(10);
@@ -231,7 +245,7 @@ public class MapMenu extends MenuBar {
             String input1 = inputFieldId.getText();
             String input2 = inputFieldTipo.getText();
             String input3 = inputFieldForca.getText();
-             String input4 = inputFieldVel.getText();
+            String input4 = inputFieldVel.getText();
             if (isNumeric(input1) && isNumeric(input3) && isNumeric(input4)) {
                 int userInput1 = Integer.parseInt(input1);
                 double userInput3 = (double) Integer.parseInt(input3);
@@ -239,11 +253,11 @@ public class MapMenu extends MenuBar {
                 System.out.println("ID: " + userInput1);
                 System.out.println("Força: " + userInput3);
                 System.out.println("Velocidade: " + userInput4);
-                if(input2.equalsIgnoreCase("FLORA")){
+                if (input2.equalsIgnoreCase("FLORA")) {
                     ecossistemaManager.setForcaFlora(userInput1, userInput3);
-                }else if(input2.equalsIgnoreCase("FAUNA")) {
+                } else if (input2.equalsIgnoreCase("FAUNA")) {
                     ecossistemaManager.setForcaEVelocidadeFauna(userInput1, userInput3, userInput4);
-                }else{
+                } else {
                     errorLabel.setText("Tipo de elemento deve ser um dos 2: FLORA ou FAUNA");
                 }
 
@@ -265,7 +279,7 @@ public class MapMenu extends MenuBar {
         window.showAndWait();
     }
 
-    private void openCustomWindowEliminarElemento(){
+    private void openCustomWindowEliminarElemento() {
         Stage window = new Stage();
 
         VBox layout = new VBox(10);
@@ -306,7 +320,7 @@ public class MapMenu extends MenuBar {
         window.showAndWait();
     }
 
-    private void openCustomWindowConfigSimulacaoInicio(){
+    private void openCustomWindowConfigSimulacaoInicio() {
         Stage window = new Stage();
 
         VBox layout = new VBox(10);
@@ -337,8 +351,8 @@ public class MapMenu extends MenuBar {
                 //TODO converter para multiplos de 20
                 int height = (userInput2 / 20) * 20;
                 int width = (userInput3 / 20) * 20;
-                System.out.println("Altura"+height);
-                System.out.println("Largura"+width);
+                System.out.println("Altura" + height);
+                System.out.println("Largura" + width);
                 //mudar aqui valores
 //                ecossistemaManager.setMapWidth(width);
 //                ecossistemaManager.setMapHeight(height-25);
@@ -368,7 +382,7 @@ public class MapMenu extends MenuBar {
         window.showAndWait();
     }
 
-    private void openCustomWindowConfigSimulacao(){
+    private void openCustomWindowConfigSimulacao() {
         Stage window = new Stage();
 
         VBox layout = new VBox(10);
