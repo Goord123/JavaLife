@@ -1,10 +1,6 @@
 package org.isec.pa.ecossistema.utils;
 
-import org.isec.pa.ecossistema.model.EcossistemaManager;
-import org.isec.pa.ecossistema.model.data.Fauna;
-import org.isec.pa.ecossistema.model.data.Flora;
-import org.isec.pa.ecossistema.model.data.IElemento;
-import org.isec.pa.ecossistema.model.data.Inanimado;
+import org.isec.pa.ecossistema.model.data.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -58,7 +54,7 @@ public class GameSaver {
         }
     }
 
-    public Set<IElemento> loadFromCSV(EcossistemaManager manager, String filePath) throws IOException {
+    public Set<IElemento> loadFromCSV(Ecossistema ecossistema, String filePath) throws IOException {
         Set<IElemento> elementos = new HashSet<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -82,7 +78,7 @@ public class GameSaver {
                     int timesReproduced = Integer.parseInt(tokens[7]);
                     int segundosParaReproduzir = Integer.parseInt(tokens[8]);
 
-                    Fauna fauna = new Fauna(manager);
+                    Fauna fauna = new Fauna(ecossistema);
                     fauna.setId(id);
                     fauna.setArea(area);
                     fauna.setForca(forca);
@@ -93,7 +89,7 @@ public class GameSaver {
                     double forca = Double.parseDouble(tokens[6]);
                     int timesReproduced = Integer.parseInt(tokens[7]);
 
-                    Flora flora = new Flora(manager);
+                    Flora flora = new Flora(ecossistema);
                     flora.setId(id);
                     flora.setArea(area);
                     flora.setForca(forca);

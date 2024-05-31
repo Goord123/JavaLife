@@ -11,10 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
-import org.isec.pa.ecossistema.model.data.ElementoBase;
-import org.isec.pa.ecossistema.model.data.Fauna;
-import org.isec.pa.ecossistema.model.data.Flora;
-import org.isec.pa.ecossistema.model.data.IElemento;
+import org.isec.pa.ecossistema.model.data.*;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
@@ -78,11 +75,14 @@ public class MapArea extends Canvas {
     public void update() {
         GraphicsContext gc = this.getGraphicsContext2D();
         this.clearScreen(gc);
-        //this.spawnBorder();
         this.ecossistemaManager.getElementos().forEach((element) -> {
-            this.drawFigure(gc, (ElementoBase) element);
+            if (element instanceof Inanimado || element instanceof Flora)
+                this.drawFigure(gc, (ElementoBase) element);
         });
-        //this.drawFigure(gc, this.ecossistema.getCurrentElement());
+        this.ecossistemaManager.getElementos().forEach((element) -> {
+            if (element instanceof Fauna)
+                this.drawFigure(gc, (ElementoBase) element);
+        });
     }
 
     private void clearScreen(GraphicsContext gc) {

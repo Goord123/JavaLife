@@ -8,12 +8,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
-import org.isec.pa.ecossistema.model.data.Fauna;
-import org.isec.pa.ecossistema.model.data.Flora;
-import org.isec.pa.ecossistema.model.data.IElemento;
-import org.isec.pa.ecossistema.model.data.Inanimado;
+import org.isec.pa.ecossistema.model.data.*;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
-import java.io.IOException
+
+import java.io.IOException;
+
 public class MapMenu extends MenuBar {
     public static final String PROP_SWITCH_REDO = "_switchRedo_";
     public static final String PROP_SWITCH_UNDO = "_switchUndo_";
@@ -51,6 +50,7 @@ public class MapMenu extends MenuBar {
 
     private double forcaEdit;
     private int velocidadeEdit;
+
     public MapMenu(EcossistemaManager ecossistemaManager, MapArea mapArea) {
         this.ecossistemaManager = ecossistemaManager;
         this.mapArea = mapArea;
@@ -102,7 +102,7 @@ public class MapMenu extends MenuBar {
 
     private void registerHandlers() {
         this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_REDO, (evt) -> {
-            if(this.mnRedo.isDisable()){
+            if (this.mnRedo.isDisable()) {
                 this.mnRedo.setDisable(false);
             } else {
                 this.mnRedo.setDisable(true);
@@ -110,7 +110,7 @@ public class MapMenu extends MenuBar {
         });
         this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_UNDO, (evt) -> {
 
-            if(this.mnUndo.isDisable()) {
+            if (this.mnUndo.isDisable()) {
                 this.mnUndo.setDisable(false);
             } else {
                 this.mnUndo.setDisable(true);
@@ -161,18 +161,14 @@ public class MapMenu extends MenuBar {
         });
         this.mnGravar.setOnAction((event) -> {
             try {
-                ecossistemaManager.saveToCSV();
+                ecossistemaManager.getEcossistema().save();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             System.out.println("Ecossistema Gravado");
         });
         this.mnAbrir.setOnAction((event) -> {
-            try {
-                ecossistemaManager.loadFromCSV();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            ecossistemaManager.getEcossistema().load();
             System.out.println("Ecossistema Carregado");
         });
 
@@ -290,20 +286,20 @@ public class MapMenu extends MenuBar {
                 System.out.println("ID: " + userInput1);
                 System.out.println("Força: " + userInput3);
                 System.out.println("Velocidade: " + userInput4);
-                if(input2.equalsIgnoreCase("FLORA")){
+                if (input2.equalsIgnoreCase("FLORA")) {
                     Flora floraAux = (Flora) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FLORA);
                     elementoBase = (ElementoBase) floraAux;
                     forcaEdit = userInput3;
                     activateCommands(4);
                     //ecossistemaManager.setForcaFlora(userInput1, userInput3);
-                }else if(input2.equalsIgnoreCase("FAUNA")) {
+                } else if (input2.equalsIgnoreCase("FAUNA")) {
                     Fauna faunaAux = (Fauna) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FAUNA);
                     elementoBase = (ElementoBase) faunaAux;
                     forcaEdit = userInput3;
                     velocidadeEdit = userInput4;
                     activateCommands(4);
                     //ecossistemaManager.setForcaEVelocidadeFauna(userInput1, userInput3, userInput4);
-                }else{
+                } else {
                     errorLabel.setText("Tipo de elemento deve ser um dos 2: FLORA ou FAUNA");
                 }
 
@@ -345,36 +341,36 @@ public class MapMenu extends MenuBar {
             String input2 = inputFieldType.getText();
             if (isNumeric(input1)) {
                 int userInput1 = Integer.parseInt(input1);
-                if(input2.equalsIgnoreCase("INANIMADO")){
+                if (input2.equalsIgnoreCase("INANIMADO")) {
                     Inanimado inanimadoAux = (Inanimado) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.INANIMADO);
-                    if(inanimadoAux == null){
+                    if (inanimadoAux == null) {
                         errorLabel.setText("O id inserido não existe");
                         return;
                     }
-                    if(inanimadoAux.isBarreira()){
+                    if (inanimadoAux.isBarreira()) {
                         errorLabel.setText("O id inserido faz parte da BARREIRA");
                         return;
                     }
                     elementoBase = (ElementoBase) inanimadoAux;
                     activateCommands(5);
                     //ecossistemaManager.removeElemento(EcossistemaManager.getElementoByIdAndType(userInput1, ConversionResult));
-                }else if(input2.equalsIgnoreCase("FLORA")){
+                } else if (input2.equalsIgnoreCase("FLORA")) {
                     Flora floraAux = (Flora) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FLORA);
-                    if(floraAux == null){
+                    if (floraAux == null) {
                         errorLabel.setText("O id inserido não existe");
                         return;
                     }
                     elementoBase = (ElementoBase) floraAux;
                     activateCommands(5);
-                }else if(input2.equalsIgnoreCase("FAUNA")) {
+                } else if (input2.equalsIgnoreCase("FAUNA")) {
                     Fauna faunaAux = (Fauna) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FAUNA);
-                    if(faunaAux == null){
+                    if (faunaAux == null) {
                         errorLabel.setText("O id inserido não existe");
                         return;
                     }
                     elementoBase = (ElementoBase) faunaAux;
                     activateCommands(5);
-                }else{
+                } else {
                     errorLabel.setText("Tipo de elemento deve ser um dos 3: INANIMADO, FLORA ou FAUNA");
                 }
                 // Convert to Enum (inputFieldType) ?
@@ -496,7 +492,8 @@ public class MapMenu extends MenuBar {
         window.initModality(Modality.APPLICATION_MODAL);
         window.showAndWait();
     }
-    private void activateCommands(int op){
+
+    private void activateCommands(int op) {
         switch (op) {
             case 1:
 

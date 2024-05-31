@@ -14,7 +14,6 @@ import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
@@ -24,17 +23,15 @@ import static org.isec.pa.ecossistema.utils.UtilFunctions.getRandomNumber;
 
 public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     public static final String PROP_ELEMENT = "_element_";
+    public static final String PROP_SWITCH_REDO = "_switchRedo_";
+    public static final String PROP_SWITCH_UNDO = "_switchUndo_";
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
     private final IGameEngine gameEngine;
-    public static final String PROP_SWITCH_REDO = "_switchRedo_";
-    public static final String PROP_SWITCH_UNDO = "_switchUndo_";
-
     private Ecossistema ecossistema;
     private CommandManager commandManager;
     private double velocidadeDefault = 1;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-    private final IGameEngine gameEngine;
 
     public EcossistemaManager(Ecossistema ecossistema) {
         this.ecossistema = ecossistema;
@@ -108,18 +105,19 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         });
     }
 
-    public void switchUndo(){
+    public void switchUndo() {
         Platform.runLater(() -> {
             pcs.firePropertyChange(PROP_SWITCH_UNDO, null, null);
         });
     }
-    public void switchRedo(){
+
+    public void switchRedo() {
         Platform.runLater(() -> {
             pcs.firePropertyChange(PROP_SWITCH_REDO, null, null);
         });
     }
 
-    public double getTamBorder(){
+    public double getTamBorder() {
         return ecossistema.getTamBorder();
     }
 
@@ -139,7 +137,7 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         ecossistema.setMapWidth(mapWidth);
     }
 
-    public int getPixelMultiplier(){
+    public int getPixelMultiplier() {
         return ecossistema.getPixelMultiplier();
     }
 
@@ -151,13 +149,14 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         ecossistema.getElementos().remove(elemento);
     }
 
+    public double getForcaDefault() {
+        return ecossistema.getForcaDefault();
+    }
+
     public void setForcaDefault(double newForcaDefault) {
         ecossistema.setForcaDefault(newForcaDefault);
     }
 
-    public double getForcaDefault() {
-        return ecossistema.getForcaDefault();
-    }
     public Set<IElemento> getElementos() {
         return ecossistema.getElementos();
     }
@@ -167,7 +166,7 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     }
 
     public IElemento getElementoByIdAndType(int id, ElementoEnum elemento) {
-       return ecossistema.getElementoByIdAndType(id, elemento);
+        return ecossistema.getElementoByIdAndType(id, elemento);
     }
 
     public Set<IElemento> getElementosByElemento(ElementoEnum elementoEnum) {
@@ -187,77 +186,77 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 //        pcs.firePropertyChange(PROP_ELEMENT,null,null);
 //    }
 
-    public void spawnBorder(double x, double y, double width, double height){
+    public void spawnBorder(double x, double y, double width, double height) {
         ecossistema.spawnBorder(x, y, width, height);
     }
 
-    public void spawnRandoms(double x, double y, double width, double height){
+    public void spawnRandoms(double x, double y, double width, double height) {
         ecossistema.spawnRandoms(x, y, width, height);
     }
 
-    public boolean existsElement(double x1, double y1, double x2, double y2){
+    public boolean existsElement(double x1, double y1, double x2, double y2) {
         return ecossistema.existsElement(x1, y1, x2, y2);
     }
 
-    public void adicionarElementoInanimado(double width, double height){
+    public void adicionarElementoInanimado(double width, double height) {
         double randomWidth, randomHeight;
         int randomWidthInt, randomHeightInt;
-        do{
-            do{
+        do {
+            do {
                 randomWidthInt = getRandomNumber((int) width);
                 randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
-            }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
-            do{
+            } while (randomWidth < tamBorder || randomWidth > width - 2 * tamBorder);
+            do {
                 randomHeightInt = getRandomNumber((int) height);
                 randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
-            }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
-        }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
+            } while (randomHeight < tamBorder || randomHeight > height - 2 * tamBorder);
+        } while (existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
         Inanimado inanimadoTemp = new Inanimado();
-        inanimadoTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
+        inanimadoTemp.setArea(new Area(randomWidth, randomWidth + tamBorder, randomHeight, randomHeight + tamBorder));
         ecossistema.addElemento(inanimadoTemp);
-        this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
+        this.pcs.firePropertyChange(PROP_ELEMENT, (Object) null, (Object) null);
     }
 
-    public void adicionarElementoFlora(double width, double height){
+    public void adicionarElementoFlora(double width, double height) {
         double randomWidth, randomHeight;
         int randomWidthInt, randomHeightInt;
-        do{
-            do{
+        do {
+            do {
                 randomWidthInt = getRandomNumber((int) width);
                 randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
-            }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
-            do{
+            } while (randomWidth < tamBorder || randomWidth > width - 2 * tamBorder);
+            do {
                 randomHeightInt = getRandomNumber((int) height);
                 randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
-            }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
-        }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
+            } while (randomHeight < tamBorder || randomHeight > height - 2 * tamBorder);
+        } while (existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
-        Flora floraTemp = new Flora(this);
-        floraTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
+        Flora floraTemp = new Flora(ecossistema);
+        floraTemp.setArea(new Area(randomWidth, randomWidth + tamBorder, randomHeight, randomHeight + tamBorder));
         ecossistema.addElemento(floraTemp);
-        this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
+        this.pcs.firePropertyChange(PROP_ELEMENT, (Object) null, (Object) null);
     }
 
-    public void adicionarElementoFauna(double width, double height){
+    public void adicionarElementoFauna(double width, double height) {
         double randomWidth, randomHeight;
         int randomWidthInt, randomHeightInt;
-        do{
-            do{
+        do {
+            do {
                 randomWidthInt = getRandomNumber((int) width);
                 randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
-            }while(randomWidth < tamBorder || randomWidth > width-2*tamBorder);
-            do{
+            } while (randomWidth < tamBorder || randomWidth > width - 2 * tamBorder);
+            do {
                 randomHeightInt = getRandomNumber((int) height);
                 randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
-            }while(randomHeight < tamBorder || randomHeight > height-2*tamBorder);
-        }while(existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
+            } while (randomHeight < tamBorder || randomHeight > height - 2 * tamBorder);
+        } while (existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
 
-        Fauna faunaTemp = new Fauna(this);
-        faunaTemp.setArea(new Area(randomWidth, randomWidth + tamBorder,randomHeight , randomHeight + tamBorder));
+        Fauna faunaTemp = new Fauna(ecossistema);
+        faunaTemp.setArea(new Area(randomWidth, randomWidth + tamBorder, randomHeight, randomHeight + tamBorder));
         System.out.println(faunaTemp.getArea().toString());
         ecossistema.addElemento(faunaTemp);
-        this.pcs.firePropertyChange(PROP_ELEMENT, (Object)null, (Object)null);
+        this.pcs.firePropertyChange(PROP_ELEMENT, (Object) null, (Object) null);
     }
 
     public Area convertToPixels(double mouseX, double mouseY) {
@@ -282,16 +281,8 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 //        fauna.setVelocity(velocidade);
     }
 
-    public void saveToCSV() throws IOException {
-        ecossistema.save();
-    }
-
-    public void loadFromCSV() throws IOException {
-        ecossistema.load(this);
-    }
-
-    public void addElementCommand(ElementoEnum elementoEnum){
-        if(commandManager.invokeCommand(new AddElementCommand(ecossistema, elementoEnum))){
+    public void addElementCommand(ElementoEnum elementoEnum) {
+        if (commandManager.invokeCommand(new AddElementCommand(ecossistema, elementoEnum))) {
             System.out.println("switched undo");
             switchUndo();
             refreshUI();
@@ -299,8 +290,8 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     }
 
 
-    public void editarElementoCommand(ElementoEnum elementoEnum, int id, double newForca, int newVelocidade){
-        if(commandManager.invokeCommand(new EditElementCommand(ecossistema, elementoEnum, id, newForca, newVelocidade))){
+    public void editarElementoCommand(ElementoEnum elementoEnum, int id, double newForca, int newVelocidade) {
+        if (commandManager.invokeCommand(new EditElementCommand(ecossistema, elementoEnum, id, newForca, newVelocidade))) {
             System.out.println("switched undo");
             switchUndo();
             refreshUI();
@@ -308,15 +299,19 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
     }
 
-    public void removeElementoCommand(ElementoEnum elementoEnum, int id){
-        if(commandManager.invokeCommand(new RemoveElementCommand(ecossistema, elementoEnum, id))){
+    public void removeElementoCommand(ElementoEnum elementoEnum, int id) {
+        if (commandManager.invokeCommand(new RemoveElementCommand(ecossistema, elementoEnum, id))) {
             System.out.println("switched undo");
             switchUndo();
             refreshUI();
         }
     }
 
-    public void undo(){
+    public void undo() {
         commandManager.undo();
+    }
+    
+    public Ecossistema getEcossistema() {
+        return ecossistema;
     }
 }
