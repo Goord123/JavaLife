@@ -9,12 +9,15 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.*;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +36,10 @@ public class MapArea extends Canvas {
         this.spawnBorder();
         this.spawnRandoms();
         this.update();
+
     }
+
+
 
     private void registerHandlers() {
         this.ecossistemaManager.addPropertyChangeListener(PROP_ELEMENT, (evt) -> {

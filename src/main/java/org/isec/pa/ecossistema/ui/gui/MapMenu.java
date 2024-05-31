@@ -5,12 +5,14 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.*;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
+import java.io.File;
 import java.io.IOException;
 
 public class MapMenu extends MenuBar {
@@ -59,6 +61,41 @@ public class MapMenu extends MenuBar {
         this.update();
         this.mnUndo.setDisable(true);
         this.mnRedo.setDisable(true);
+    }
+
+    private void openSimulation() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Abrir ficheiro...");
+        fileChooser.setInitialDirectory(new File("."));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Guardar (.dat)", ".dat"),
+                new FileChooser.ExtensionFilter("Todos", "."));
+        File file = fileChooser.showOpenDialog(this.getScene().getWindow());
+        if (file != null) {
+//            try {
+////                _manager.openFile(file);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+        }
+    }
+
+    private void saveSimulation() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar ficheiro...");
+        fileChooser.setInitialDirectory(new File("."));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Guardar (.dat)", ".dat"),
+                new FileChooser.ExtensionFilter("Todos", "."));
+        File file = fileChooser.showSaveDialog(this.getScene().getWindow());
+        if (file != null) {
+//            try {
+////                _manager.saveToFile(file);
+////                _manager.resetSaveChanges();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+        }
     }
 
     private void createViews() {
@@ -160,6 +197,17 @@ public class MapMenu extends MenuBar {
             activateCommands(7);
         });
         this.mnGravar.setOnAction((event) -> {
+            saveSimulation();
+        });
+        this.mnAbrir.setOnAction((event) -> {
+            openSimulation();
+
+        });
+        this.mnImportar.setOnAction((event) -> {
+            ecossistemaManager.getEcossistema().load();
+            System.out.println("Ecossistema Carregado");
+        });
+        this.mnExportar.setOnAction((event) -> {
             try {
                 ecossistemaManager.getEcossistema().save();
             } catch (IOException e) {
@@ -167,11 +215,6 @@ public class MapMenu extends MenuBar {
             }
             System.out.println("Ecossistema Gravado");
         });
-        this.mnAbrir.setOnAction((event) -> {
-            ecossistemaManager.getEcossistema().load();
-            System.out.println("Ecossistema Carregado");
-        });
-
 //        this.mnNew.setOnAction((event) -> {
 //            this.drawing.clearAll();
 //        });
