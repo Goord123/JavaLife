@@ -7,11 +7,11 @@ import org.isec.pa.ecossistema.utils.ElementoEnum;
 import java.io.Serializable;
 import java.util.List;
 
-public final class Flora extends ElementoBase implements IElemento, Serializable, IElementoComImagem, IElementoComForca {
+public non-sealed class Flora extends ElementoBase implements IElemento, Serializable, IElementoComImagem, IElementoComForca {
 
     private static int lastId = 0; // Static variable to keep track of the last ID used
-    private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.FLORA;
+    private int id;
     private double forca = 50;
     private int size;
     private int timesReproduced = 0;
@@ -29,6 +29,7 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
         if (this.forca <= 0) dead = true;
 
         this.forca++;
+        if (this.forca > 100) this.forca = 100;
 
         reproduce();
     }
@@ -37,6 +38,10 @@ public final class Flora extends ElementoBase implements IElemento, Serializable
     @Override
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

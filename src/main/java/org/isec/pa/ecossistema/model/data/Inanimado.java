@@ -3,10 +3,10 @@ package org.isec.pa.ecossistema.model.data;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-public final class Inanimado extends ElementoBase implements IElemento{
+public final class Inanimado extends ElementoBase implements IElemento {
     private static int lastId = 0;
-    private final int id;
     private final ElementoEnum elementoEnum = ElementoEnum.INANIMADO;
+    private int id;
     private Area area;
     private boolean isBarreira;
 
@@ -19,6 +19,10 @@ public final class Inanimado extends ElementoBase implements IElemento{
     @Override
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
