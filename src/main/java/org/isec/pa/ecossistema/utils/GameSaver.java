@@ -2,14 +2,13 @@ package org.isec.pa.ecossistema.utils;
 
 import org.isec.pa.ecossistema.model.data.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GameSaver {
+public class GameSaver implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public void saveToCSV(Set<IElemento> elementos, String filePath) throws IOException {
         try (FileWriter writer = new FileWriter(filePath)) {

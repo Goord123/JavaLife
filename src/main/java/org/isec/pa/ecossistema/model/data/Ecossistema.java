@@ -6,8 +6,7 @@ import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 import org.isec.pa.ecossistema.utils.GameSaver;
 
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +15,8 @@ import java.util.Set;
 import static org.isec.pa.ecossistema.utils.UtilFunctions.getRandomNumber;
 
 public class Ecossistema implements IGameEngineEvolve, Serializable {
-
+    @Serial
+    private static final long serialVersionUID = 1L;
     private final String FILE_PATH = "ecossistema.csv";
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
@@ -25,7 +25,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     private int mapHeight;
     private int mapWidth;
     private double forcaDefault = 50;
-    private int tickSpeed = 1000;// (milisegundos)
 
     public Ecossistema() {
     }
@@ -362,7 +361,16 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         return true;
     }
 
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
 
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.gameSaver = new GameSaver();
+    }
 //    public void createElement(double x, double y){
 //        this.element = this.elementType.createFigure();
 //        this.element.setP1(x, y);

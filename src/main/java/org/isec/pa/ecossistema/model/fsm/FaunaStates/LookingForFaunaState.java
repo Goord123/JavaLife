@@ -6,36 +6,45 @@ import org.isec.pa.ecossistema.model.fsm.FaunaState;
 import org.isec.pa.ecossistema.model.fsm.FaunaStateAdapter;
 import org.isec.pa.ecossistema.utils.Area;
 
-public class LookingForFaunaState extends FaunaStateAdapter {
+import java.io.Serial;
+import java.io.Serializable;
 
-        public LookingForFaunaState(FaunaContext context, Fauna fauna) {
-            super(context, fauna);
+public class LookingForFaunaState extends FaunaStateAdapter implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    public LookingForFaunaState(FaunaContext context, Fauna fauna) {
+        super(context, fauna);
+    }
+
+    // Default constructor needed for deserialization
+    public LookingForFaunaState() {
+        super(null, null);
+    }
+
+    @Override
+    public IFaunaState getCurrentState() {
+        return FaunaState.LOOKING_FOR_FAUNA.getInstance(context, fauna);
+    }
+
+    @Override
+    public void evolve() {
+        if (!fauna.checkIfAlive()) return;
+
+        if (fauna.getForca() < 50) {
+            changeState(FaunaState.LOOKING_FOR_FLORA);
         }
 
-        @Override
-        public IFaunaState getCurrentState() {
-            return FaunaState.LOOKING_FOR_FAUNA.getInstance(context, fauna);
+        if (fauna.hunt()) return;
+
+        Area targetFauna = fauna.lookForWeakestFauna();
+        if (targetFauna != null) {
+            fauna.setTarget(targetFauna);
+            fauna.getDirectionOfTarget();
+        } else {
+            fauna.setDirection(null);
+            fauna.setTarget(null);
+            fauna.getDirectionOfTarget();
         }
-
-        @Override
-        public void evolve() {
-            if (!fauna.checkIfAlive()) return;
-
-            if (fauna.getForca() < 50) {
-                changeState(FaunaState.LOOKING_FOR_FLORA);
-            }
-
-                if (fauna.hunt()) return;
-
-                Area targetFauna = fauna.lookForWeakestFauna();
-                if (targetFauna != null) {
-                    fauna.setTarget(targetFauna);
-                    fauna.getDirectionOfTarget();
-                }
-                else {
-                    fauna.setDirection(null);
-                    fauna.setTarget(null);
-                    fauna.getDirectionOfTarget();
-                }
-        }
+    }
 }

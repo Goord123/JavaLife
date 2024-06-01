@@ -68,15 +68,11 @@ public class MapMenu extends MenuBar {
         fileChooser.setTitle("Abrir ficheiro...");
         fileChooser.setInitialDirectory(new File("."));
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Guardar (.dat)", ".dat"),
-                new FileChooser.ExtensionFilter("Todos", "."));
+                new FileChooser.ExtensionFilter("Guardar (.dat)", "*.dat"),
+                new FileChooser.ExtensionFilter("Todos", "*.*"));
         File file = fileChooser.showOpenDialog(this.getScene().getWindow());
         if (file != null) {
-//            try {
-////                _manager.openFile(file);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            ecossistemaManager.openBinFile(file);
         }
     }
 
@@ -89,12 +85,12 @@ public class MapMenu extends MenuBar {
                 new FileChooser.ExtensionFilter("Todos", "."));
         File file = fileChooser.showSaveDialog(this.getScene().getWindow());
         if (file != null) {
-//            try {
-////                _manager.saveToFile(file);
-////                _manager.resetSaveChanges();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                ecossistemaManager.saveToBinFile(file);
+                //ecossistemaManager.resetSaveChanges();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -215,6 +211,29 @@ public class MapMenu extends MenuBar {
             }
             System.out.println("Ecossistema Gravado");
         });
+        this.mnAplicarHerbicida.setOnAction((event) -> {
+            openHerbicidaWindow();
+        });
+        this.mnInjetarForca.setOnAction((event) -> {
+            openInjectFaunalWindow();
+        });
+        this.mnAplicarSol.setOnAction((event) -> {
+            ecossistemaManager.aplicarSolEvent();
+        });
+        this.mnPausar.setOnAction((event) -> {
+            ecossistemaManager.pauseGameEngine();
+        });
+        this.mnContinuar.setOnAction((event) -> {
+            ecossistemaManager.resumeGameEngine();
+        });
+        this.mnParar.setOnAction((event) -> {
+            ecossistemaManager.stopGameEngine();
+        });
+        this.mnExecutar.setOnAction((event) -> {
+            ecossistemaManager.startGameEngine();
+        });
+
+
 //        this.mnNew.setOnAction((event) -> {
 //            this.drawing.clearAll();
 //        });
@@ -246,41 +265,119 @@ public class MapMenu extends MenuBar {
 
     }
 
-    private void openCustomWindowConfigGeraisEcossistema() {
+    private void openHerbicidaWindow() {
         Stage window = new Stage();
 
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
 
-        Label instructionLabelForca = new Label("Força: ");
-        TextField inputFieldForca = new TextField();
-        Label instructionLabelVel = new Label("Velocidade: ");
-        TextField inputFieldVel = new TextField();
+        Label instructionLabelId = new Label("Digite o ID da Flora que deseja eliminar: ");
+        TextField inputFieldId = new TextField();
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
-            String input1 = inputFieldForca.getText();
-            String input2 = inputFieldVel.getText();
-            if (isNumeric(input1) && isNumeric(input2)) {
-                float userInput1 = (float) Integer.parseInt(input1);
-                float userInput2 = (float) Integer.parseInt(input2);
-                System.out.println("Força: " + userInput1);
-                System.out.println("Velocidade: " + userInput2);
-                //EcossistemaManager.setForcaDefault(userInput1);
-                //EcossistemaManager.setVelocidadeAll(userInput2);
-                window.close();
-                //mudar aqui valores
+            String input = inputFieldId.getText();
+            if (isNumeric(input)) {
+                int id = Integer.parseInt(input);
+                // Assume isValidId is a method that checks if the ID is valid in your system
+                Flora floraAux = (Flora) ecossistemaManager.getElementoByIdAndType(id, ElementoEnum.FLORA);
+                if (floraAux == null) {
+                    errorLabel.setText("O ID inserido não existe");
+                } else {
+                    window.close();
+                    ecossistemaManager.removeElementoCommand(ElementoEnum.FLORA, id);
+                }
             } else {
-                errorLabel.setText("Ambos os campos devem ser preenchidos com NUMEROS INTEIROS");
+                errorLabel.setText("Digite um ID válido.");
             }
         });
 
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelForca, inputFieldForca, instructionLabelVel, inputFieldVel, submitButton, errorLabel, closeButton);
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, submitButton, errorLabel, closeButton);
+
+        Scene scene = new Scene(layout, 300, 200);
+        window.setTitle("Digite um ID");
+        window.setScene(scene);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.showAndWait();
+    }
+
+    private void openInjectFaunalWindow() {
+        Stage window = new Stage();
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+
+        Label instructionLabelId = new Label("Digite o ID da Fauna que deseja eliminar: ");
+        TextField inputFieldId = new TextField();
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+
+        Button submitButton = new Button("Confirmar");
+        submitButton.setOnAction(event -> {
+            String input = inputFieldId.getText();
+            if (isNumeric(input)) {
+                int id = Integer.parseInt(input);
+                // Assume isValidId is a method that checks if the ID is valid in your system
+                Fauna faunaAux = (Fauna) ecossistemaManager.getElementoByIdAndType(id, ElementoEnum.FAUNA);
+                if (faunaAux == null) {
+                    errorLabel.setText("O ID inserido não existe");
+                } else {
+                    window.close();
+                    faunaAux.setForca(faunaAux.getForca() + 50);
+                    if (faunaAux.getForca() > 100) {
+                        faunaAux.setForca(100);
+                    }
+                }
+            } else {
+                errorLabel.setText("Digite um ID válido.");
+            }
+        });
+
+        Button closeButton = new Button("Cancelar");
+        closeButton.setOnAction(event -> window.close());
+
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, submitButton, errorLabel, closeButton);
+
+        Scene scene = new Scene(layout, 300, 200);
+        window.setTitle("Digite um ID");
+        window.setScene(scene);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.showAndWait();
+    }
+
+    private void openCustomWindowConfigGeraisEcossistema() {
+        Stage window = new Stage();
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+
+        Label instructionLabelForca = new Label("Força Inicial (Fauna e Flora): ");
+        TextField inputFieldForca = new TextField();
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+
+        Button submitButton = new Button("Confirmar");
+        submitButton.setOnAction(event -> {
+            String input1 = inputFieldForca.getText();
+            if (isNumeric(input1)) {
+                float userInput1 = (float) Integer.parseInt(input1);
+                //System.out.println("Força Inicial (Fauna e Flora): " + userInput1);
+                ecossistemaManager.setForcaDefault(userInput1);
+                window.close();
+            } else {
+                errorLabel.setText("Insira um valor numérico inteiro");
+            }
+        });
+
+        Button closeButton = new Button("Cancelar");
+        closeButton.setOnAction(event -> window.close());
+
+        layout.getChildren().addAll(instructionLabelForca, inputFieldForca, submitButton, errorLabel, closeButton);
 
         Scene scene = new Scene(layout, 400, 250);
         window.setTitle("Configurações Gerais do Ecossistema");
@@ -472,6 +569,8 @@ public class MapMenu extends MenuBar {
                 int width = (userInput3 / 20) * 20;
                 System.out.println("Altura" + height);
                 System.out.println("Largura" + width);
+                System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
+                this.ecossistemaManager.changeTickSpeed(userInput1);
                 //mudar aqui valores
 //                ecossistemaManager.setMapWidth(width);
 //                ecossistemaManager.setMapHeight(height-25);
