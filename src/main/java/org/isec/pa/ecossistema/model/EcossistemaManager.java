@@ -207,67 +207,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         return ecossistema.existsElement(x1, y1, x2, y2);
     }
 
-    public void adicionarElementoInanimado(double width, double height) {
-        double randomWidth, randomHeight;
-        int randomWidthInt, randomHeightInt;
-        do {
-            do {
-                randomWidthInt = getRandomNumber((int) width);
-                randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
-            } while (randomWidth < tamBorder || randomWidth > width - 2 * tamBorder);
-            do {
-                randomHeightInt = getRandomNumber((int) height);
-                randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
-            } while (randomHeight < tamBorder || randomHeight > height - 2 * tamBorder);
-        } while (existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
-
-        Inanimado inanimadoTemp = new Inanimado();
-        inanimadoTemp.setArea(new Area(randomWidth, randomWidth + tamBorder, randomHeight, randomHeight + tamBorder));
-        ecossistema.addElemento(inanimadoTemp);
-        this.pcs.firePropertyChange(PROP_ELEMENT, (Object) null, (Object) null);
-    }
-
-    public void adicionarElementoFlora(double width, double height) {
-        double randomWidth, randomHeight;
-        int randomWidthInt, randomHeightInt;
-        do {
-            do {
-                randomWidthInt = getRandomNumber((int) width);
-                randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
-            } while (randomWidth < tamBorder || randomWidth > width - 2 * tamBorder);
-            do {
-                randomHeightInt = getRandomNumber((int) height);
-                randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
-            } while (randomHeight < tamBorder || randomHeight > height - 2 * tamBorder);
-        } while (existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
-
-        Flora floraTemp = new Flora(ecossistema);
-        floraTemp.setArea(new Area(randomWidth, randomWidth + tamBorder, randomHeight, randomHeight + tamBorder));
-        ecossistema.addElemento(floraTemp);
-        this.pcs.firePropertyChange(PROP_ELEMENT, (Object) null, (Object) null);
-    }
-
-    public void adicionarElementoFauna(double width, double height) {
-        double randomWidth, randomHeight;
-        int randomWidthInt, randomHeightInt;
-        do {
-            do {
-                randomWidthInt = getRandomNumber((int) width);
-                randomWidth = (double) (randomWidthInt / pixelMultiplier) * pixelMultiplier;
-            } while (randomWidth < tamBorder || randomWidth > width - 2 * tamBorder);
-            do {
-                randomHeightInt = getRandomNumber((int) height);
-                randomHeight = (double) (randomHeightInt / pixelMultiplier) * pixelMultiplier;
-            } while (randomHeight < tamBorder || randomHeight > height - 2 * tamBorder);
-        } while (existsElement(randomWidth, randomHeight, randomWidth + pixelMultiplier, randomHeight + pixelMultiplier));
-
-        Fauna faunaTemp = new Fauna(ecossistema);
-        faunaTemp.setArea(new Area(randomWidth, randomWidth + tamBorder, randomHeight, randomHeight + tamBorder));
-        System.out.println(faunaTemp.getArea().toString());
-        ecossistema.addElemento(faunaTemp);
-        this.pcs.firePropertyChange(PROP_ELEMENT, (Object) null, (Object) null);
-    }
-
     public Area convertToPixels(double mouseX, double mouseY) {
         // Convert coordinates to multiples of 20
         int x1 = (int) (mouseX / 20) * 20;
@@ -279,15 +218,10 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
     public void setForcaFlora(int id, double forca) {
         ecossistema.setForcaFlora(id, forca);
-//        Flora flora = (Flora) ecossistema.getElementoByIdAndType(id, new Fauna(this));
-//        flora.setForca(forca);
     }
 
     public void setForcaEVelocidadeFauna(int id, double forca, int velocidade) {
         ecossistema.setForcaEVelocidadeFauna(id, forca, velocidade);
-        //(Fauna) ecossistema.getElementoByIdAndType(id, new Fauna(this).setForca(forca));
-//        fauna.setForca(forca);
-//        fauna.setVelocity(velocidade);
     }
 
     public void addElementCommand(ElementoEnum elementoEnum) {
@@ -318,6 +252,11 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
     public void undo() {
         commandManager.undo();
+    }
+
+
+    public void redo() {
+        commandManager.redo();
     }
 
     public Ecossistema getEcossistema() {

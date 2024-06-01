@@ -59,8 +59,8 @@ public class MapMenu extends MenuBar {
         this.createViews();
         this.registerHandlers();
         this.update();
-        this.mnUndo.setDisable(true);
-        this.mnRedo.setDisable(true);
+//        this.mnUndo.setDisable(true);
+//        this.mnRedo.setDisable(true);
     }
 
     private void openSimulation() {
@@ -134,21 +134,21 @@ public class MapMenu extends MenuBar {
     }
 
     private void registerHandlers() {
-        this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_REDO, (evt) -> {
-            if (this.mnRedo.isDisable()) {
-                this.mnRedo.setDisable(false);
-            } else {
-                this.mnRedo.setDisable(true);
-            }
-        });
-        this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_UNDO, (evt) -> {
-
-            if (this.mnUndo.isDisable()) {
-                this.mnUndo.setDisable(false);
-            } else {
-                this.mnUndo.setDisable(true);
-            }
-        });
+//        this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_REDO, (evt) -> {
+//            if (this.mnRedo.isDisable()) {
+//                this.mnRedo.setDisable(false);
+//            } else {
+//                this.mnRedo.setDisable(true);
+//            }
+//        });
+//        this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_UNDO, (evt) -> {
+//
+//            if (this.mnUndo.isDisable()) {
+//                this.mnUndo.setDisable(false);
+//            } else {
+//                this.mnUndo.setDisable(true);
+//            }
+//        });
         this.mnAdicionarElementoInanimado.setOnAction((event) -> {
             activateCommands(1);
             //this.ecossistemaManager.adicionarElementoInanimado(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
@@ -638,7 +638,6 @@ public class MapMenu extends MenuBar {
     private void activateCommands(int op) {
         switch (op) {
             case 1:
-
                 ecossistemaManager.addElementCommand(ElementoEnum.INANIMADO);
                 break;
             case 2:
@@ -657,7 +656,10 @@ public class MapMenu extends MenuBar {
                 ecossistemaManager.undo();
                 break;
             case 7:
-                //ecossistemaManager.redo();
+                ecossistemaManager.redo();
+                break;
+            case 8:
+                //definições
                 break;
             default:
                 System.out.println("Erro no switch do patern commands");

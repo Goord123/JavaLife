@@ -119,8 +119,9 @@ public class MapArea extends Canvas {
                     break;
                 case FLORA:
                     //TODO mudar para a percentagem da força
+                    Flora floraAux = (Flora) element;
                     gc.setStroke(Color.GREEN.darker());
-                    gc.setFill(Color.GREEN);
+                    gc.setFill(new Color(0.0, 1.0, 0.0, floraAux.getForca() / 100.0));
                     gc.fillRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
                     gc.strokeRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
                     break;
