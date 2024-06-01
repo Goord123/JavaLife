@@ -335,8 +335,18 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         return true;
     }
 
-    public boolean editarElementoCommandUndo() {
-        //TODO
+    public boolean editarElementoCommandUndo(int id, ElementoEnum tipoElemento, double forcaAntiga, int velocidadeAntiga) {
+        IElemento elemento = getElementoByIdAndType(id, tipoElemento);
+        if(elemento == null)
+            return false;
+
+        if(tipoElemento.equals(ElementoEnum.FLORA)){
+            setForcaFlora(id, forcaAntiga);
+        } else if (tipoElemento.equals(ElementoEnum.FAUNA)){
+            setForcaEVelocidadeFauna(id, forcaAntiga, velocidadeAntiga);
+        } else {
+            return false;
+        }
         return true;
     }
 
@@ -346,7 +356,9 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     }
 
     public boolean removerElementoCommandUndo(IElemento elemento) {
-        //TODO
+        if(!mapHasSpace())
+            return false;
+        addElemento(elemento);
         return true;
     }
 
