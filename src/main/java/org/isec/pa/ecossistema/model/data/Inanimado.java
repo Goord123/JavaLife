@@ -3,7 +3,11 @@ package org.isec.pa.ecossistema.model.data;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-public final class Inanimado extends ElementoBase implements IElemento {
+import java.io.Serial;
+
+public non-sealed class Inanimado extends ElementoBase implements IElemento {
+    @Serial
+    private static final long serialVersionUID = 1L;
     private static int lastId = 0;
     private final ElementoEnum elementoEnum = ElementoEnum.INANIMADO;
     private int id;
@@ -35,6 +39,10 @@ public final class Inanimado extends ElementoBase implements IElemento {
         return this.area;
     }
 
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
     public boolean isBarreira() {
         return isBarreira;
     }
@@ -46,9 +54,5 @@ public final class Inanimado extends ElementoBase implements IElemento {
     @Override
     public void evolve() {
 
-    }
-
-    public void setArea(Area area) {
-        this.area = area;
     }
 }

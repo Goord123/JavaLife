@@ -3,7 +3,12 @@ package org.isec.pa.ecossistema.model.fsm;
 import org.isec.pa.ecossistema.model.data.Fauna;
 import org.isec.pa.ecossistema.model.fsm.FaunaStates.IFaunaState;
 
-public abstract class FaunaStateAdapter implements IFaunaState {
+import java.io.Serial;
+import java.io.Serializable;
+
+public abstract class FaunaStateAdapter implements IFaunaState, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     protected FaunaContext context;
     protected Fauna fauna;
 
@@ -33,5 +38,15 @@ public abstract class FaunaStateAdapter implements IFaunaState {
 
     @Override
     public void evolve() {
+    }
+
+    // para a serializacao
+    public void setContext(FaunaContext context) {
+        this.context = context;
+    }
+
+    // para a serializacao
+    public void setFauna(Fauna fauna) {
+        this.fauna = fauna;
     }
 }

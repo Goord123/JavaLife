@@ -1,18 +1,19 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.fsm.FaunaContext;
 import org.isec.pa.ecossistema.model.fsm.FaunaState;
+import org.isec.pa.ecossistema.model.fsm.FaunaStateAdapter;
 import org.isec.pa.ecossistema.model.fsm.FaunaStates.IFaunaState;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.DirectionEnum;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.List;
 
 public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaState, Serializable, IElementoComForca, IElementoComImagem {
-
+    @Serial
+    private static final long serialVersionUID = 1L;
     private final static int HP_PER_TICK_EATING = 20;
     private static int lastId = 0; // Static variable to keep track of the last ID used
     private final ElementoEnum elementoEnum = ElementoEnum.FAUNA;
@@ -497,5 +498,26 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
     @Override
     public void setImagem(String imagem) {
         this.imagem = imagem;
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeUTF(currentState.getClass().getName());
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        try {
+            String stateClassName = in.readUTF();
+            Class<?> stateClass = Class.forName(stateClassName);
+            this.context = new FaunaContext(this);
+            this.currentState = (IFaunaState) stateClass.getDeclaredConstructor().newInstance();
+            ((FaunaStateAdapter) this.currentState).setContext(this.context);
+            ((FaunaStateAdapter) this.currentState).setFauna(this);
+        } catch (Exception e) {
+            throw new IOException("Failed to deserialize Fauna state", e);
+        }
     }
 }

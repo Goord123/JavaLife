@@ -6,10 +6,20 @@ import org.isec.pa.ecossistema.model.fsm.FaunaState;
 import org.isec.pa.ecossistema.model.fsm.FaunaStateAdapter;
 import org.isec.pa.ecossistema.utils.Area;
 
-public class LookingForFloraState extends FaunaStateAdapter {
+import java.io.Serial;
+import java.io.Serializable;
+
+public class LookingForFloraState extends FaunaStateAdapter implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public LookingForFloraState(FaunaContext context, Fauna fauna) {
         super(context, fauna);
+    }
+
+    // Default constructor needed for deserialization
+    public LookingForFloraState() {
+        super(null, null);
     }
 
     @Override

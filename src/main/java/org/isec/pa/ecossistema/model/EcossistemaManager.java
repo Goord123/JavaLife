@@ -14,7 +14,7 @@ import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,25 +22,30 @@ import java.util.Set;
 import static org.isec.pa.ecossistema.utils.UtilFunctions.getRandomNumber;
 
 public class EcossistemaManager implements IGameEngineEvolve, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     public static final String PROP_ELEMENT = "_element_";
     public static final String PROP_SWITCH_REDO = "_switchRedo_";
     public static final String PROP_SWITCH_UNDO = "_switchUndo_";
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
-    private final IGameEngine gameEngine;
+    private transient IGameEngine gameEngine;
     private Ecossistema ecossistema;
     private CommandManager commandManager;
-    private double velocidadeDefault = 1;
+    private double velocidadeDefault;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private int tickSpeed;
 
     public EcossistemaManager(Ecossistema ecossistema) {
         this.ecossistema = ecossistema;
         this.commandManager = new CommandManager();
+        this.tickSpeed = 1000;
         this.gameEngine = new GameEngine();
-        this.gameEngine.start(1000);
+        this.gameEngine.start(tickSpeed);
         this.gameEngine.registerClient(this);
         ecossistema.setMapHeight(580);
         ecossistema.setMapWidth(800);
+        this.velocidadeDefault = 1;
 
         // Add a listener to handle updates
         pcs.addPropertyChangeListener(evt -> {
@@ -155,6 +160,10 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
     public void setForcaDefault(double newForcaDefault) {
         ecossistema.setForcaDefault(newForcaDefault);
+    }
+
+    public void setTickSpeed(int tickSpeed) {
+        this.tickSpeed = tickSpeed;
     }
 
     public Set<IElemento> getElementos() {
@@ -310,8 +319,69 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     public void undo() {
         commandManager.undo();
     }
-    
+
     public Ecossistema getEcossistema() {
         return ecossistema;
+    }
+
+    public void saveToBinFile(File file) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(ecossistema);
+            oos.writeObject(this); // Save the manager state if needed
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public void openBinFile(File file) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            ecossistema = (Ecossistema) ois.readObject();
+            EcossistemaManager manager = (EcossistemaManager) ois.readObject();
+            //this.commandManager = manager.commandManager; acho que isto n é preciso
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // para serializar
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+    }
+
+    public void aplicarSolEvent() {
+        for (IElemento elemento : ecossistema.getElementos()) {
+            if (elemento instanceof Flora) {
+                ((Flora) elemento).setForcaPorTurno(((Flora) elemento).getForcaPorTurno() * 2);
+            }
+        }
+    }
+
+    public void pauseGameEngine() {
+        gameEngine.pause();
+    }
+
+    public void resumeGameEngine() {
+        gameEngine.resume();
+    }
+
+    public void changeTickSpeed(int speed) {
+        this.setTickSpeed(speed);
+        gameEngine.setInterval(speed);
+    }
+
+    public void stopGameEngine() {
+        gameEngine.stop();
+    }
+
+    public void startGameEngine() {
+        gameEngine.start(tickSpeed);
     }
 }
