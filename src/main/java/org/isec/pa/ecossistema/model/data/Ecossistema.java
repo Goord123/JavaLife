@@ -1,7 +1,7 @@
 package org.isec.pa.ecossistema.model.data;
 
-import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
-import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
+import org.isec.pa.ecossistema.model.GameEngine.IGameEngine;
+import org.isec.pa.ecossistema.model.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 import org.isec.pa.ecossistema.utils.GameSaver;
@@ -336,12 +336,12 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
 
     public boolean editarElementoCommandUndo(int id, ElementoEnum tipoElemento, double forcaAntiga, int velocidadeAntiga) {
         IElemento elemento = getElementoByIdAndType(id, tipoElemento);
-        if(elemento == null)
+        if (elemento == null)
             return false;
 
-        if(tipoElemento.equals(ElementoEnum.FLORA)){
+        if (tipoElemento.equals(ElementoEnum.FLORA)) {
             setForcaFlora(id, forcaAntiga);
-        } else if (tipoElemento.equals(ElementoEnum.FAUNA)){
+        } else if (tipoElemento.equals(ElementoEnum.FAUNA)) {
             setForcaEVelocidadeFauna(id, forcaAntiga, velocidadeAntiga);
         } else {
             return false;
@@ -355,7 +355,7 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     }
 
     public boolean removerElementoCommandUndo(IElemento elemento) {
-        if(!mapHasSpace())
+        if (!mapHasSpace())
             return false;
         addElemento(elemento);
         return true;
