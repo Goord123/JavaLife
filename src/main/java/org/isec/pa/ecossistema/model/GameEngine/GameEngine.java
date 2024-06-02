@@ -1,4 +1,4 @@
-package org.isec.pa.ecossistema.model.fsm.GameEngine;
+package org.isec.pa.ecossistema.model.GameEngine;
 
 import java.util.HashSet;
 import java.util.List;

@@ -1,6 +1,9 @@
 package org.isec.pa.ecossistema.model;
 
 import javafx.application.Platform;
+import org.isec.pa.ecossistema.model.GameEngine.GameEngine;
+import org.isec.pa.ecossistema.model.GameEngine.IGameEngine;
+import org.isec.pa.ecossistema.model.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.model.command.AddElementCommand;
 import org.isec.pa.ecossistema.model.command.CommandManager;
 import org.isec.pa.ecossistema.model.command.EditElementCommand;
@@ -9,9 +12,6 @@ import org.isec.pa.ecossistema.model.data.Ecossistema;
 import org.isec.pa.ecossistema.model.data.Fauna;
 import org.isec.pa.ecossistema.model.data.Flora;
 import org.isec.pa.ecossistema.model.data.IElemento;
-import org.isec.pa.ecossistema.model.fsm.GameEngine.GameEngine;
-import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
-import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
