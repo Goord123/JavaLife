@@ -276,21 +276,29 @@ public class MapMenu extends MenuBar {
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
 
-        Label instructionLabel = new Label("Quer realmente sair?");
+        Label instructionLabel = new Label("Deseja guardar a simulação?");
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
         HBox buttonLayout = new HBox(10); // Create an HBox to align buttons horizontally
         buttonLayout.setAlignment(Pos.CENTER); // Center align the buttons
 
-        Button confirmButton = new Button("Confirmar");
+        Button confirmButton = new Button("Gravar");
         confirmButton.setOnAction(event -> {
+            try {
+                ecossistemaManager.saveToBinFile(new File("ecossistema.dat"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             window.close();
             Platform.exit();
         });
 
-        Button cancelButton = new Button("Cancelar");
-        cancelButton.setOnAction(event -> window.close());
+        Button cancelButton = new Button("Sair");
+        cancelButton.setOnAction(event -> {
+            window.close();
+            Platform.exit();
+        });
 
         buttonLayout.getChildren().addAll(confirmButton, cancelButton); // Add buttons to HBox
 
@@ -601,10 +609,6 @@ public class MapMenu extends MenuBar {
 
         Label instructionLabelTimeUnit = new Label("Unidade de tempo de cada movimentação: ");
         TextField inputFieldTimeUnit = new TextField();
-        Label instructionLabelHeight = new Label("Tamanho de janela (Altura): ");
-        TextField inputFieldHeight = new TextField();
-        Label instructionLabelWidth = new Label("Tamanho de janela (Largura): ");
-        TextField inputFieldWidth = new TextField();
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
@@ -614,24 +618,14 @@ public class MapMenu extends MenuBar {
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
             String input1 = inputFieldTimeUnit.getText();
-            String input2 = inputFieldHeight.getText();
-            String input3 = inputFieldWidth.getText();
-            if (isNumeric(input1) && isNumeric(input2) && isNumeric(input3)) {
+            if (isNumeric(input1)) {
                 int userInput1 = Integer.parseInt(input1);
-                int userInput2 = Integer.parseInt(input2);
-                int userInput3 = Integer.parseInt(input3);
                 if(userInput1 < 500){
                     errorLabel.setText("A unidade de tempo tem que ser pelo menos 500 milisegundos");
                     return;
                 }
                 System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
-                System.out.println("Tamanho de janela (Altura): " + userInput2);
-                System.out.println("Tamanho de janela (Largura): " + userInput3);
                 window.close();
-                int height = (userInput2 / 20) * 20;
-                int width = (userInput3 / 20) * 20;
-                System.out.println("Altura" + height);
-                System.out.println("Largura" + width);
                 System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
                 this.ecossistemaManager.changeTickSpeed(userInput1);
             } else {
@@ -644,9 +638,9 @@ public class MapMenu extends MenuBar {
 
         buttonLayout.getChildren().addAll(submitButton, closeButton);
 
-        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, instructionLabelHeight, inputFieldHeight, instructionLabelWidth, inputFieldWidth, errorLabel, buttonLayout);
+        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, errorLabel, buttonLayout);
 
-        Scene scene = new Scene(layout, 300, 300);
+        Scene scene = new Scene(layout, 300, 150);
         window.setTitle("Configurações de Início da Simulação");
         window.setScene(scene);
         window.initModality(Modality.APPLICATION_MODAL);
