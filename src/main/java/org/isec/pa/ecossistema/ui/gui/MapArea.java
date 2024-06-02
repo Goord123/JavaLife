@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.*;
@@ -65,13 +66,6 @@ public class MapArea extends Canvas {
 
             }
         });
-        //widthProperty().addListener() -> update();
-//        this.setOnMouseDragged((mouseEvent) -> {
-//            this.drawing.updateCurrentFigure(mouseEvent.getX(), mouseEvent.getY());
-//        });
-//        this.setOnMouseReleased((mouseEvent) -> {
-//            this.drawing.finishCurrentFigure(mouseEvent.getX(), mouseEvent.getY());
-//        });
     }
 
     public void update() {
@@ -84,6 +78,10 @@ public class MapArea extends Canvas {
         this.ecossistemaManager.getElementos().forEach((element) -> {
             if (element instanceof Fauna)
                 this.drawFigure(gc, (ElementoBase) element);
+        });
+        this.ecossistemaManager.getElementos().forEach((element) -> {
+            if (element instanceof Fauna || element instanceof Flora)
+                this.drawForca(gc, (ElementoBase) element);
         });
     }
 
@@ -103,9 +101,6 @@ public class MapArea extends Canvas {
 
     private void drawFigure(GraphicsContext gc, ElementoBase element) {
         if (element != null) {
-            //Color color = Color.color(element.getR(), element.getG(), element.getB());
-            //Color color = Color.color(Cores.RED.getCode(), 0, 0);
-            //gc.setFill(color);
             switch (element.getElemento()) {
                 case INANIMADO:
                     gc.setStroke(Color.GREY.darker());
@@ -133,6 +128,20 @@ public class MapArea extends Canvas {
                         gc.fillRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
                         gc.strokeRect(element.getArea().x1(), element.getArea().y1(), element.getWidth(), element.getHeight());
                     }
+            }
+        }
+    }
+
+    private void drawForca(GraphicsContext gc, ElementoBase element) {
+        if (element != null) {
+            gc.setFill(Color.BLACK);  // Set the text color to black
+            gc.setFont(new Font(10));  // Set the font size
+            if(element.getElemento().equals(ElementoEnum.FLORA)){
+                Flora floraAux = (Flora) element;
+                gc.fillText(String.valueOf(floraAux.getForca()), floraAux.getArea().x1(), floraAux.getArea().y1());  // Draw the number
+            } else {
+                Fauna faunaAux = (Fauna) element;
+                gc.fillText(String.valueOf(faunaAux.getForca()), faunaAux.getArea().x1(), faunaAux.getArea().y1());  // Draw the number
             }
         }
     }

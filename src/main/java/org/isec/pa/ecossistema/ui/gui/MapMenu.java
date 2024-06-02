@@ -620,6 +620,10 @@ public class MapMenu extends MenuBar {
                 int userInput1 = Integer.parseInt(input1);
                 int userInput2 = Integer.parseInt(input2);
                 int userInput3 = Integer.parseInt(input3);
+                if(userInput1 < 500){
+                    errorLabel.setText("A unidade de tempo tem que ser pelo menos 500 milisegundos");
+                    return;
+                }
                 System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
                 System.out.println("Tamanho de janela (Altura): " + userInput2);
                 System.out.println("Tamanho de janela (Largura): " + userInput3);
