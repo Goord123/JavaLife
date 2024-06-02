@@ -69,14 +69,6 @@ public non-sealed class Flora extends ElementoBase implements IElemento, Seriali
         this.forca = forca;
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
     public int getTimesReproduced() {
         return timesReproduced;
     }

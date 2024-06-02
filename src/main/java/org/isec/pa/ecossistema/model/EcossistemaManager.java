@@ -5,7 +5,10 @@ import org.isec.pa.ecossistema.model.command.AddElementCommand;
 import org.isec.pa.ecossistema.model.command.CommandManager;
 import org.isec.pa.ecossistema.model.command.EditElementCommand;
 import org.isec.pa.ecossistema.model.command.RemoveElementCommand;
-import org.isec.pa.ecossistema.model.data.*;
+import org.isec.pa.ecossistema.model.data.Ecossistema;
+import org.isec.pa.ecossistema.model.data.Fauna;
+import org.isec.pa.ecossistema.model.data.Flora;
+import org.isec.pa.ecossistema.model.data.IElemento;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.GameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngine;
 import org.isec.pa.ecossistema.model.fsm.GameEngine.IGameEngineEvolve;
@@ -18,8 +21,6 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.isec.pa.ecossistema.utils.UtilFunctions.getRandomNumber;
 
 public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     @Serial
@@ -68,10 +69,7 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
                     elementsToRemove.add(elemento);
                 } else if (elemento instanceof Flora && ((Flora) elemento).isDead()) {
                     elementsToRemove.add(elemento);
-                    System.out.println("Removing Flora with ID: " + ((Flora) elemento).getId() + " as it is dead.");
-                    elementsToRemove.add(elemento);
                 } else if (elemento instanceof Fauna && ((Fauna) elemento).reproduce()) {
-                    System.out.println("reproduzir ANIMAL");
                     Area areaForNewFauna = ((Fauna) elemento).getReproductionArea();
                     Fauna newFauna = new Fauna(ecossistema);
                     newFauna.setArea(areaForNewFauna);
@@ -91,10 +89,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
         Platform.runLater(() -> {
             synchronized (elementos) {
-                for (IElemento elem : elementsToRemove) {
-                    System.out.println("Actually removing element with ID: " + elem.getId());
-                }
-
                 ecossistema.removeElementos(elementsToRemove);
                 ecossistema.addElementos(elementsToAdd);
 
@@ -190,11 +184,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         this.pcs.addPropertyChangeListener(property, listener);
     }
 
-//    public void createFigure(double x, double y) {
-//        ecossistema.createElement(x,y);
-//        pcs.firePropertyChange(PROP_ELEMENT,null,null);
-//    }
-
     public void spawnBorder(double x, double y, double width, double height) {
         ecossistema.spawnBorder(x, y, width, height);
     }
@@ -266,7 +255,7 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     public void saveToBinFile(File file) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(ecossistema);
-            oos.writeObject(this); // Save the manager state if needed
+            oos.writeObject(this);
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -277,7 +266,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             ecossistema = (Ecossistema) ois.readObject();
             EcossistemaManager manager = (EcossistemaManager) ois.readObject();
-            //this.commandManager = manager.commandManager; acho que isto n é preciso
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

@@ -25,7 +25,6 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
     private DirectionEnum direction;
     private Area area;
     private Area target;
-    private int size;
     private boolean dead = false;
     private int timesReproduced = 0;
     private int segundosParaReproduzir;
@@ -39,7 +38,7 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
         this.forca = ecossistema.getForcaDefault();
         this.ecossistema = ecossistema;
         this.id = ++lastId;
-        this.velocity = 1 * ecossistema.getPixelMultiplier();
+        this.velocity = ecossistema.getPixelMultiplier();
         this.pixelMultiplier = ecossistema.getPixelMultiplier();
         this.segundosParaReproduzir = 0;
         this.context = new FaunaContext(this);
@@ -129,14 +128,6 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
 
     public void setSegundosParaReproduzir(int segundosParaReproduzir) {
         this.segundosParaReproduzir = segundosParaReproduzir;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
     }
 
     public Area getTarget() {

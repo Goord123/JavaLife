@@ -2,14 +2,19 @@ package org.isec.pa.ecossistema.ui.gui;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
-import org.isec.pa.ecossistema.model.data.*;
+import org.isec.pa.ecossistema.model.data.ElementoBase;
+import org.isec.pa.ecossistema.model.data.Fauna;
+import org.isec.pa.ecossistema.model.data.Flora;
+import org.isec.pa.ecossistema.model.data.Inanimado;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
 import java.io.File;
@@ -118,8 +123,8 @@ public class MapMenu extends MenuBar {
         this.mnParar = new MenuItem("_Parar");
         this.mnPausar = new MenuItem("_Pausar");
         this.mnContinuar = new MenuItem("_Continuar");
-        this.mnGravarSnapshot = new MenuItem("_Gravar Snapshot");
-        this.mnRestaurarSnapshot = new MenuItem("_Restaurar Snapshot");
+        //this.mnGravarSnapshot = new MenuItem("_Gravar Snapshot");
+        //this.mnRestaurarSnapshot = new MenuItem("_Restaurar Snapshot");
         this.mnAplicarSol = new MenuItem("_Aplicar Sol");
         this.mnAplicarHerbicida = new MenuItem("_Aplicar Herbicida");
         this.mnInjetarForca = new MenuItem("_Injetar Forca");
@@ -128,7 +133,7 @@ public class MapMenu extends MenuBar {
         //this.mnOpen.setAccelerator(new KeyCodeCombination(KeyCode.O, new KeyCombination.Modifier[]{KeyCodeCombination.ALT_DOWN}));
         this.mnFicheiro.getItems().addAll(new MenuItem[]{this.mnCriar, this.mnAbrir, this.mnGravar, new SeparatorMenuItem(), this.mnExportar, this.mnImportar, this.mnSair});
         this.mnEcossistema.getItems().addAll(new MenuItem[]{this.mnConfigGeraisEcossistema, this.mnAdicionarElementoInanimado, this.mnAdicionarElementoFlora, this.mnAdicionarElementoFauna, this.mnEditarElemento, this.mnEliminarElemento, this.mnUndo, this.mnRedo});
-        this.mnSimulacao.getItems().addAll(new MenuItem[]{this.mnConfigSimulacao, this.mnExecutar, this.mnParar, this.mnPausar, this.mnContinuar, this.mnGravarSnapshot, this.mnRestaurarSnapshot});
+        this.mnSimulacao.getItems().addAll(new MenuItem[]{this.mnConfigSimulacao, this.mnExecutar, this.mnParar, this.mnPausar, this.mnContinuar});
         this.mnEventos.getItems().addAll(new MenuItem[]{this.mnAplicarSol, this.mnAplicarHerbicida, this.mnInjetarForca});
         this.getMenus().addAll(new Menu[]{this.mnFicheiro, this.mnEcossistema, this.mnSimulacao, this.mnEventos});
     }
@@ -184,7 +189,7 @@ public class MapMenu extends MenuBar {
             openCustomWindowEliminarElemento();
         });
         this.mnSair.setOnAction((event) -> {
-            Platform.exit();
+            openExitConfirmationWindow();
         });
         this.mnUndo.setOnAction((event) -> {
             activateCommands(6);
@@ -265,6 +270,39 @@ public class MapMenu extends MenuBar {
 
     }
 
+    private void openExitConfirmationWindow() {
+        Stage window = new Stage();
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new Insets(15));
+
+        Label instructionLabel = new Label("Quer realmente sair?");
+        Label errorLabel = new Label();
+        errorLabel.setStyle("-fx-text-fill: red;");
+
+        HBox buttonLayout = new HBox(10); // Create an HBox to align buttons horizontally
+        buttonLayout.setAlignment(Pos.CENTER); // Center align the buttons
+
+        Button confirmButton = new Button("Confirmar");
+        confirmButton.setOnAction(event -> {
+            window.close();
+            Platform.exit();
+        });
+
+        Button cancelButton = new Button("Cancelar");
+        cancelButton.setOnAction(event -> window.close());
+
+        buttonLayout.getChildren().addAll(confirmButton, cancelButton); // Add buttons to HBox
+
+        layout.getChildren().addAll(instructionLabel, buttonLayout, errorLabel);
+
+        Scene scene = new Scene(layout, 250, 120); // Adjusted window size
+        window.setTitle("Confirmação de Saída");
+        window.setScene(scene);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.showAndWait();
+    }
+
     private void openHerbicidaWindow() {
         Stage window = new Stage();
 
@@ -276,12 +314,14 @@ public class MapMenu extends MenuBar {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
             String input = inputFieldId.getText();
             if (isNumeric(input)) {
                 int id = Integer.parseInt(input);
-                // Assume isValidId is a method that checks if the ID is valid in your system
                 Flora floraAux = (Flora) ecossistemaManager.getElementoByIdAndType(id, ElementoEnum.FLORA);
                 if (floraAux == null) {
                     errorLabel.setText("O ID inserido não existe");
@@ -297,14 +337,17 @@ public class MapMenu extends MenuBar {
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelId, inputFieldId, submitButton, errorLabel, closeButton);
+        buttonLayout.getChildren().addAll(submitButton, closeButton);
 
-        Scene scene = new Scene(layout, 300, 200);
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, errorLabel, buttonLayout);
+
+        Scene scene = new Scene(layout, 300, 150);
         window.setTitle("Digite um ID");
         window.setScene(scene);
         window.initModality(Modality.APPLICATION_MODAL);
         window.showAndWait();
     }
+
 
     private void openInjectFaunalWindow() {
         Stage window = new Stage();
@@ -317,12 +360,14 @@ public class MapMenu extends MenuBar {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
             String input = inputFieldId.getText();
             if (isNumeric(input)) {
                 int id = Integer.parseInt(input);
-                // Assume isValidId is a method that checks if the ID is valid in your system
                 Fauna faunaAux = (Fauna) ecossistemaManager.getElementoByIdAndType(id, ElementoEnum.FAUNA);
                 if (faunaAux == null) {
                     errorLabel.setText("O ID inserido não existe");
@@ -341,14 +386,17 @@ public class MapMenu extends MenuBar {
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelId, inputFieldId, submitButton, errorLabel, closeButton);
+        buttonLayout.getChildren().addAll(submitButton, closeButton);
 
-        Scene scene = new Scene(layout, 300, 200);
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, errorLabel, buttonLayout);
+
+        Scene scene = new Scene(layout, 300, 150);
         window.setTitle("Digite um ID");
         window.setScene(scene);
         window.initModality(Modality.APPLICATION_MODAL);
         window.showAndWait();
     }
+
 
     private void openCustomWindowConfigGeraisEcossistema() {
         Stage window = new Stage();
@@ -361,12 +409,14 @@ public class MapMenu extends MenuBar {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
             String input1 = inputFieldForca.getText();
             if (isNumeric(input1)) {
                 float userInput1 = (float) Integer.parseInt(input1);
-                //System.out.println("Força Inicial (Fauna e Flora): " + userInput1);
                 ecossistemaManager.setForcaDefault(userInput1);
                 window.close();
             } else {
@@ -377,9 +427,11 @@ public class MapMenu extends MenuBar {
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelForca, inputFieldForca, submitButton, errorLabel, closeButton);
+        buttonLayout.getChildren().addAll(submitButton, closeButton);
 
-        Scene scene = new Scene(layout, 400, 250);
+        layout.getChildren().addAll(instructionLabelForca, inputFieldForca, errorLabel, buttonLayout);
+
+        Scene scene = new Scene(layout, 300, 150);
         window.setTitle("Configurações Gerais do Ecossistema");
         window.setScene(scene);
         window.initModality(Modality.APPLICATION_MODAL);
@@ -413,6 +465,9 @@ public class MapMenu extends MenuBar {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
             String input1 = inputFieldId.getText();
@@ -431,14 +486,12 @@ public class MapMenu extends MenuBar {
                     elementoBase = (ElementoBase) floraAux;
                     forcaEdit = userInput3;
                     activateCommands(4);
-                    //ecossistemaManager.setForcaFlora(userInput1, userInput3);
                 } else if (input2.equalsIgnoreCase("FAUNA")) {
                     Fauna faunaAux = (Fauna) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FAUNA);
                     elementoBase = (ElementoBase) faunaAux;
                     forcaEdit = userInput3;
                     velocidadeEdit = userInput4;
                     activateCommands(4);
-                    //ecossistemaManager.setForcaEVelocidadeFauna(userInput1, userInput3, userInput4);
                 } else {
                     errorLabel.setText("Tipo de elemento deve ser um dos 2: FLORA ou FAUNA");
                 }
@@ -452,14 +505,17 @@ public class MapMenu extends MenuBar {
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelId, inputFieldId, instructionLabelTipo, inputFieldTipo, instructionLabelForca, inputFieldForca, instructionLabelVel, inputFieldVel, submitButton, errorLabel, closeButton);
+        buttonLayout.getChildren().addAll(submitButton, closeButton);
 
-        Scene scene = new Scene(layout, 400, 400);
-        window.setTitle("Configurações Gerais do Ecossistema");
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, instructionLabelTipo, inputFieldTipo, instructionLabelForca, inputFieldForca, instructionLabelVel, inputFieldVel, errorLabel, buttonLayout);
+
+        Scene scene = new Scene(layout, 300, 300);
+        window.setTitle("Editar Elemento");
         window.setScene(scene);
         window.initModality(Modality.APPLICATION_MODAL);
         window.showAndWait();
     }
+
 
     private void openCustomWindowEliminarElemento() {
         Stage window = new Stage();
@@ -474,9 +530,11 @@ public class MapMenu extends MenuBar {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
-            IElemento elementoReturn = null;
             String input1 = inputFieldId.getText();
             String input2 = inputFieldType.getText();
             if (isNumeric(input1)) {
@@ -493,7 +551,6 @@ public class MapMenu extends MenuBar {
                     }
                     elementoBase = (ElementoBase) inanimadoAux;
                     activateCommands(5);
-                    //ecossistemaManager.removeElemento(EcossistemaManager.getElementoByIdAndType(userInput1, ConversionResult));
                 } else if (input2.equalsIgnoreCase("FLORA")) {
                     Flora floraAux = (Flora) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FLORA);
                     if (floraAux == null) {
@@ -513,12 +570,9 @@ public class MapMenu extends MenuBar {
                 } else {
                     errorLabel.setText("Tipo de elemento deve ser um dos 3: INANIMADO, FLORA ou FAUNA");
                 }
-                // Convert to Enum (inputFieldType) ?
-                //ecossistemaManager.removeElemento(EcossistemaManager.getElementoByIdAndType(userInput1, ConversionResult));
 
                 System.out.println("ID eliminado: " + userInput1);
                 window.close();
-                //mudar aqui valores
             } else {
                 errorLabel.setText("Campo deve ser preenchido com NUMEROS INTEIROS");
             }
@@ -527,14 +581,17 @@ public class MapMenu extends MenuBar {
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelId, inputFieldId, instructionLabelType, inputFieldType, submitButton, errorLabel, closeButton);
+        buttonLayout.getChildren().addAll(submitButton, closeButton);
 
-        Scene scene = new Scene(layout, 400, 350);
-        window.setTitle("Configurações Gerais do Ecossistema");
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, instructionLabelType, inputFieldType, errorLabel, buttonLayout);
+
+        Scene scene = new Scene(layout, 300, 200);
+        window.setTitle("Eliminar Elemento");
         window.setScene(scene);
         window.initModality(Modality.APPLICATION_MODAL);
         window.showAndWait();
     }
+
 
     private void openCustomWindowConfigSimulacaoInicio() {
         Stage window = new Stage();
@@ -551,6 +608,9 @@ public class MapMenu extends MenuBar {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
             String input1 = inputFieldTimeUnit.getText();
@@ -564,25 +624,12 @@ public class MapMenu extends MenuBar {
                 System.out.println("Tamanho de janela (Altura): " + userInput2);
                 System.out.println("Tamanho de janela (Largura): " + userInput3);
                 window.close();
-                //TODO converter para multiplos de 20
                 int height = (userInput2 / 20) * 20;
                 int width = (userInput3 / 20) * 20;
                 System.out.println("Altura" + height);
                 System.out.println("Largura" + width);
                 System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
                 this.ecossistemaManager.changeTickSpeed(userInput1);
-                //mudar aqui valores
-//                ecossistemaManager.setMapWidth(width);
-//                ecossistemaManager.setMapHeight(height-25);
-//                Platform.runLater(() -> {
-//                    int height = (userInput2 / 20) * 20;
-//                    int width = (userInput3 / 20) * 20;
-//                    System.out.println("Altura: " + height);
-//                    System.out.println("Largura: " + width);
-//                    ecossistemaManager.setMapWidth(width);
-//                    ecossistemaManager.setMapHeight(height - 25);
-//                    window.close();
-//                });
             } else {
                 errorLabel.setText("Ambos os campos devem ser preenchidos com NUMEROS INTEIROS");
             }
@@ -591,14 +638,17 @@ public class MapMenu extends MenuBar {
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, instructionLabelHeight, inputFieldHeight, instructionLabelWidth, inputFieldWidth, submitButton, errorLabel, closeButton);
+        buttonLayout.getChildren().addAll(submitButton, closeButton);
 
-        Scene scene = new Scene(layout, 400, 350);
-        window.setTitle("Configurações Gerais do Ecossistema");
+        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, instructionLabelHeight, inputFieldHeight, instructionLabelWidth, inputFieldWidth, errorLabel, buttonLayout);
+
+        Scene scene = new Scene(layout, 300, 300);
+        window.setTitle("Configurações de Início da Simulação");
         window.setScene(scene);
         window.initModality(Modality.APPLICATION_MODAL);
         window.showAndWait();
     }
+
 
     private void openCustomWindowConfigSimulacao() {
         Stage window = new Stage();
@@ -611,29 +661,35 @@ public class MapMenu extends MenuBar {
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.setAlignment(Pos.CENTER);
+
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
             String input1 = inputFieldTimeUnit.getText();
             if (isNumeric(input1)) {
                 int userInput1 = Integer.parseInt(input1);
                 System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
-                //TODO Set na unidade de tempo no manager
+                ecossistemaManager.changeTickSpeed(userInput1);
             } else {
-                errorLabel.setText("Ambos os campos devem ser preenchidos com NUMEROS INTEIROS");
+                errorLabel.setText("O campo deve ser preenchido com um NÚMERO INTEIRO");
             }
         });
 
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, submitButton, errorLabel, closeButton);
+        buttonLayout.getChildren().addAll(submitButton, closeButton);
 
-        Scene scene = new Scene(layout, 400, 350);
-        window.setTitle("Configurações Gerais do Ecossistema");
+        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, errorLabel, buttonLayout);
+
+        Scene scene = new Scene(layout, 300, 150);
+        window.setTitle("Configurações de Simulação");
         window.setScene(scene);
         window.initModality(Modality.APPLICATION_MODAL);
         window.showAndWait();
     }
+
 
     private void activateCommands(int op) {
         switch (op) {
