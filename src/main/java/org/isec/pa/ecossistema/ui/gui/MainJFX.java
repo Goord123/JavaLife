@@ -12,15 +12,11 @@ public class MainJFX extends Application {
     private Ecossistema ecossistema;
 
 
-
     public void init() throws Exception {
         super.init();
         this.ecossistema = new Ecossistema();
         this.ecossistemaManager = new EcossistemaManager(ecossistema);
-//        widthWindow = 800;
-//        heightWindow = 605;
     }
-
 
 
     @Override
@@ -33,7 +29,7 @@ public class MainJFX extends Application {
         Scene scene = new Scene(ecossistemaUI, ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight() + 25);  //largura , altura
         stage.setScene(scene);
         stage.setResizable(false);
-        stage.setTitle("Drawing@PA");
+        stage.setTitle("JavaLife");
         stage.show();
     }
 }

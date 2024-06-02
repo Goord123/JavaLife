@@ -13,7 +13,6 @@ public non-sealed class Flora extends ElementoBase implements IElemento, Seriali
     private final ElementoEnum elementoEnum = ElementoEnum.FLORA;
     private int id;
     private double forca;
-    private int size;
     private int timesReproduced = 0;
     private Area area;
     private String imagem;

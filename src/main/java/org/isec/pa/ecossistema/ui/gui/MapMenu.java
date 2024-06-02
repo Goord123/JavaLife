@@ -139,32 +139,14 @@ public class MapMenu extends MenuBar {
     }
 
     private void registerHandlers() {
-//        this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_REDO, (evt) -> {
-//            if (this.mnRedo.isDisable()) {
-//                this.mnRedo.setDisable(false);
-//            } else {
-//                this.mnRedo.setDisable(true);
-//            }
-//        });
-//        this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_UNDO, (evt) -> {
-//
-//            if (this.mnUndo.isDisable()) {
-//                this.mnUndo.setDisable(false);
-//            } else {
-//                this.mnUndo.setDisable(true);
-//            }
-//        });
         this.mnAdicionarElementoInanimado.setOnAction((event) -> {
             activateCommands(1);
-            //this.ecossistemaManager.adicionarElementoInanimado(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         });
         this.mnAdicionarElementoFlora.setOnAction((event) -> {
             activateCommands(2);
-            //this.ecossistemaManager.adicionarElementoFlora(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         });
         this.mnAdicionarElementoFauna.setOnAction((event) -> {
             activateCommands(3);
-            //this.ecossistemaManager.adicionarElementoFauna(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         });
         this.mnConfigGeraisEcossistema.setOnAction((event) -> {
             openCustomWindowConfigGeraisEcossistema();
@@ -176,7 +158,6 @@ public class MapMenu extends MenuBar {
             //dá clean a tudo (Set com elementos e ecrã)
             ecossistemaManager.removeAllElementos();
             mapArea.update();
-            // Como limpar a area do mapa vizualmente?
             openCustomWindowConfigSimulacaoInicio();
             mapArea.spawnBorder();
             mapArea.spawnRandoms();
@@ -237,33 +218,6 @@ public class MapMenu extends MenuBar {
         this.mnExecutar.setOnAction((event) -> {
             ecossistemaManager.startGameEngine();
         });
-
-
-//        this.mnNew.setOnAction((event) -> {
-//            this.drawing.clearAll();
-//        });
-//        this.mnOpen.setOnAction((e) -> {
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("File open...");
-//            fileChooser.setInitialDirectory(new File("."));
-//            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter[]{new FileChooser.ExtensionFilter("Drawing (*.dat)", new String[]{"*.dat"}), new FileChooser.ExtensionFilter("All", new String[]{"*.*"})});
-//            File hFile = fileChooser.showOpenDialog(this.getScene().getWindow());
-//            if (hFile != null) {
-//                this.drawing.load(hFile);
-//            }
-//
-//        });
-//        this.mnSave.setOnAction((e) -> {
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("File save...");
-//            fileChooser.setInitialDirectory(new File("."));
-//            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter[]{new FileChooser.ExtensionFilter("Drawing (*.dat)", new String[]{"*.dat"}), new FileChooser.ExtensionFilter("All", new String[]{"*.*"})});
-//            File hFile = fileChooser.showSaveDialog(this.getScene().getWindow());
-//            if (hFile != null) {
-//                this.drawing.save(hFile);
-//            }
-//
-//        });
     }
 
     private void update() {
@@ -620,7 +574,7 @@ public class MapMenu extends MenuBar {
             String input1 = inputFieldTimeUnit.getText();
             if (isNumeric(input1)) {
                 int userInput1 = Integer.parseInt(input1);
-                if(userInput1 < 500){
+                if (userInput1 < 500) {
                     errorLabel.setText("A unidade de tempo tem que ser pelo menos 500 milisegundos");
                     return;
                 }
@@ -691,33 +645,15 @@ public class MapMenu extends MenuBar {
 
     private void activateCommands(int op) {
         switch (op) {
-            case 1:
-                ecossistemaManager.addElementCommand(ElementoEnum.INANIMADO);
-                break;
-            case 2:
-                ecossistemaManager.addElementCommand(ElementoEnum.FLORA);
-                break;
-            case 3:
-                ecossistemaManager.addElementCommand(ElementoEnum.FAUNA);
-                break;
-            case 4:
-                ecossistemaManager.editarElementoCommand(elementoBase.getElemento(), elementoBase.getId(), forcaEdit, velocidadeEdit);
-                break;
-            case 5:
-                ecossistemaManager.removeElementoCommand(elementoBase.getElemento(), elementoBase.getId());
-                break;
-            case 6:
-                ecossistemaManager.undo();
-                break;
-            case 7:
-                ecossistemaManager.redo();
-                break;
-            case 8:
-                //definições
-                break;
-            default:
-                System.out.println("Erro no switch do patern commands");
-                break;
+            case 1 -> ecossistemaManager.addElementCommand(ElementoEnum.INANIMADO);
+            case 2 -> ecossistemaManager.addElementCommand(ElementoEnum.FLORA);
+            case 3 -> ecossistemaManager.addElementCommand(ElementoEnum.FAUNA);
+            case 4 ->
+                    ecossistemaManager.editarElementoCommand(elementoBase.getElemento(), elementoBase.getId(), forcaEdit, velocidadeEdit);
+            case 5 -> ecossistemaManager.removeElementoCommand(elementoBase.getElemento(), elementoBase.getId());
+            case 6 -> ecossistemaManager.undo();
+            case 7 -> ecossistemaManager.redo();
+            default -> System.out.println("Erro");
         }
     }
 }

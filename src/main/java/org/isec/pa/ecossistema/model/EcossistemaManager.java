@@ -26,14 +26,9 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     public static final String PROP_ELEMENT = "_element_";
-    public static final String PROP_SWITCH_REDO = "_switchRedo_";
-    public static final String PROP_SWITCH_UNDO = "_switchUndo_";
-    private final int pixelMultiplier = 20;
-    private final double tamBorder = 20;
     private transient IGameEngine gameEngine;
     private Ecossistema ecossistema;
     private CommandManager commandManager;
-    private double velocidadeDefault;
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private int tickSpeed;
 
@@ -46,7 +41,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         this.gameEngine.registerClient(this);
         ecossistema.setMapHeight(580);
         ecossistema.setMapWidth(800);
-        this.velocidadeDefault = 1;
 
         // Add a listener to handle updates
         pcs.addPropertyChangeListener(evt -> {
@@ -98,58 +92,17 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     }
 
     public void refreshUI() {
-        // Logic to refresh the UI, typically by updating the JavaFX scene graph
         Platform.runLater(() -> {
             pcs.firePropertyChange(PROP_ELEMENT, null, null);
         });
-    }
-
-    public void switchUndo() {
-        Platform.runLater(() -> {
-            pcs.firePropertyChange(PROP_SWITCH_UNDO, null, null);
-        });
-    }
-
-    public void switchRedo() {
-        Platform.runLater(() -> {
-            pcs.firePropertyChange(PROP_SWITCH_REDO, null, null);
-        });
-    }
-
-    public double getTamBorder() {
-        return ecossistema.getTamBorder();
     }
 
     public int getMapHeight() {
         return ecossistema.getMapHeight();
     }
 
-    public void setMapHeight(int mapHeight) {
-        ecossistema.setMapHeight(mapHeight);
-    }
-
     public int getMapWidth() {
         return ecossistema.getMapWidth();
-    }
-
-    public void setMapWidth(int mapWidth) {
-        ecossistema.setMapWidth(mapWidth);
-    }
-
-    public int getPixelMultiplier() {
-        return ecossistema.getPixelMultiplier();
-    }
-
-    public void addElemento(IElemento elemento) {
-        ecossistema.addElemento(elemento);
-    }
-
-    public void removeElemento(IElemento elemento) {
-        ecossistema.getElementos().remove(elemento);
-    }
-
-    public double getForcaDefault() {
-        return ecossistema.getForcaDefault();
     }
 
     public void setForcaDefault(double newForcaDefault) {
@@ -172,10 +125,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         return ecossistema.getElementoByIdAndType(id, elemento);
     }
 
-    public Set<IElemento> getElementosByElemento(ElementoEnum elementoEnum) {
-        return ecossistema.getElementosByElemento(elementoEnum);
-    }
-
     public List<IElemento> getElementosByArea(Area area) {
         return ecossistema.getElementosByArea(area);
     }
@@ -184,16 +133,12 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         this.pcs.addPropertyChangeListener(property, listener);
     }
 
-    public void spawnBorder(double x, double y, double width, double height) {
-        ecossistema.spawnBorder(x, y, width, height);
+    public void spawnBorder(double width, double height) {
+        ecossistema.spawnBorder(width, height);
     }
 
     public void spawnRandoms(double x, double y, double width, double height) {
         ecossistema.spawnRandoms(x, y, width, height);
-    }
-
-    public boolean existsElement(double x1, double y1, double x2, double y2) {
-        return ecossistema.existsElement(x1, y1, x2, y2);
     }
 
     public Area convertToPixels(double mouseX, double mouseY) {
@@ -201,22 +146,11 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         int x1 = (int) (mouseX / 20) * 20;
         int y1 = (int) (mouseY / 20) * 20;
 
-        // Assuming x2 and y2 are the same as x1 and y1 for simplicity
         return new Area(x1, x1 + 20, y1, y1 + 20);
-    }
-
-    public void setForcaFlora(int id, double forca) {
-        ecossistema.setForcaFlora(id, forca);
-    }
-
-    public void setForcaEVelocidadeFauna(int id, double forca, int velocidade) {
-        ecossistema.setForcaEVelocidadeFauna(id, forca, velocidade);
     }
 
     public void addElementCommand(ElementoEnum elementoEnum) {
         if (commandManager.invokeCommand(new AddElementCommand(ecossistema, elementoEnum))) {
-            System.out.println("switched undo");
-            switchUndo();
             refreshUI();
         }
     }
@@ -224,8 +158,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
     public void editarElementoCommand(ElementoEnum elementoEnum, int id, double newForca, int newVelocidade) {
         if (commandManager.invokeCommand(new EditElementCommand(ecossistema, elementoEnum, id, newForca, newVelocidade))) {
-            System.out.println("switched undo");
-            switchUndo();
             refreshUI();
         }
 
@@ -233,8 +165,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
     public void removeElementoCommand(ElementoEnum elementoEnum, int id) {
         if (commandManager.invokeCommand(new RemoveElementCommand(ecossistema, elementoEnum, id))) {
-            System.out.println("switched undo");
-            switchUndo();
             refreshUI();
         }
     }
