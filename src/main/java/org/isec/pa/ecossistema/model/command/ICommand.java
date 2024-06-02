@@ -1,6 +1,9 @@
 package org.isec.pa.ecossistema.model.command;
 
-public interface ICommand {
+import java.io.Serializable;
+
+public interface ICommand extends Serializable {
     boolean execute();
+
     boolean undo();
 }

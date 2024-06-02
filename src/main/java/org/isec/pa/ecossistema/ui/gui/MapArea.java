@@ -9,15 +9,12 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.*;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,7 +35,6 @@ public class MapArea extends Canvas {
         this.update();
 
     }
-
 
 
     private void registerHandlers() {
@@ -158,7 +154,7 @@ public class MapArea extends Canvas {
         Label titleLabel = new Label("Informação do Elemento");
 
         // Create a label for the element
-        Label type = new Label("Type of Element: " + e.getElemento());
+        Label type = new Label("Tipo de Elemento: " + e.getElemento());
         Label elementLabel = new Label("ID: " + e.getId());
         Label area = new Label("Area: " + "  X1:" + e.getArea().x1() + "  Y1:" + e.getArea().y1() + "  X2:" + e.getArea().x2() + "  Y2:" + e.getArea().y2());
         layout.getChildren().addAll(type, elementLabel, area);
@@ -180,7 +176,7 @@ public class MapArea extends Canvas {
         Label titleLabel = new Label("Informação do Elemento");
 
         // Create a label for the element
-        Label type = new Label("Type of Element: " + flora.getElemento());
+        Label type = new Label("Tipo de Elemento: " + flora.getElemento());
         Label elementLabel = new Label("ID: " + flora.getId());
         Label hp = new Label("Força: " + flora.getForca());
         Label area = new Label("Area: " + "  X1:" + flora.getArea().x1() + "  Y1:" + flora.getArea().y1() + "  X2:" + flora.getArea().x2() + "  Y2:" + flora.getArea().y2());
@@ -204,7 +200,7 @@ public class MapArea extends Canvas {
         Label titleLabel = new Label("Informação do Elemento");
 
         // Create a label for the element
-        Label type = new Label("Type of Element: " + fauna.getElemento());
+        Label type = new Label("Tipo de Elemento: " + fauna.getElemento());
         Label elementLabel = new Label("ID: " + fauna.getId());
         Label forca = new Label("Forca: " + fauna.getForca());
         Label velocidade = new Label("Velocidade: " + fauna.getVelocity());
