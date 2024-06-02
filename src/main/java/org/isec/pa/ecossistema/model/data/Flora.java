@@ -111,8 +111,6 @@ public non-sealed class Flora extends ElementoBase implements IElemento, Seriali
         this.imagem = imagem;
     }
 
-    // METODOS
-
 
     public Area getAdjacentArea() {
         double x1 = this.area.x1();

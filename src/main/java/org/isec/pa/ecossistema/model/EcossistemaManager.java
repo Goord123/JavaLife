@@ -19,14 +19,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.isec.pa.ecossistema.utils.UtilFunctions.getRandomNumber;
-
 public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     public static final String PROP_ELEMENT = "_element_";
-    public static final String PROP_SWITCH_REDO = "_switchRedo_";
-    public static final String PROP_SWITCH_UNDO = "_switchUndo_";
     private final int pixelMultiplier = 20;
     private final double tamBorder = 20;
     private transient IGameEngine gameEngine;
@@ -46,8 +42,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         ecossistema.setMapHeight(580);
         ecossistema.setMapWidth(800);
         this.velocidadeDefault = 1;
-
-        // Add a listener to handle updates
         pcs.addPropertyChangeListener(evt -> {
             if (PROP_ELEMENT.equals(evt.getPropertyName())) {
                 refreshUI();
@@ -91,10 +85,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
         Platform.runLater(() -> {
             synchronized (elementos) {
-                for (IElemento elem : elementsToRemove) {
-                    System.out.println("Actually removing element with ID: " + elem.getId());
-                }
-
                 ecossistema.removeElementos(elementsToRemove);
                 ecossistema.addElementos(elementsToAdd);
 
@@ -104,21 +94,8 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     }
 
     public void refreshUI() {
-        // Logic to refresh the UI, typically by updating the JavaFX scene graph
         Platform.runLater(() -> {
             pcs.firePropertyChange(PROP_ELEMENT, null, null);
-        });
-    }
-
-    public void switchUndo() {
-        Platform.runLater(() -> {
-            pcs.firePropertyChange(PROP_SWITCH_UNDO, null, null);
-        });
-    }
-
-    public void switchRedo() {
-        Platform.runLater(() -> {
-            pcs.firePropertyChange(PROP_SWITCH_REDO, null, null);
         });
     }
 
@@ -190,11 +167,6 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         this.pcs.addPropertyChangeListener(property, listener);
     }
 
-//    public void createFigure(double x, double y) {
-//        ecossistema.createElement(x,y);
-//        pcs.firePropertyChange(PROP_ELEMENT,null,null);
-//    }
-
     public void spawnBorder(double x, double y, double width, double height) {
         ecossistema.spawnBorder(x, y, width, height);
     }
@@ -208,11 +180,8 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     }
 
     public Area convertToPixels(double mouseX, double mouseY) {
-        // Convert coordinates to multiples of 20
         int x1 = (int) (mouseX / 20) * 20;
         int y1 = (int) (mouseY / 20) * 20;
-
-        // Assuming x2 and y2 are the same as x1 and y1 for simplicity
         return new Area(x1, x1 + 20, y1, y1 + 20);
     }
 
@@ -220,23 +189,21 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         ecossistema.setForcaFlora(id, forca);
     }
 
-    public void setForcaEVelocidadeFauna(int id, double forca, int velocidade) {
-        ecossistema.setForcaEVelocidadeFauna(id, forca, velocidade);
+    public void setForcaEVelocidadeFauna(int id, double forca) {
+        ecossistema.setForcaFauna(id, forca);
     }
 
     public void addElementCommand(ElementoEnum elementoEnum) {
         if (commandManager.invokeCommand(new AddElementCommand(ecossistema, elementoEnum))) {
-            System.out.println("switched undo");
-            switchUndo();
+            //System.out.println("switched undo");
             refreshUI();
         }
     }
 
 
-    public void editarElementoCommand(ElementoEnum elementoEnum, int id, double newForca, int newVelocidade) {
-        if (commandManager.invokeCommand(new EditElementCommand(ecossistema, elementoEnum, id, newForca, newVelocidade))) {
-            System.out.println("switched undo");
-            switchUndo();
+    public void editarElementoCommand(ElementoEnum elementoEnum, int id, double newForca) {
+        if (commandManager.invokeCommand(new EditElementCommand(ecossistema, elementoEnum, id, newForca))) {
+            //System.out.println("switched undo");
             refreshUI();
         }
 
@@ -244,8 +211,7 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
 
     public void removeElementoCommand(ElementoEnum elementoEnum, int id) {
         if (commandManager.invokeCommand(new RemoveElementCommand(ecossistema, elementoEnum, id))) {
-            System.out.println("switched undo");
-            switchUndo();
+            //System.out.println("switched undo");
             refreshUI();
         }
     }
@@ -266,7 +232,7 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
     public void saveToBinFile(File file) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
             oos.writeObject(ecossistema);
-            oos.writeObject(this); // Save the manager state if needed
+            oos.writeObject(this);
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -277,14 +243,10 @@ public class EcossistemaManager implements IGameEngineEvolve, Serializable {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
             ecossistema = (Ecossistema) ois.readObject();
             EcossistemaManager manager = (EcossistemaManager) ois.readObject();
-            //this.commandManager = manager.commandManager; acho que isto n é preciso
-
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
-
-    // para serializar
     @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();

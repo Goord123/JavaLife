@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class MapMenu extends MenuBar {
-    public static final String PROP_SWITCH_REDO = "_switchRedo_";
-    public static final String PROP_SWITCH_UNDO = "_switchUndo_";
     EcossistemaManager ecossistemaManager;
     MapArea mapArea;
     Menu mnFicheiro;
@@ -51,7 +49,6 @@ public class MapMenu extends MenuBar {
     private ElementoBase elementoBase;
 
     private double forcaEdit;
-    private int velocidadeEdit;
 
     public MapMenu(EcossistemaManager ecossistemaManager, MapArea mapArea) {
         this.ecossistemaManager = ecossistemaManager;
@@ -59,8 +56,6 @@ public class MapMenu extends MenuBar {
         this.createViews();
         this.registerHandlers();
         this.update();
-//        this.mnUndo.setDisable(true);
-//        this.mnRedo.setDisable(true);
     }
 
     private void openSimulation() {
@@ -87,7 +82,6 @@ public class MapMenu extends MenuBar {
         if (file != null) {
             try {
                 ecossistemaManager.saveToBinFile(file);
-                //ecossistemaManager.resetSaveChanges();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -125,7 +119,6 @@ public class MapMenu extends MenuBar {
         this.mnInjetarForca = new MenuItem("_Injetar Forca");
 
 
-        //this.mnOpen.setAccelerator(new KeyCodeCombination(KeyCode.O, new KeyCombination.Modifier[]{KeyCodeCombination.ALT_DOWN}));
         this.mnFicheiro.getItems().addAll(new MenuItem[]{this.mnCriar, this.mnAbrir, this.mnGravar, new SeparatorMenuItem(), this.mnExportar, this.mnImportar, this.mnSair});
         this.mnEcossistema.getItems().addAll(new MenuItem[]{this.mnConfigGeraisEcossistema, this.mnAdicionarElementoInanimado, this.mnAdicionarElementoFlora, this.mnAdicionarElementoFauna, this.mnEditarElemento, this.mnEliminarElemento, this.mnUndo, this.mnRedo});
         this.mnSimulacao.getItems().addAll(new MenuItem[]{this.mnConfigSimulacao, this.mnExecutar, this.mnParar, this.mnPausar, this.mnContinuar, this.mnGravarSnapshot, this.mnRestaurarSnapshot});
@@ -134,32 +127,14 @@ public class MapMenu extends MenuBar {
     }
 
     private void registerHandlers() {
-//        this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_REDO, (evt) -> {
-//            if (this.mnRedo.isDisable()) {
-//                this.mnRedo.setDisable(false);
-//            } else {
-//                this.mnRedo.setDisable(true);
-//            }
-//        });
-//        this.ecossistemaManager.addPropertyChangeListener(PROP_SWITCH_UNDO, (evt) -> {
-//
-//            if (this.mnUndo.isDisable()) {
-//                this.mnUndo.setDisable(false);
-//            } else {
-//                this.mnUndo.setDisable(true);
-//            }
-//        });
         this.mnAdicionarElementoInanimado.setOnAction((event) -> {
             activateCommands(1);
-            //this.ecossistemaManager.adicionarElementoInanimado(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         });
         this.mnAdicionarElementoFlora.setOnAction((event) -> {
             activateCommands(2);
-            //this.ecossistemaManager.adicionarElementoFlora(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         });
         this.mnAdicionarElementoFauna.setOnAction((event) -> {
             activateCommands(3);
-            //this.ecossistemaManager.adicionarElementoFauna(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         });
         this.mnConfigGeraisEcossistema.setOnAction((event) -> {
             openCustomWindowConfigGeraisEcossistema();
@@ -168,10 +143,8 @@ public class MapMenu extends MenuBar {
             openCustomWindowConfigSimulacao();
         });
         this.mnCriar.setOnAction((event) -> {
-            //dá clean a tudo (Set com elementos e ecrã)
             ecossistemaManager.removeAllElementos();
             mapArea.update();
-            // Como limpar a area do mapa vizualmente?
             openCustomWindowConfigSimulacaoInicio();
             mapArea.spawnBorder();
             mapArea.spawnRandoms();
@@ -232,33 +205,6 @@ public class MapMenu extends MenuBar {
         this.mnExecutar.setOnAction((event) -> {
             ecossistemaManager.startGameEngine();
         });
-
-
-//        this.mnNew.setOnAction((event) -> {
-//            this.drawing.clearAll();
-//        });
-//        this.mnOpen.setOnAction((e) -> {
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("File open...");
-//            fileChooser.setInitialDirectory(new File("."));
-//            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter[]{new FileChooser.ExtensionFilter("Drawing (*.dat)", new String[]{"*.dat"}), new FileChooser.ExtensionFilter("All", new String[]{"*.*"})});
-//            File hFile = fileChooser.showOpenDialog(this.getScene().getWindow());
-//            if (hFile != null) {
-//                this.drawing.load(hFile);
-//            }
-//
-//        });
-//        this.mnSave.setOnAction((e) -> {
-//            FileChooser fileChooser = new FileChooser();
-//            fileChooser.setTitle("File save...");
-//            fileChooser.setInitialDirectory(new File("."));
-//            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter[]{new FileChooser.ExtensionFilter("Drawing (*.dat)", new String[]{"*.dat"}), new FileChooser.ExtensionFilter("All", new String[]{"*.*"})});
-//            File hFile = fileChooser.showSaveDialog(this.getScene().getWindow());
-//            if (hFile != null) {
-//                this.drawing.save(hFile);
-//            }
-//
-//        });
     }
 
     private void update() {
@@ -281,7 +227,6 @@ public class MapMenu extends MenuBar {
             String input = inputFieldId.getText();
             if (isNumeric(input)) {
                 int id = Integer.parseInt(input);
-                // Assume isValidId is a method that checks if the ID is valid in your system
                 Flora floraAux = (Flora) ecossistemaManager.getElementoByIdAndType(id, ElementoEnum.FLORA);
                 if (floraAux == null) {
                     errorLabel.setText("O ID inserido não existe");
@@ -366,7 +311,6 @@ public class MapMenu extends MenuBar {
             String input1 = inputFieldForca.getText();
             if (isNumeric(input1)) {
                 float userInput1 = (float) Integer.parseInt(input1);
-                //System.out.println("Força Inicial (Fauna e Flora): " + userInput1);
                 ecossistemaManager.setForcaDefault(userInput1);
                 window.close();
             } else {
@@ -408,8 +352,6 @@ public class MapMenu extends MenuBar {
         TextField inputFieldTipo = new TextField();
         Label instructionLabelForca = new Label("Força: ");
         TextField inputFieldForca = new TextField();
-        Label instructionLabelVel = new Label("Velocidade: ");
-        TextField inputFieldVel = new TextField();
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
@@ -418,27 +360,21 @@ public class MapMenu extends MenuBar {
             String input1 = inputFieldId.getText();
             String input2 = inputFieldTipo.getText();
             String input3 = inputFieldForca.getText();
-            String input4 = inputFieldVel.getText();
-            if (isNumeric(input1) && isNumeric(input3) && isNumeric(input4)) {
+            if (isNumeric(input1) && isNumeric(input3)) {
                 int userInput1 = Integer.parseInt(input1);
                 double userInput3 = (double) Integer.parseInt(input3);
-                int userInput4 = Integer.parseInt(input4);
                 System.out.println("ID: " + userInput1);
                 System.out.println("Força: " + userInput3);
-                System.out.println("Velocidade: " + userInput4);
                 if (input2.equalsIgnoreCase("FLORA")) {
                     Flora floraAux = (Flora) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FLORA);
                     elementoBase = (ElementoBase) floraAux;
                     forcaEdit = userInput3;
                     activateCommands(4);
-                    //ecossistemaManager.setForcaFlora(userInput1, userInput3);
                 } else if (input2.equalsIgnoreCase("FAUNA")) {
                     Fauna faunaAux = (Fauna) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FAUNA);
                     elementoBase = (ElementoBase) faunaAux;
                     forcaEdit = userInput3;
-                    velocidadeEdit = userInput4;
                     activateCommands(4);
-                    //ecossistemaManager.setForcaEVelocidadeFauna(userInput1, userInput3, userInput4);
                 } else {
                     errorLabel.setText("Tipo de elemento deve ser um dos 2: FLORA ou FAUNA");
                 }
@@ -452,7 +388,7 @@ public class MapMenu extends MenuBar {
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelId, inputFieldId, instructionLabelTipo, inputFieldTipo, instructionLabelForca, inputFieldForca, instructionLabelVel, inputFieldVel, submitButton, errorLabel, closeButton);
+        layout.getChildren().addAll(instructionLabelId, inputFieldId, instructionLabelTipo, inputFieldTipo, instructionLabelForca, inputFieldForca, submitButton, errorLabel, closeButton);
 
         Scene scene = new Scene(layout, 400, 400);
         window.setTitle("Configurações Gerais do Ecossistema");
@@ -493,7 +429,6 @@ public class MapMenu extends MenuBar {
                     }
                     elementoBase = (ElementoBase) inanimadoAux;
                     activateCommands(5);
-                    //ecossistemaManager.removeElemento(EcossistemaManager.getElementoByIdAndType(userInput1, ConversionResult));
                 } else if (input2.equalsIgnoreCase("FLORA")) {
                     Flora floraAux = (Flora) ecossistemaManager.getElementoByIdAndType(userInput1, ElementoEnum.FLORA);
                     if (floraAux == null) {
@@ -513,12 +448,8 @@ public class MapMenu extends MenuBar {
                 } else {
                     errorLabel.setText("Tipo de elemento deve ser um dos 3: INANIMADO, FLORA ou FAUNA");
                 }
-                // Convert to Enum (inputFieldType) ?
-                //ecossistemaManager.removeElemento(EcossistemaManager.getElementoByIdAndType(userInput1, ConversionResult));
-
                 System.out.println("ID eliminado: " + userInput1);
                 window.close();
-                //mudar aqui valores
             } else {
                 errorLabel.setText("Campo deve ser preenchido com NUMEROS INTEIROS");
             }
@@ -542,47 +473,24 @@ public class MapMenu extends MenuBar {
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
 
-        Label instructionLabelTimeUnit = new Label("Unidade de tempo de cada movimentação: ");
+        Label instructionLabelTimeUnit = new Label("Unidade de tempo de cada movimentação (milisegundos): ");
         TextField inputFieldTimeUnit = new TextField();
-        Label instructionLabelHeight = new Label("Tamanho de janela (Altura): ");
-        TextField inputFieldHeight = new TextField();
-        Label instructionLabelWidth = new Label("Tamanho de janela (Largura): ");
-        TextField inputFieldWidth = new TextField();
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");
 
         Button submitButton = new Button("Confirmar");
         submitButton.setOnAction(event -> {
             String input1 = inputFieldTimeUnit.getText();
-            String input2 = inputFieldHeight.getText();
-            String input3 = inputFieldWidth.getText();
-            if (isNumeric(input1) && isNumeric(input2) && isNumeric(input3)) {
+            if (isNumeric(input1)) {
                 int userInput1 = Integer.parseInt(input1);
-                int userInput2 = Integer.parseInt(input2);
-                int userInput3 = Integer.parseInt(input3);
+                if(userInput1 < 500){
+                    errorLabel.setText("A unidade de tempo tem que ser pelo menos 500 milisegundos");
+                    return;
+                }
                 System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
-                System.out.println("Tamanho de janela (Altura): " + userInput2);
-                System.out.println("Tamanho de janela (Largura): " + userInput3);
                 window.close();
-                //TODO converter para multiplos de 20
-                int height = (userInput2 / 20) * 20;
-                int width = (userInput3 / 20) * 20;
-                System.out.println("Altura" + height);
-                System.out.println("Largura" + width);
                 System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
                 this.ecossistemaManager.changeTickSpeed(userInput1);
-                //mudar aqui valores
-//                ecossistemaManager.setMapWidth(width);
-//                ecossistemaManager.setMapHeight(height-25);
-//                Platform.runLater(() -> {
-//                    int height = (userInput2 / 20) * 20;
-//                    int width = (userInput3 / 20) * 20;
-//                    System.out.println("Altura: " + height);
-//                    System.out.println("Largura: " + width);
-//                    ecossistemaManager.setMapWidth(width);
-//                    ecossistemaManager.setMapHeight(height - 25);
-//                    window.close();
-//                });
             } else {
                 errorLabel.setText("Ambos os campos devem ser preenchidos com NUMEROS INTEIROS");
             }
@@ -591,7 +499,7 @@ public class MapMenu extends MenuBar {
         Button closeButton = new Button("Cancelar");
         closeButton.setOnAction(event -> window.close());
 
-        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, instructionLabelHeight, inputFieldHeight, instructionLabelWidth, inputFieldWidth, submitButton, errorLabel, closeButton);
+        layout.getChildren().addAll(instructionLabelTimeUnit, inputFieldTimeUnit, submitButton, errorLabel, closeButton);
 
         Scene scene = new Scene(layout, 400, 350);
         window.setTitle("Configurações Gerais do Ecossistema");
@@ -617,7 +525,6 @@ public class MapMenu extends MenuBar {
             if (isNumeric(input1)) {
                 int userInput1 = Integer.parseInt(input1);
                 System.out.println("Unidade de tempo de cada movimentação: " + userInput1);
-                //TODO Set na unidade de tempo no manager
             } else {
                 errorLabel.setText("Ambos os campos devem ser preenchidos com NUMEROS INTEIROS");
             }
@@ -647,7 +554,7 @@ public class MapMenu extends MenuBar {
                 ecossistemaManager.addElementCommand(ElementoEnum.FAUNA);
                 break;
             case 4:
-                ecossistemaManager.editarElementoCommand(elementoBase.getElemento(), elementoBase.getId(), forcaEdit, velocidadeEdit);
+                ecossistemaManager.editarElementoCommand(elementoBase.getElemento(), elementoBase.getId(), forcaEdit);
                 break;
             case 5:
                 ecossistemaManager.removeElementoCommand(elementoBase.getElemento(), elementoBase.getId());
@@ -657,9 +564,6 @@ public class MapMenu extends MenuBar {
                 break;
             case 7:
                 ecossistemaManager.redo();
-                break;
-            case 8:
-                //definições
                 break;
             default:
                 System.out.println("Erro no switch do patern commands");

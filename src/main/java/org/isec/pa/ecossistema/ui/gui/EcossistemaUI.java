@@ -1,6 +1,5 @@
 package org.isec.pa.ecossistema.ui.gui;
 
-import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -14,27 +13,13 @@ public class EcossistemaUI extends BorderPane {
     public EcossistemaUI(EcossistemaManager ecossistema) {
         this.ecossistema = ecossistema;
         this.createViews();
-        this.registerHandlers();
-        this.update();
     }
 
     private void createViews() {
         this.mapArea = new MapArea(this.ecossistema);
-        this.setTop(new VBox(new Node[]{new MapMenu(this.ecossistema, mapArea)}));
+        this.setTop(new VBox(new MapMenu(this.ecossistema, mapArea)));
 
-        this.mapAreaPane = new Pane(new Node[]{this.mapArea});
+        this.mapAreaPane = new Pane(this.mapArea);
         this.setCenter(this.mapAreaPane);
-    }
-
-    private void registerHandlers() {
-//        this.mapAreaPane.widthProperty().addListener((observable) -> {
-//            this.mapArea.updateSize(this.mapAreaPane.getWidth(), this.mapAreaPane.getHeight());
-//        });
-//        this.mapAreaPane.heightProperty().addListener((observable) -> {
-//            this.mapArea.updateSize(this.mapAreaPane.getWidth(), this.mapAreaPane.getHeight());
-//        });
-    }
-
-    private void update() {
     }
 }

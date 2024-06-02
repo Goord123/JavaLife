@@ -13,20 +13,15 @@ public class EditElementCommand extends AbstractCommand{
 
     private double forca;
     private double forcaAntiga;
-    private int velocidade;
-    private int velocidadeAntiga;
-    public EditElementCommand(Ecossistema ecossistema, ElementoEnum elementoEnum, int id, double newForca, int newVelocidade){
+    public EditElementCommand(Ecossistema ecossistema, ElementoEnum elementoEnum, int id, double newForca){
         super(ecossistema);
         this.tipoElemento = elementoEnum;
         this.id = id;
         this.forca = newForca;
-        this.velocidade = newVelocidade;
     }
 
     @Override
     public boolean execute(){
-
-        //verificar se o elemento existe
         elemento = ecossistema.getElementoByIdAndType(id, tipoElemento);
         if(elemento == null)
             return false;
@@ -38,8 +33,7 @@ public class EditElementCommand extends AbstractCommand{
         } else if (tipoElemento.equals(ElementoEnum.FAUNA)){
             Fauna faunaAux = (Fauna) elemento;
             forcaAntiga = faunaAux.getForca();
-            velocidadeAntiga = faunaAux.getVelocity();
-            ecossistema.setForcaEVelocidadeFauna(id, forca, velocidade);
+            ecossistema.setForcaFauna(id, forca);
         } else {
             return false;
         }
@@ -47,6 +41,6 @@ public class EditElementCommand extends AbstractCommand{
     }
 
     public boolean undo(){
-        return ecossistema.editarElementoCommandUndo(id, tipoElemento, forcaAntiga, velocidadeAntiga);
+        return ecossistema.editarElementoCommandUndo(id, tipoElemento, forcaAntiga);
     }
 }

@@ -9,15 +9,12 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.FileChooser;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.isec.pa.ecossistema.model.EcossistemaManager;
 import org.isec.pa.ecossistema.model.data.*;
 import org.isec.pa.ecossistema.utils.Area;
 import org.isec.pa.ecossistema.utils.ElementoEnum;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,9 +23,6 @@ public class MapArea extends Canvas {
 
     EcossistemaManager ecossistemaManager;
 
-    //    private Stage infoWindow;
-//    private VBox infoLayout;
-//    private Scene infoScene;
     public MapArea(EcossistemaManager ecossistemaManager) {
         super(ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight());
         this.ecossistemaManager = ecossistemaManager;
@@ -36,15 +30,12 @@ public class MapArea extends Canvas {
         this.spawnBorder();
         this.spawnRandoms();
         this.update();
-
     }
 
 
 
     private void registerHandlers() {
-        this.ecossistemaManager.addPropertyChangeListener(PROP_ELEMENT, (evt) -> {
-            this.update();
-        });
+        this.ecossistemaManager.addPropertyChangeListener(PROP_ELEMENT, (evt) -> this.update());
         this.setOnMousePressed((mouseEvent) -> {
             double mouseX = mouseEvent.getX();
             double mouseY = mouseEvent.getY();
@@ -52,10 +43,6 @@ public class MapArea extends Canvas {
             List<IElemento> listElements = this.ecossistemaManager.getElementosByArea(areaMouse);
             if (!listElements.isEmpty()) {
                 for (IElemento e : listElements) {
-//                    if(e.getElemento() == ElementoEnum.FAUNA || e.getElemento() == ElementoEnum.FLORA){
-//                        IElementoComForca aux = (IElementoComForca) e;
-//                        createWindowInfoComForca(aux, e);
-//                    }
                     if (e.getElemento() == ElementoEnum.FAUNA) {
                         Fauna aux = (Fauna) e;
                         createWindowInfoComFauna(aux);
@@ -69,13 +56,6 @@ public class MapArea extends Canvas {
 
             }
         });
-        //widthProperty().addListener() -> update();
-//        this.setOnMouseDragged((mouseEvent) -> {
-//            this.drawing.updateCurrentFigure(mouseEvent.getX(), mouseEvent.getY());
-//        });
-//        this.setOnMouseReleased((mouseEvent) -> {
-//            this.drawing.finishCurrentFigure(mouseEvent.getX(), mouseEvent.getY());
-//        });
     }
 
     public void update() {
@@ -88,6 +68,10 @@ public class MapArea extends Canvas {
         this.ecossistemaManager.getElementos().forEach((element) -> {
             if (element instanceof Fauna)
                 this.drawFigure(gc, (ElementoBase) element);
+        });
+        this.ecossistemaManager.getElementos().forEach((element) -> {
+            if (element instanceof Fauna || element instanceof Flora)
+                this.drawForca(gc, (ElementoBase) element);
         });
     }
 
@@ -107,9 +91,6 @@ public class MapArea extends Canvas {
 
     private void drawFigure(GraphicsContext gc, ElementoBase element) {
         if (element != null) {
-            //Color color = Color.color(element.getR(), element.getG(), element.getB());
-            //Color color = Color.color(Cores.RED.getCode(), 0, 0);
-            //gc.setFill(color);
             switch (element.getElemento()) {
                 case INANIMADO:
                     gc.setStroke(Color.GREY.darker());
@@ -141,23 +122,25 @@ public class MapArea extends Canvas {
         }
     }
 
-    public void updateSize(double newWidth, double newHeight) {
-        this.setWidth(newWidth);
-        this.setHeight(newHeight);
-        this.update();
+    private void drawForca(GraphicsContext gc, ElementoBase element) {
+        if (element != null) {
+            gc.setFill(Color.BLACK);  // Set the text color to black
+            gc.setFont(new Font(10));  // Set the font size
+            if(element.getElemento().equals(ElementoEnum.FLORA)){
+                Flora floraAux = (Flora) element;
+                gc.fillText(String.valueOf(floraAux.getForca()), floraAux.getArea().x1(), floraAux.getArea().y1());  // Draw the number
+            } else {
+                Fauna faunaAux = (Fauna) element;
+                gc.fillText(String.valueOf(faunaAux.getForca()), faunaAux.getArea().x1(), faunaAux.getArea().y1());  // Draw the number
+            }
+        }
     }
 
     private void createWindowInfoInanimado(IElemento e) {
-
         Stage window = new Stage();
-
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
         layout.setAlignment(Pos.CENTER);
-
-        Label titleLabel = new Label("Informação do Elemento");
-
-        // Create a label for the element
         Label type = new Label("Type of Element: " + e.getElemento());
         Label elementLabel = new Label("ID: " + e.getId());
         Label area = new Label("Area: " + "  X1:" + e.getArea().x1() + "  Y1:" + e.getArea().y1() + "  X2:" + e.getArea().x2() + "  Y2:" + e.getArea().y2());
@@ -177,14 +160,10 @@ public class MapArea extends Canvas {
         layout.setPadding(new Insets(15));
         layout.setAlignment(Pos.CENTER);
 
-        Label titleLabel = new Label("Informação do Elemento");
-
-        // Create a label for the element
         Label type = new Label("Type of Element: " + flora.getElemento());
         Label elementLabel = new Label("ID: " + flora.getId());
         Label hp = new Label("Força: " + flora.getForca());
         Label area = new Label("Area: " + "  X1:" + flora.getArea().x1() + "  Y1:" + flora.getArea().y1() + "  X2:" + flora.getArea().x2() + "  Y2:" + flora.getArea().y2());
-        //Label secondsToReproduce = new Label("Seconds to Reproduce: " + e.getSecondsToReproduce());
         layout.getChildren().addAll(type, hp, elementLabel, area);
 
         Scene scene = new Scene(layout, 300, 200);
@@ -201,15 +180,11 @@ public class MapArea extends Canvas {
         layout.setPadding(new Insets(15));
         layout.setAlignment(Pos.CENTER);
 
-        Label titleLabel = new Label("Informação do Elemento");
-
-        // Create a label for the element
         Label type = new Label("Type of Element: " + fauna.getElemento());
         Label elementLabel = new Label("ID: " + fauna.getId());
         Label forca = new Label("Forca: " + fauna.getForca());
         Label velocidade = new Label("Velocidade: " + fauna.getVelocity());
         Label area = new Label("Area: " + "  X1:" + fauna.getArea().x1() + "  Y1:" + fauna.getArea().y1() + "  X2:" + fauna.getArea().x2() + "  Y2:" + fauna.getArea().y2());
-        //Label secondsToReproduce = new Label("Seconds to Reproduce: " + e.getSecondsToReproduce());
         layout.getChildren().addAll(type, elementLabel, forca, velocidade, area);
 
 

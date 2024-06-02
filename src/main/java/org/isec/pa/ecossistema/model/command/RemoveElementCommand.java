@@ -16,7 +16,6 @@ public class RemoveElementCommand extends AbstractCommand{
 
     @Override
     public boolean execute(){
-        //verificar se o elemento existe
         elemento = ecossistema.getElementoByIdAndType(id, tipoElemento);
         if(elemento == null)
             return false;

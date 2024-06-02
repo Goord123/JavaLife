@@ -18,8 +18,6 @@ public non-sealed class Inanimado extends ElementoBase implements IElemento {
         this.id = ++lastId;
         this.isBarreira = false;
     }
-
-    // GETTERS E SETTERS
     @Override
     public int getId() {
         return id;

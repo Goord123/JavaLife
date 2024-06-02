@@ -8,12 +8,12 @@ import java.util.Deque;
 public class CommandManager implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private Deque<ICommand> history; //private Stack<ICommand> history;
-    private Deque<ICommand> redoCmds; //private Stack<ICommand> redoCmds;
+    private Deque<ICommand> history;
+    private Deque<ICommand> redoCmds;
 
     public CommandManager() {
-        history = new ArrayDeque<>(); //history = new Stack<>();
-        redoCmds = new ArrayDeque<>(); //redoCmds = new Stack<>();
+        history = new ArrayDeque<>();
+        redoCmds = new ArrayDeque<>();
     }
 
     public boolean invokeCommand(ICommand cmd) {

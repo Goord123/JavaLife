@@ -7,8 +7,6 @@ import java.io.Serializable;
 
 public sealed interface IElemento extends Serializable permits ElementoBase, Flora, Fauna, Inanimado {
 
-    // METODOS COMUNS A TODOS OS ELEMENTOS DO ECOSSISTEMA
-
     ElementoEnum getElemento();
 
     int getId();

@@ -12,7 +12,6 @@ public class GameSaver implements Serializable {
 
     public void saveToCSV(Set<IElemento> elementos, String filePath) throws IOException {
         try (FileWriter writer = new FileWriter(filePath)) {
-            // Write CSV header for elements
             writer.append("Type,Id,X1,Y1,X2,Y2,Forca,TimesReproduced,SegundosParaReproduzir\n");
 
             for (IElemento elemento : elementos) {

@@ -40,12 +40,10 @@ public abstract class FaunaStateAdapter implements IFaunaState, Serializable {
     public void evolve() {
     }
 
-    // para a serializacao
     public void setContext(FaunaContext context) {
         this.context = context;
     }
 
-    // para a serializacao
     public void setFauna(Fauna fauna) {
         this.fauna = fauna;
     }

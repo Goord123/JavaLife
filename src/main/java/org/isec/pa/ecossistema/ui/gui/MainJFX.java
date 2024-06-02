@@ -9,16 +9,12 @@ import org.isec.pa.ecossistema.model.data.Ecossistema;
 public class MainJFX extends Application {
 
     private EcossistemaManager ecossistemaManager;
-    private Ecossistema ecossistema;
-
 
 
     public void init() throws Exception {
         super.init();
-        this.ecossistema = new Ecossistema();
+        Ecossistema ecossistema = new Ecossistema();
         this.ecossistemaManager = new EcossistemaManager(ecossistema);
-//        widthWindow = 800;
-//        heightWindow = 605;
     }
 
 
@@ -30,10 +26,10 @@ public class MainJFX extends Application {
 
     private void createOneStage(Stage stage) {
         EcossistemaUI ecossistemaUI = new EcossistemaUI(this.ecossistemaManager);
-        Scene scene = new Scene(ecossistemaUI, ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight() + 25);  //largura , altura
+        Scene scene = new Scene(ecossistemaUI, ecossistemaManager.getMapWidth(), ecossistemaManager.getMapHeight() + 25);
         stage.setScene(scene);
         stage.setResizable(false);
-        stage.setTitle("Drawing@PA");
+        stage.setTitle("JavaLife@PA");
         stage.show();
     }
 }

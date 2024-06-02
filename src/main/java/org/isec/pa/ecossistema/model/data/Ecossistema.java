@@ -105,17 +105,7 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         return tamBorder;
     }
 
-    //    public Set<IElemento> getElementosByElemento(ElementoEnum elementoEnum) {
-//        Set<IElemento> elementosByElemento = new HashSet<>();
-//        for (IElemento e : ecossistema.getElementos()) {
-//            if (e.getElemento() == elementoEnum) {
-//                elementosByElemento.add(e);
-//            }
-//        }
-//        return elementosByElemento;
-//    }
     public List<IElemento> getElementosByArea(Area area) {
-        //TODO falta comparar com ele próprio
         List<IElemento> elementosByArea = new ArrayList<>();
         synchronized (elementos) {
             for (IElemento e : elementos) {
@@ -143,8 +133,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     public boolean existsElement(double x1, double y1, double x2, double y2) {
         Area area = new Area(x1, x2, y1, y2);
         return !getElementosByArea(area).isEmpty();
-
-        //return ecossistema.existsElement(x1, y1, x2, y2);
     }
 
     public boolean mapHasSpace() {
@@ -198,7 +186,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     }
 
     public void spawnBorder(double x, double y, double width, double height) {
-        // Draw top border
         for (double i = 0; i < width; i = i + tamBorder) {
             Inanimado inanimadoTemp = new Inanimado();
             inanimadoTemp.setBarreira(true);
@@ -206,8 +193,6 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
             addElemento(inanimadoTemp);
 
         }
-
-        // Draw bottom border
         for (double i = 0; i < width; i = i + tamBorder) {
             Inanimado inanimadoTemp = new Inanimado();
             inanimadoTemp.setBarreira(true);
@@ -215,16 +200,12 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
             addElemento(inanimadoTemp);
 
         }
-
-        // Draw left border
         for (double i = 0; i < height; i = i + tamBorder) {
             Inanimado inanimadoTemp = new Inanimado();
             inanimadoTemp.setBarreira(true);
             inanimadoTemp.setArea(new Area(0, tamBorder, i, i + tamBorder));
             addElemento(inanimadoTemp);
         }
-
-        // Draw right border
         for (double i = 0; i < height; i = i + tamBorder) {
             Inanimado inanimadoTemp = new Inanimado();
             inanimadoTemp.setBarreira(true);
@@ -272,25 +253,24 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
     }
 
     public void setForcaFlora(int id, double forca) {
-        System.out.println("Entrou set forca flora");
+        //System.out.println("Entrou set forca flora");
         synchronized (this.elementos) {
             for (IElemento e : elementos) {
                 if (e.getElemento() == ElementoEnum.FLORA && e.getId() == id) {
                     Flora flora = (Flora) e;
                     flora.setForca(forca);
-                    System.out.println("deu set da forca");
+                    //System.out.println("deu set da forca");
                 }
             }
         }
     }
 
-    public void setForcaEVelocidadeFauna(int id, double forca, int velocidade) {
+    public void setForcaFauna(int id, double forca) {
         synchronized (this.elementos) {
             for (IElemento e : elementos) {
                 if (e.getElemento() == ElementoEnum.FAUNA && e.getId() == id) {
                     Fauna fauna = (Fauna) e;
                     fauna.setForca(forca);
-                    fauna.setVelocity(velocidade);
                 }
             }
         }
@@ -334,7 +314,7 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         return true;
     }
 
-    public boolean editarElementoCommandUndo(int id, ElementoEnum tipoElemento, double forcaAntiga, int velocidadeAntiga) {
+    public boolean editarElementoCommandUndo(int id, ElementoEnum tipoElemento, double forcaAntiga) {
         IElemento elemento = getElementoByIdAndType(id, tipoElemento);
         if(elemento == null)
             return false;
@@ -342,7 +322,7 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         if(tipoElemento.equals(ElementoEnum.FLORA)){
             setForcaFlora(id, forcaAntiga);
         } else if (tipoElemento.equals(ElementoEnum.FAUNA)){
-            setForcaEVelocidadeFauna(id, forcaAntiga, velocidadeAntiga);
+            setForcaFauna(id, forcaAntiga);
         } else {
             return false;
         }
@@ -371,10 +351,4 @@ public class Ecossistema implements IGameEngineEvolve, Serializable {
         in.defaultReadObject();
         this.gameSaver = new GameSaver();
     }
-//    public void createElement(double x, double y){
-//        this.element = this.elementType.createFigure();
-//        this.element.setP1(x, y);
-//        this.element.setP2(x, y);
-//        //this.element.setRGB(this.r, this.g, this.b);
-//    }
 }
