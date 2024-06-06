@@ -317,7 +317,7 @@ public class MapMenu extends MenuBar {
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
 
-        Label instructionLabelId = new Label("Digite o ID da Fauna que deseja eliminar: ");
+        Label instructionLabelId = new Label("Digite o ID da Fauna que deseja injetar: ");
         TextField inputFieldId = new TextField();
         Label errorLabel = new Label();
         errorLabel.setStyle("-fx-text-fill: red;");

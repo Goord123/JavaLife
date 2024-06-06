@@ -21,20 +21,6 @@ public abstract class FaunaStateAdapter implements IFaunaState, Serializable {
         context.changeState(newState.getInstance(context, fauna));
     }
 
-    @Override
-    public void move() {
-    }
-
-    public abstract IFaunaState getCurrentState();
-
-    @Override
-    public void eat() {
-    }
-
-    @Override
-    public boolean reproduce() {
-        return false;
-    }
 
     @Override
     public void evolve() {

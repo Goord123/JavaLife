@@ -27,7 +27,7 @@ public class FaunaContext implements Serializable {
     }
 
     public IFaunaState getCurrentState() {
-        return fauna.getCurrentState();
+        return currentState.getCurrentState();
     }
 
 }

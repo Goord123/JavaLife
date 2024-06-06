@@ -11,7 +11,7 @@ import org.isec.pa.ecossistema.utils.ElementoEnum;
 import java.io.*;
 import java.util.List;
 
-public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaState, Serializable, IElementoComForca, IElementoComImagem {
+public non-sealed class Fauna extends ElementoBase implements IElemento, Serializable, IElementoComForca, IElementoComImagem {
     @Serial
     private static final long serialVersionUID = 1L;
     private final static int HP_PER_TICK_EATING = 20;
@@ -73,10 +73,6 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
         return elementoEnum;
     }
 
-    @Override
-    public IFaunaState getCurrentState() {
-        return this.currentState;
-    }
 
     public void changeState(IFaunaState newState) {
         this.currentState = newState;
@@ -176,7 +172,7 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
         move();
     }
 
-    @Override
+
     public void move() {
         boolean continua = true;
 
@@ -224,7 +220,6 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
     }
 
 
-    @Override
     public void eat() {
         List<IElemento> elementos = this.ecossistema.getElementosByArea(this.area);
         for (IElemento element : elementos) {
@@ -304,7 +299,7 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
         return null;
     }
 
-    @Override
+
     public boolean reproduce() {
         if (checkIfCanReproduce()) {
             if (this.forca <= 25) {
@@ -349,7 +344,7 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
                 for (IElemento element : elementos) {
                     if (element.getElemento() == ElementoEnum.FAUNA) {
                         Fauna faunaTarget = (Fauna) element;
-                        if (faunaTarget.getForca() < 80 && faunaTarget.getCurrentState().equals(FaunaState.LOOKING_FOR_FAUNA.getInstance(context, faunaTarget))) {
+                        if (faunaTarget.getForca() < 80 && context.getCurrentState().equals(FaunaState.LOOKING_FOR_FAUNA.getInstance(context, faunaTarget))) {
                             if (this.forca < faunaTarget.getForca()) {
                                 faunaTarget.setForca(faunaTarget.getForca() + this.forca - 10);
                                 if (faunaTarget.getForca() > 100) faunaTarget.setForca(100);
@@ -412,7 +407,7 @@ public non-sealed class Fauna extends ElementoBase implements IElemento, IFaunaS
                 for (IElemento element : elementos) {
                     if (element.getElemento() == ElementoEnum.FAUNA) {
                         Fauna faunaTarget = (Fauna) element;
-                        if (!faunaTarget.getCurrentState().equals(FaunaState.LOOKING_FOR_FAUNA.getInstance(context, this))
+                        if (!context.getCurrentState().equals(FaunaState.LOOKING_FOR_FAUNA.getInstance(context, this))
                                 && faunaTarget.getTimesReproduced() < 2) {
                             this.segundosParaReproduzir++;
                             if (this.segundosParaReproduzir == 10) {
